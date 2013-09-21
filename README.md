@@ -3,5 +3,5 @@ WhiteLog
 
 Logging library
 
-this is an experamental project in early alpha state
+This is an experimental project in early alpha state
 More information will come soon
