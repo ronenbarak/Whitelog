@@ -1,0 +1,154 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{4FFBCA90-0258-49CD-8CEE-51EAA96AF526}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Whitelog.Core</RootNamespace>
+    <AssemblyName>Whitelog.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Barak\DataStructures\BulkCollector\IBulkCollector.cs" />
+    <Compile Include="Barak\DataStructures\BulkCollector\QueuedBulkCollector.cs" />
+    <Compile Include="Barak\DataStructures\BulkCollector\StackBulkCollector.cs" />
+    <Compile Include="Barak\DataStructures\Dictionary\IMaintenanceMode.cs" />
+    <Compile Include="Barak\DataStructures\Dictionary\IncressSizeOnlyMaintenanceMode.cs" />
+    <Compile Include="Barak\DataStructures\Dictionary\ReadSafeDictionary.cs" />
+    <Compile Include="Barak\DataStructures\Ring\Consumer.cs" />
+    <Compile Include="Barak\DataStructures\Ring\Entry.cs" />
+    <Compile Include="Barak\DataStructures\Ring\RingBuffer.cs" />
+    <Compile Include="Barak\DataStructures\Ring\Util.cs" />
+    <Compile Include="Barak\EventArgs.cs" />
+    <Compile Include="Barak\ISystemTime.cs" />
+    <Compile Include="Barak\ObjectHelper.cs" />
+    <Compile Include="FileLog\BaseFileLog.cs" />
+    <Compile Include="FileLog\InMemmoryBinaryFileLogger.cs" />
+    <Compile Include="FileLog\SubmitLogEntry\AsyncSubmitLogEntry.cs" />
+    <Compile Include="FileLog\SubmitLogEntry\AsyncSubmitLogEntryFactory.cs" />
+    <Compile Include="FileLog\SubmitLogEntry\RingLogBuffer.cs" />
+    <Compile Include="FileLog\SubmitLogEntry\RingSubmitLogEntryFactory.cs" />
+    <Compile Include="FileLog\SubmitLogEntry\SyncSubmitLogEntry.cs" />
+    <Compile Include="FileLog\SubmitLogEntry\SyncSubmitLogEntryFactory.cs" />
+    <Compile Include="Generic\GenericComponentType.cs" />
+    <Compile Include="Generic\GenericPropertyInfo.cs" />
+    <Compile Include="IBinaryLogger.cs" />
+    <Compile Include="ILogEntryData.cs" />
+    <Compile Include="ILogScopeSyncImplementation.cs" />
+    <Compile Include="FileLog\ISubmitLogEntry.cs" />
+    <Compile Include="Interface\ILog.cs" />
+    <Compile Include="Interface\ILogScope.cs" />
+    <Compile Include="Interface\ILogTitle.cs" />
+    <Compile Include="Interface\LogEntry.cs" />
+    <Compile Include="Interface\LogExtenstions.cs" />
+    <Compile Include="Interface\LogTitles\DebugLogTitle.cs" />
+    <Compile Include="Interface\LogTitles\ErrorLogTitle.cs" />
+    <Compile Include="Interface\LogTitles\FatalLogTitle.cs" />
+    <Compile Include="Interface\LogTitles\InfoLogTitle.cs" />
+    <Compile Include="Interface\LogTitles\StringLogTitle.cs" />
+    <Compile Include="Interface\LogTitles\WarningLogTitle.cs" />
+    <Compile Include="ISerializer.cs" />
+    <Compile Include="ListWriter\ExpendableList.cs" />
+    <Compile Include="ListWriter\IListWriter.cs" />
+    <Compile Include="LogReader.cs" />
+    <Compile Include="LogReaderObjectObserver.cs" />
+    <Compile Include="LogScopeSyncImplementation\MultiLogPerApplicationScopeSync.cs" />
+    <Compile Include="PakageDefinitions\Pack\ConstStringPropertyDefinitoin.cs" />
+    <Compile Include="PakageDefinitions\Pack\InheretancePackageDefinition.cs" />
+    <Compile Include="PakageDefinitions\Pack\OpenLogScopeTitlePackageDefinition.cs" />
+    <Compile Include="PakageDefinitions\KnownPackageDefinition.cs" />
+    <Compile Include="PakageDefinitions\Pack\PropertyDefinitionDefinition.cs" />
+    <Compile Include="Generic\GenericPackageProperty.cs" />
+    <Compile Include="CacheString.cs" />
+    <Compile Include="PakageDefinitions\Unpack\CachePropertyUnpackageDefinition.cs" />
+    <Compile Include="PakageDefinitions\Unpack\CacheStringUnpackageDefinition.cs" />
+    <Compile Include="PakageDefinitions\Unpack\EmptyConstractorUnpackageDefinition.cs" />
+    <Compile Include="Generic\GenericPropertyUnpackageDefinition.cs" />
+    <Compile Include="Generic\GenericUnpackageDefinition.cs" />
+    <Compile Include="PakageDefinitions\Unpack\UnkwonSerilizeTypeException.cs" />
+    <Compile Include="LogScopeSyncImplementation\SingleLogPerApplicationScopeSync.cs" />
+    <Compile Include="BinaryPackager.cs" />
+    <Compile Include="PakageDefinitions\Unpack\BinaryPackageDefinitionToGenericUnpackageDefinition.cs" />
+    <Compile Include="FileLog\ContinuesBinaryFileLogger.cs" />
+    <Compile Include="CorruptedDataException.cs" />
+    <Compile Include="Generic\GenericPackageData.cs" />
+    <Compile Include="ListWriter\FixSizeList.cs" />
+    <Compile Include="RegisteredPackageDefinition.cs" />
+    <Compile Include="Serializer\MemoryBuffer\BufferPool.cs" />
+    <Compile Include="Serializer\MemoryBuffer\BufferPoolFactory.cs" />
+    <Compile Include="Serializer\MemoryBuffer\BufferPoolProxy.cs" />
+    <Compile Include="Serializer\MemoryBuffer\IBufferAllocator.cs" />
+    <Compile Include="Serializer\MemoryBuffer\ThreadStaticBuffer.cs" />
+    <Compile Include="Serializer\MemoryBuffer\ThreadStaticBufferFactory.cs" />
+    <Compile Include="Serializer\RawDataSerializer.cs" />
+    <Compile Include="Serializer\StreamDeserilizer.cs" />
+    <Compile Include="PakageDefinitions\Pack\StringLogTitlePackageDefinition.cs" />
+    <Compile Include="PakageDefinitions\Pack\StringCachePackageDefinition.cs" />
+    <Compile Include="UnkownPackageException.cs" />
+    <Compile Include="PakageDefinitions\Unpack\UnpackageDefinition.cs" />
+    <Compile Include="Unpacker.cs" />
+    <Compile Include="IBinaryPackager.cs" />
+    <Compile Include="IStringRenderer.cs" />
+    <Compile Include="PakageDefinitions\Pack\LogEntryPackageDefinition.cs" />
+    <Compile Include="StreamLogBinaryPackager.cs" />
+    <Compile Include="IBinaryPackageDefinition.cs" />
+    <Compile Include="LogScope.cs" />
+    <Compile Include="LogScopeTitle.cs" />
+    <Compile Include="LogTunnel.cs" />
+    <Compile Include="NoPackageFoundForTypeExceptin.cs" />
+    <Compile Include="PakageDefinitions\Pack\ObjectPackageDefinition.cs" />
+    <Compile Include="PakageDefinitions\Pack\PackageDefinition.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PakageDefinitions\Pack\PropertyDefinition.cs" />
+    <Compile Include="PakageDefinitions\Pack\RegisteredPackageDefinitionDefinition.cs" />
+    <Compile Include="SerilizeType.cs" />
+    <Compile Include="PakageDefinitions\Unpack\UnpackPropertyDefinition.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common\Barak.Common.csproj">
+      <Project>{4F6A458A-5A2D-40FC-92FF-F5E5C4E28402}</Project>
+      <Name>Barak.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
