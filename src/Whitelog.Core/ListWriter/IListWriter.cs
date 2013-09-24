@@ -3,10 +3,9 @@ using Whitelog.Core.FileLog;
 
 namespace Whitelog.Core.ListWriter
 {
-    public interface IObjectObserver
+    public interface IBufferConsumer
     {
-        void Add(byte[] bytes);
-        ICollection<object> GetCollection();
+        void Consume(IRawData buffer);
     }
 
     public interface IListWriter
@@ -14,8 +13,10 @@ namespace Whitelog.Core.ListWriter
         byte[] GetListWriterSignature();
         void WriteData(IRawData buffer);
         void WriteData(IEnumerable<IRawData> buffer);
-        byte[] Read();
-        void ReadAll(IObjectObserver objectObserver);
+        
+        bool Read(IBufferConsumer bufferConsumer);
+        bool ReadAll(IBufferConsumer objectObserver);
+
         object LockObject { get; }
         void Flush();
     }

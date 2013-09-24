@@ -13,9 +13,19 @@ namespace Whitelog.Core.Serializer
         private byte[] m_buffer;
         private int m_ioIndex = 0;
 
+        public StreamDeserilizer()
+        {
+        }
+        
         public StreamDeserilizer(byte[] buffer)
         {
+            Init(buffer);
+        }
+
+        public void Init(byte[] buffer)
+        {
             m_buffer = buffer;
+            m_ioIndex = 0;
         }
 
         public int DeserializeInt()

@@ -6,6 +6,7 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Whitelog.Barak.Common.ExtensionMethods;
 using Whitelog.Core;
+using Whitelog.Core.FileLog;
 using Whitelog.Core.FileLog.SubmitLogEntry;
 using Whitelog.Core.ListWriter;
 using Whitelog.Core.PakageDefinitions.Pack;
@@ -23,38 +24,46 @@ namespace Whitelog.Tests
         public DateTime DateTimeData { get; set; }
         public List<PackData> ArrayPackData { get; set; }
     }
+    public static class ListWriterExtensions
+    {
+        class BufferConsumer : IBufferConsumer
+        {
+            public IRawData m_buffer;
+
+            public void Consume(IRawData buffer)
+            {
+                m_buffer = buffer;
+            }
+        }
+
+        public static byte[] Read(this IListWriter listWriter)
+        {
+            var buffer = new BufferConsumer();
+            if (!listWriter.Read(buffer))
+            {
+                return null;
+            }
+            return buffer.m_buffer.Buffer;
+        }
+    }
 
     [TestClass]
     public class ListWritersTester
     {
         [TestMethod]
-        public void TestFixedSizeWriter()
-        {
-            using (MemoryStream ms = new MemoryStream())
-            {
-                FixSizeList fixSizeWriter = new FixSizeList(ms, 0, 1024, true);
-                fixSizeWriter.WriteData(new CloneRawData(BitConverter.GetBytes(1)));
-                fixSizeWriter.WriteData(new CloneRawData(BitConverter.GetBytes(2)));
-                fixSizeWriter.WriteData(new CloneRawData(BitConverter.GetBytes(3)));
-                FixSizeList readerSizeWriter = new FixSizeList(ms, 0, 1024, false);
-                Assert.AreEqual(1, BitConverter.ToInt32(readerSizeWriter.Read(), 0));
-                Assert.AreEqual(2, BitConverter.ToInt32(readerSizeWriter.Read(), 0));
-                Assert.AreEqual(3, BitConverter.ToInt32(readerSizeWriter.Read(), 0));
-                Assert.IsNull(readerSizeWriter.Read());
-            }
-        }
-
-        [TestMethod]
         public void TestContinuesExpendableList()
         {
             using (MemoryStream ms = new MemoryStream())
             {
-                ExpendableList fixSizeWriter = new ExpendableList(1024, ms, BufferPoolFactory.Instance.CreateBufferAllocator());
+                ms.SetLength(1024);
+                ms.Position = 1024;
+                ExpendableList fixSizeWriter = new ExpendableList(ms);
                 fixSizeWriter.WriteData(new CloneRawData(BitConverter.GetBytes(1)));
                 fixSizeWriter.WriteData(new CloneRawData(BitConverter.GetBytes(2)));
                 fixSizeWriter.WriteData(new CloneRawData(BitConverter.GetBytes(3)));
 
-                ExpendableList readerSizeWriter = new ExpendableList(1024, ms, BufferPoolFactory.Instance.CreateBufferAllocator());
+                ms.Position = 1024;
+                ExpendableList readerSizeWriter = new ExpendableList(ms);
                 Assert.AreEqual(1, BitConverter.ToInt32(readerSizeWriter.Read(), 0));
                 Assert.AreEqual(2, BitConverter.ToInt32(readerSizeWriter.Read(), 0));
                 Assert.AreEqual(3, BitConverter.ToInt32(readerSizeWriter.Read(), 0));

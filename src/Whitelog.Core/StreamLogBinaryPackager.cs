@@ -1,18 +1,10 @@
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using System.Threading;
-using Whitelog.Core;
-using System.Linq;
 using Whitelog.Core.Generic;
-using Whitelog.Core.ListWriter;
 using Whitelog.Core.PakageDefinitions;
 using Whitelog.Core.PakageDefinitions.Pack;
-using Whitelog.Core.PakageDefinitions.Unpack;
-using Whitelog.Core.Serializer;
 using Whitelog.Core.Serializer.MemoryBuffer;
 
-namespace Whitelog.Interface
+namespace Whitelog.Core
 {
     public class StreamLogBinaryPackager : BinaryPackager
     {

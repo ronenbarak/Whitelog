@@ -1,6 +1,6 @@
 using System;
 
-namespace Whitelog.Interface
+namespace Whitelog.Core
 {
     class NoPackageFoundForTypeExceptin : Exception
     {

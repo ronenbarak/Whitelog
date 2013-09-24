@@ -16,14 +16,11 @@ namespace Whitelog.Core.PakageDefinitions.Unpack
             set { }
         }
 
-        public override bool Unpack(IDeserializer deserializer, IUnpacker unpacker, out object data)
+        public override object Unpack(IDeserializer deserializer, IUnpacker unpacker)
         {
-            var isData = base.Unpack(deserializer, unpacker, out data);
-            if (isData)
-            {
-                this.RaiseEvent(PackageDefinitionRegistred, data as GenericUnpackageDefinition);
-            }
-            return isData;
+            var data = base.Unpack(deserializer, unpacker);
+            this.RaiseEvent(PackageDefinitionRegistred, data as GenericUnpackageDefinition);
+            return data;
         }
 
         public BinaryPackageDefinitionToGenericUnpackageDefinition()

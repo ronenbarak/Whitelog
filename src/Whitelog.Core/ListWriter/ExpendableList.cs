@@ -8,21 +8,30 @@ namespace Whitelog.Core.ListWriter
 {
     public class ExpendableList : IListWriter
     {
+        class ExpendableBuffer : IRawData
+        {
+            public int Length { get; set; }
+            public byte[] Buffer { get; set; }
+        }
+
         public static readonly Guid ID = new Guid("89AA96B3-E9BA-48C9-80CA-CE83BF2AEA70");
         private Stream m_stream;
-        private long m_startPosition;
         private long m_readIndex;
-        private IBufferAllocator m_bufferAllocator;
+        private ExpendableBuffer m_expendableBuffer;
 
-        public ExpendableList(long startPosition, Stream stream,IBufferAllocator bufferAllocator)
+        public ExpendableList(Stream stream):this(stream,stream.Position)
+        {            
+        }
+        
+        public ExpendableList(Stream stream, long startReadPosition)
         {
-            m_bufferAllocator = bufferAllocator;
-            m_readIndex = m_startPosition = startPosition;
+            m_readIndex = startReadPosition;
             m_stream = stream;
-            if (m_stream.Length < startPosition)
-            {
-                m_stream.SetLength(startPosition);
-            }
+            m_expendableBuffer = new ExpendableBuffer()
+                                 {
+                                     Buffer = new byte[1024],
+                                     Length = 0,
+                                 };
         }
 
         private void MoveToLastPosition()
@@ -53,11 +62,10 @@ namespace Whitelog.Core.ListWriter
             get { return m_stream; }
         }
 
-        public byte[] Read()
+        public bool Read(IBufferConsumer bufferConsumer)
         {
             lock (LockObject)
             {
-                IBuffer mainBuffer = m_bufferAllocator.Allocate();
                 byte[] intSizeBuffer = new byte[sizeof(int)];
                 if (m_readIndex < m_stream.Length)
                 {
@@ -66,28 +74,29 @@ namespace Whitelog.Core.ListWriter
                     int sizeBuffer = BitConverter.ToInt32(intSizeBuffer, 0);
                     if (sizeBuffer != -1)
                     {
-                        byte[] dataBuffer = mainBuffer.Buffer;
-                        if (mainBuffer.Length >= sizeBuffer)
+                        if (m_expendableBuffer.Buffer.Length >= sizeBuffer)
                         {
-                            dataBuffer = new byte[sizeBuffer];
+                            m_expendableBuffer.Buffer = new byte[sizeBuffer];
                         }
 
-                        if (m_stream.Read(dataBuffer, 0, sizeBuffer) != sizeBuffer)
+                        if (m_stream.Read(m_expendableBuffer.Buffer, 0, sizeBuffer) != sizeBuffer)
                         {
                             throw new CorruptedDataException();
                         }
                         else
                         {
                             m_readIndex = m_stream.Position;
-                            return dataBuffer;
+                            m_expendableBuffer.Length = sizeBuffer;
+                            bufferConsumer.Consume(m_expendableBuffer);
+                            return true;
                         }
                     }
-                }
-                return null;
+                }                
             }
+            return false;
         }
 
-        public void ReadAll(IObjectObserver data)
+        public bool ReadAll(IBufferConsumer bufferConsumer)
         {
             lock (LockObject)
             {
@@ -103,34 +112,34 @@ namespace Whitelog.Core.ListWriter
                     ended = true;
                 }
 
-                using (IBuffer mainBuffer = m_bufferAllocator.Allocate())
+                byte[] intSizeBuffer = new byte[sizeof (int)];
+                bool hasAnyRead = false;
+                while (!ended)
                 {
-                    byte[] intSizeBuffer = new byte[sizeof (int)];
-                    while (!ended)
+                    m_stream.Read(intSizeBuffer, 0, intSizeBuffer.Length);
+                    int sizeBuffer = BitConverter.ToInt32(intSizeBuffer, 0);
+                    if (sizeBuffer != -1)
                     {
-                        m_stream.Read(intSizeBuffer, 0, intSizeBuffer.Length);
-                        int sizeBuffer = BitConverter.ToInt32(intSizeBuffer, 0);
-                        if (sizeBuffer != -1)
+                        if (m_expendableBuffer.Buffer.Length < sizeBuffer)
                         {
-                            byte[] dataBuffer = mainBuffer.Buffer;
-                            if (mainBuffer.Length < sizeBuffer)
-                            {
-                                dataBuffer = new byte[sizeBuffer];
-                            }
-
-                            if (m_stream.Read(dataBuffer, 0, sizeBuffer) != sizeBuffer)
-                            {
-                                throw new CorruptedDataException();
-                            }
-                            else
-                            {
-                                m_readIndex = m_stream.Position;
-                                data.Add(dataBuffer);
-                            }
+                            m_expendableBuffer.Buffer = new byte[sizeBuffer];
                         }
-                        ended = !(m_readIndex < maxRead);
+
+                        if (m_stream.Read(m_expendableBuffer.Buffer, 0, sizeBuffer) != sizeBuffer)
+                        {
+                            throw new CorruptedDataException();
+                        }
+                        else
+                        {
+                            m_readIndex = m_stream.Position;
+                            m_expendableBuffer.Length = sizeBuffer;
+                            bufferConsumer.Consume(m_expendableBuffer);
+                            hasAnyRead = true;
+                        }
                     }
+                    ended = !(m_readIndex < maxRead);
                 }
+                return hasAnyRead;
             }
         }
 
@@ -143,8 +152,7 @@ namespace Whitelog.Core.ListWriter
         {
             using (MemoryStream ms = new MemoryStream())
             {
-                ms.Write(ID.ToByteArray(), 0, ID.ToByteArray().Length);
-                ms.Write(BitConverter.GetBytes(m_startPosition), 0, sizeof(long));
+                ms.Write(ID.ToByteArray(), 0, ID.ToByteArray().Length);                
                 return ms.ToArray();
             }
         }

@@ -1,4 +1,4 @@
-namespace Whitelog.Interface
+namespace Whitelog.Core
 {
     public interface ILogScopeSyncImplementation
     {

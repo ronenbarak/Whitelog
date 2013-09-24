@@ -21,7 +21,7 @@ namespace Whitelog.Core.FileLog
         {
             m_stream = new MemoryStream();
 
-            var logData = new ExpendableList(m_stream.Length, m_stream,  BufferPoolFactory.Instance.CreateBufferAllocator());
+            var logData = new ExpendableList(m_stream);
             var logEntry = submitLogEntryFactory.CreateSubmitLogEntry(logData);
             var stringCache = submitLogEntryFactory.CreateSubmitLogEntry(logData);
             var definition = submitLogEntryFactory.CreateSubmitLogEntry(logData);

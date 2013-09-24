@@ -1,7 +1,6 @@
-using System;
-using System.IO;
+using Whitelog.Interface;
 
-namespace Whitelog.Interface
+namespace Whitelog.Core
 {
     public interface IBinaryPackager
     {

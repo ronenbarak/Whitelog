@@ -1,18 +1,11 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
-using System.Threading;
 using Whitelog.Barak.Common.DataStructures.Dictionary;
 using Whitelog.Barak.Common.Events;
-using Whitelog.Core;
 using Whitelog.Core.PakageDefinitions;
-using Whitelog.Core.PakageDefinitions.Pack;
-using Whitelog.Core.PakageDefinitions.Unpack;
-using Whitelog.Core.Serializer;
-using Whitelog.Core.Serializer.MemoryBuffer;
+using Whitelog.Interface;
 
-namespace Whitelog.Interface
+namespace Whitelog.Core
 {
     public class TypeComparer : IEqualityComparer<Type>
     {

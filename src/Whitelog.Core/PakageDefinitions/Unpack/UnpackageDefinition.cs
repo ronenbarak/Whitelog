@@ -8,6 +8,15 @@ using Whitelog.Interface;
 
 namespace Whitelog.Core.PakageDefinitions.Unpack
 {
+    public class CacheStringNotFoundException : Exception
+    {
+        public CacheStringNotFoundException(int id):base(string.Format("Cached string id={0} was not found",id))
+        {
+            Id = id;
+        }
+        public int  Id { get; private set; }
+    }
+
     public abstract class UnpackageDefinition<T> : IUnpackageDefinition
     {
         private List<UnpackPropertyDefinition<T>> m_unpackageDefinitions = new List<UnpackPropertyDefinition<T>>();
@@ -21,15 +30,14 @@ namespace Whitelog.Core.PakageDefinitions.Unpack
             DefinitionId = definitionId;
         }
 
-        public virtual bool Unpack(IDeserializer deserializer, IUnpacker unpacker,out object data)
+        public virtual object Unpack(IDeserializer deserializer, IUnpacker unpacker)
         {
             T instance = CreateInstance();
             foreach (var unpackPropertyDefinition in m_unpackageDefinitions)
             {
                 unpackPropertyDefinition.Unpack(instance, unpacker, deserializer);
             }
-            data = instance;
-            return true;
+            return instance;
         }
 
         protected abstract T CreateInstance();
@@ -110,6 +118,10 @@ namespace Whitelog.Core.PakageDefinitions.Unpack
                 if (unpacker.TryGetCachedString(definitionId, out value))
                 {
                     setter.Invoke(instance, value);
+                }
+                else
+                {
+                    throw new CacheStringNotFoundException(definitionId);
                 }
             });
             return this;

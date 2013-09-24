@@ -82,8 +82,6 @@
     <Compile Include="ISerializer.cs" />
     <Compile Include="ListWriter\ExpendableList.cs" />
     <Compile Include="ListWriter\IListWriter.cs" />
-    <Compile Include="LogReader.cs" />
-    <Compile Include="LogReaderObjectObserver.cs" />
     <Compile Include="LogScopeSyncImplementation\MultiLogPerApplicationScopeSync.cs" />
     <Compile Include="PakageDefinitions\Pack\ConstStringPropertyDefinitoin.cs" />
     <Compile Include="PakageDefinitions\Pack\InheretancePackageDefinition.cs" />
@@ -104,7 +102,13 @@
     <Compile Include="FileLog\ContinuesBinaryFileLogger.cs" />
     <Compile Include="CorruptedDataException.cs" />
     <Compile Include="Generic\GenericPackageData.cs" />
-    <Compile Include="ListWriter\FixSizeList.cs" />
+    <Compile Include="Reader\ExpendableList\ExpandableLogReaderFactory.cs" />
+    <Compile Include="Reader\ExpendableList\ExpendableListLogReader.cs" />
+    <Compile Include="Reader\ILogConsumer.cs" />
+    <Compile Include="Reader\ILogReader.cs" />
+    <Compile Include="Reader\ILogReaderFactory.cs" />
+    <Compile Include="Reader\UnkownLogFileException.cs" />
+    <Compile Include="Reader\WhitelogBinaryReaderFactory.cs" />
     <Compile Include="RegisteredPackageDefinition.cs" />
     <Compile Include="Serializer\MemoryBuffer\BufferPool.cs" />
     <Compile Include="Serializer\MemoryBuffer\BufferPoolFactory.cs" />

@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Serialization;
-using Whitelog.Barak.Common.Events;
-using Whitelog.Core;
+using Whitelog.Interface;
 
-namespace Whitelog.Interface
+namespace Whitelog.Core
 {
     public interface IPackageDefinition
     {
@@ -35,7 +32,7 @@ namespace Whitelog.Interface
         /// Unpack the data
         /// </summary>
         /// <returns>True if this is data object, False if interanl data definition</returns>
-        bool Unpack(IDeserializer deserializer, IUnpacker unpacker,out object data);
+        object Unpack(IDeserializer deserializer, IUnpacker unpacker);
     }
 
     public interface IBinaryPackageDefinition : IPackageDefinition

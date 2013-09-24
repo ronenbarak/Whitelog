@@ -1,10 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
-using Whitelog.Core;
+using Whitelog.Interface;
 
-namespace Whitelog.Interface
+namespace Whitelog.Core
 {
     public class LogScope : ILogScope
     {

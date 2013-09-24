@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
@@ -9,6 +10,8 @@ using Whitelog.Core.FileLog;
 using Whitelog.Core.FileLog.SubmitLogEntry;
 using Whitelog.Core.Generic;
 using Whitelog.Core.LogScopeSyncImplementation;
+using Whitelog.Core.Reader;
+using Whitelog.Core.Reader.ExpendableList;
 using Whitelog.Core.Serializer.MemoryBuffer;
 using Whitelog.Interface;
 using Whitelog.Interface.LogTitles;
@@ -78,11 +81,29 @@ namespace Whitelog.Tests
         }
     }
 
+    class TestConsumer : ILogConsumer
+    {
+        private List<ILogEntryData> m_logs = new List<ILogEntryData>();
+        public void Consume(ILogEntryData entryData)
+        {
+            m_logs.Add(entryData);
+        }
+
+        public IEnumerable<ILogEntryData> Logs()
+        {
+            var list = m_logs.ToList();
+            m_logs.Clear();
+            return list;
+        }
+        
+    }
     [TestClass]
     public class AggregatedLogSingleApplicationTester
     {
         private ILog m_log;
         private InMemmoryBinaryFileLogger m_cfl;
+        private TestConsumer m_testConsumer;
+        private ILogReader m_logReader;
 
         protected virtual LogTunnel CreateLog()
         {
@@ -96,6 +117,12 @@ namespace Whitelog.Tests
             m_log = tunnelLog = CreateLog();
             m_cfl = new InMemmoryBinaryFileLogger(new SyncSubmitLogEntryFactory(BufferPoolFactory.Instance.CreateBufferAllocator()));
             m_cfl.AttachToTunnelLog(tunnelLog);
+
+            var readerFactory = new WhitelogBinaryReaderFactory();
+            readerFactory.RegisterReaderFactory(new ExpandableLogReaderFactory());
+            readerFactory.RegisterReaderFactory(new InMemoryLogReaderFactory());
+            m_testConsumer = new TestConsumer();
+            m_logReader = readerFactory.GetLogReader(m_cfl.Stream, m_testConsumer);
         }
 
         [TestCleanup]
@@ -119,30 +146,27 @@ namespace Whitelog.Tests
             }
 
             m_log.Log("Some Title", message);
-            using (LogReader logReader = new LogReader(m_cfl.Stream, BufferPoolFactory.Instance))
-            {
-                var logEntries = logReader.ReadAll();
-                logEntries.ElementAt(0).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, 0)
-                    //.ValidatePropertyLogEntry<LogEntry, IEnumerable>(x => x.Paramaeters, null)
-                    .ValidateArrayLogEntry<LogEntry, string>(0, x => x.Paramaeters, data => data.ValidatePropertyLogEntry<string, string>(s => s.ToString(), message));
-            }
+            Assert.IsTrue(m_logReader.TryRead());
+            var logEntries = m_testConsumer.Logs();
+            logEntries.ElementAt(0).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, 0)
+                //.ValidatePropertyLogEntry<LogEntry, IEnumerable>(x => x.Paramaeters, null)
+                .ValidateArrayLogEntry<LogEntry, string>(0, x => x.Paramaeters, data => data.ValidatePropertyLogEntry<string, string>(s => s.ToString(), message));
         }
 
         [TestMethod]
         public void CanWriteSingleLogEntry()
         {
             m_log.LogInfo("SomeInfo");
-            using (LogReader logReader = new LogReader(m_cfl.Stream, BufferPoolFactory.Instance))
-            {
-                var logEntries = logReader.ReadAll();
-                Assert.AreEqual(1, logEntries.Count());
-                logEntries.ElementAt(0).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, 0)
-                    .ValidatePropertyLogEntry<LogEntry, Array>(x => x.Paramaeters, null)
-                    .ValidateLogEntry<LogEntry, InfoLogTitle>(x => x.Title,
-                                                              x =>
-                                                              x.ValidatePropertyLogEntry<InfoLogTitle, string>(
-                                                                  p => p.Title, "SomeInfo"));
-            }
+            Assert.IsTrue(m_logReader.TryRead());
+            var logEntries = m_testConsumer.Logs();
+
+            Assert.AreEqual(1, logEntries.Count());
+            logEntries.ElementAt(0).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, 0)
+                .ValidatePropertyLogEntry<LogEntry, Array>(x => x.Paramaeters, null)
+                .ValidateLogEntry<LogEntry, InfoLogTitle>(x => x.Title,
+                                                            x =>
+                                                            x.ValidatePropertyLogEntry<InfoLogTitle, string>(
+                                                                p => p.Title, "SomeInfo"));
         }
 
         [TestMethod]
@@ -152,20 +176,19 @@ namespace Whitelog.Tests
             m_log.LogError("SomeError");
 
 
-            using (LogReader logReader = new LogReader(m_cfl.Stream, BufferPoolFactory.Instance))
-            {
-                var logEntries = logReader.ReadAll();
-                Assert.AreEqual(2, logEntries.Count());
-                logEntries.ElementAt(0).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, 0)
-                                       .ValidatePropertyLogEntry<LogEntry, Array>(x => x.Paramaeters, null)
-                                       .ValidateLogEntry<LogEntry, InfoLogTitle>(x => x.Title,
-                                                x => x.ValidatePropertyLogEntry<InfoLogTitle, string>(p => p.Title, "SomeInfo"));
+            Assert.IsTrue(m_logReader.TryRead());
+            var logEntries = m_testConsumer.Logs();
 
-                logEntries.ElementAt(1).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, 0)
-                                       .ValidatePropertyLogEntry<LogEntry, Array>(x => x.Paramaeters, null)
-                                       .ValidateLogEntry<LogEntry, ErrorLogTitle>(x => x.Title,
-                                                x => x.ValidatePropertyLogEntry<InfoLogTitle, string>(p => p.Title, "SomeError"));
-            }
+            Assert.AreEqual(2, logEntries.Count());
+            logEntries.ElementAt(0).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, 0)
+                                    .ValidatePropertyLogEntry<LogEntry, Array>(x => x.Paramaeters, null)
+                                    .ValidateLogEntry<LogEntry, InfoLogTitle>(x => x.Title,
+                                            x => x.ValidatePropertyLogEntry<InfoLogTitle, string>(p => p.Title, "SomeInfo"));
+
+            logEntries.ElementAt(1).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, 0)
+                                    .ValidatePropertyLogEntry<LogEntry, Array>(x => x.Paramaeters, null)
+                                    .ValidateLogEntry<LogEntry, ErrorLogTitle>(x => x.Title,
+                                            x => x.ValidatePropertyLogEntry<InfoLogTitle, string>(p => p.Title, "SomeError"));
         }
 
         [TestMethod]
@@ -173,24 +196,25 @@ namespace Whitelog.Tests
         {
             m_log.LogInfo("SomeInfo");
 
-            using (LogReader logReader = new LogReader(m_cfl.Stream, BufferPoolFactory.Instance))
-            {
-                var logEntries = logReader.ReadAll();
-                Assert.AreEqual(1, logEntries.Count());
-                logEntries.ElementAt(0).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, 0)
-                                       .ValidatePropertyLogEntry<LogEntry, Array>(x => x.Paramaeters, null)
-                                       .ValidateLogEntry<LogEntry, InfoLogTitle>(x => x.Title,
-                                                x => x.ValidatePropertyLogEntry<InfoLogTitle, string>(p => p.Title, "SomeInfo"));
+            Assert.IsTrue(m_logReader.TryRead());
+            var logEntries = m_testConsumer.Logs();
 
-                m_log.LogError("SomeError");
+            Assert.AreEqual(1, logEntries.Count());
+            logEntries.ElementAt(0).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, 0)
+                                    .ValidatePropertyLogEntry<LogEntry, Array>(x => x.Paramaeters, null)
+                                    .ValidateLogEntry<LogEntry, InfoLogTitle>(x => x.Title,
+                                            x => x.ValidatePropertyLogEntry<InfoLogTitle, string>(p => p.Title, "SomeInfo"));
 
-                logEntries = logReader.ReadAll();
-                Assert.AreEqual(1, logEntries.Count());
-                logEntries.ElementAt(0).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, 0)
-                                       .ValidatePropertyLogEntry<LogEntry, Array>(x => x.Paramaeters, null)
-                                       .ValidateLogEntry<LogEntry, ErrorLogTitle>(x => x.Title,
-                                                x => x.ValidatePropertyLogEntry<ErrorLogTitle, string>(p => p.Title, "SomeError"));
-            }
+            m_log.LogError("SomeError");
+
+            Assert.IsTrue(m_logReader.TryRead());
+            logEntries = m_testConsumer.Logs();
+
+            Assert.AreEqual(1, logEntries.Count());
+            logEntries.ElementAt(0).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, 0)
+                                    .ValidatePropertyLogEntry<LogEntry, Array>(x => x.Paramaeters, null)
+                                    .ValidateLogEntry<LogEntry, ErrorLogTitle>(x => x.Title,
+                                            x => x.ValidatePropertyLogEntry<ErrorLogTitle, string>(p => p.Title, "SomeError"));
         }
 
         [TestMethod]
@@ -203,19 +227,18 @@ namespace Whitelog.Tests
             }
             Assert.AreNotEqual(0, scopeid);
 
-            using (LogReader logReader = new LogReader(m_cfl.Stream, BufferPoolFactory.Instance))
-            {
-                var logEntries = logReader.ReadAll();
-                Assert.AreEqual(2, logEntries.Count());
+            Assert.IsTrue(m_logReader.TryRead());
+            var logEntries = m_testConsumer.Logs();
 
-                logEntries.ElementAt(0).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, scopeid)
-                                                .ValidateLogEntry<LogEntry, OpenLogScopeTitle>(x => x.Title,
-                                                    x => x.ValidatePropertyLogEntry<OpenLogScopeTitle, string>(p => p.Title, "ScopeTile"),
-                                                    x => x.ValidatePropertyLogEntry<OpenLogScopeTitle, int>(p => p.ParentLogId, 0));
+            Assert.AreEqual(2, logEntries.Count());
 
-                logEntries.ElementAt(1).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, scopeid)
-                                                .ValidateLogEntry<LogEntry, CloseLogScopeTitle>(x => x.Title, x => { });
-            }
+            logEntries.ElementAt(0).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, scopeid)
+                                            .ValidateLogEntry<LogEntry, OpenLogScopeTitle>(x => x.Title,
+                                                x => x.ValidatePropertyLogEntry<OpenLogScopeTitle, string>(p => p.Title, "ScopeTile"),
+                                                x => x.ValidatePropertyLogEntry<OpenLogScopeTitle, int>(p => p.ParentLogId, 0));
+
+            logEntries.ElementAt(1).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, scopeid)
+                                            .ValidateLogEntry<LogEntry, CloseLogScopeTitle>(x => x.Title, x => { });
         }
 
         [TestMethod]
@@ -246,32 +269,30 @@ namespace Whitelog.Tests
 
             Assert.IsTrue(firstScopeId != secondScopeId && secondScopeId != thirdScopeId && firstScopeId != thirdScopeId);
 
-            using (LogReader logReader = new LogReader(m_cfl.Stream, BufferPoolFactory.Instance))
-            {
-                var logEntries = logReader.ReadAll();
-                Assert.AreEqual(10, logEntries.Count());
+            Assert.IsTrue(m_logReader.TryRead());
+            var logEntries = m_testConsumer.Logs();
+            Assert.AreEqual(10, logEntries.Count());
 
-                logEntries.ElementAt(0).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, firstScopeId); // Open 1 
+            logEntries.ElementAt(0).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, firstScopeId); // Open 1 
 
-                // Open 2
-                logEntries.ElementAt(1).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, secondScopeId)
-                                                    .ValidateLogEntry<LogEntry, OpenLogScopeTitle>(x => x.Title,
-                                                        x => x.ValidatePropertyLogEntry<OpenLogScopeTitle, int>(p => p.ParentLogId, firstScopeId));
+            // Open 2
+            logEntries.ElementAt(1).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, secondScopeId)
+                                                .ValidateLogEntry<LogEntry, OpenLogScopeTitle>(x => x.Title,
+                                                    x => x.ValidatePropertyLogEntry<OpenLogScopeTitle, int>(p => p.ParentLogId, firstScopeId));
 
-                logEntries.ElementAt(2).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, secondScopeId); // Data 2
-                logEntries.ElementAt(3).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, secondScopeId); // Close 2
-                logEntries.ElementAt(4).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, firstScopeId); // Data 1
+            logEntries.ElementAt(2).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, secondScopeId); // Data 2
+            logEntries.ElementAt(3).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, secondScopeId); // Close 2
+            logEntries.ElementAt(4).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, firstScopeId); // Data 1
 
-                // Open 3
-                logEntries.ElementAt(5).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, thirdScopeId)
-                                            .ValidateLogEntry<LogEntry, OpenLogScopeTitle>(x => x.Title,
-                                                        x => x.ValidatePropertyLogEntry<OpenLogScopeTitle, int>(p => p.ParentLogId, firstScopeId));
+            // Open 3
+            logEntries.ElementAt(5).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, thirdScopeId)
+                                        .ValidateLogEntry<LogEntry, OpenLogScopeTitle>(x => x.Title,
+                                                    x => x.ValidatePropertyLogEntry<OpenLogScopeTitle, int>(p => p.ParentLogId, firstScopeId));
 
-                logEntries.ElementAt(6).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, thirdScopeId); // Data 3
-                logEntries.ElementAt(7).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, thirdScopeId); // Close 3
-                logEntries.ElementAt(8).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, firstScopeId); // Close 1
-                logEntries.ElementAt(9).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, 0); // EndData
-            }
+            logEntries.ElementAt(6).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, thirdScopeId); // Data 3
+            logEntries.ElementAt(7).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, thirdScopeId); // Close 3
+            logEntries.ElementAt(8).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, firstScopeId); // Close 1
+            logEntries.ElementAt(9).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, 0); // EndData
         }
 
         [TestMethod]
@@ -310,45 +331,43 @@ namespace Whitelog.Tests
             Assert.AreNotEqual(-1, threadLogScopeID);
             Assert.AreNotEqual(-1, normalLogScopeID);
 
-            using (LogReader logReader = new LogReader(m_cfl.Stream, BufferPoolFactory.Instance))
+            Assert.IsTrue(m_logReader.TryRead());
+            var logEntries = m_testConsumer.Logs();
+            Assert.AreEqual(6, logEntries.Count());
+
+            logEntries = logEntries.Where(p => (p.GetValue("Title") as GenericPackageData).GetEntryType().FullName == typeof(CustomStringLogTitle).FullName).ToList();
+
+            int logScope = (int)(logEntries.First().GetValue("LogScopeId"));
+            string data = (logEntries.First().GetValue("Title") as GenericPackageData).GetValue("Title") as string;
+            int otherLogScope = (int)(logEntries.Last().GetValue("LogScopeId"));
+            string otherData = (logEntries.Last().GetValue("Title") as GenericPackageData).GetValue("Title") as string; ;
+
+            Assert.AreNotEqual(data, otherData);
+
+            if (data == "In thread")
             {
-                var logEntries = logReader.ReadAll();
-                Assert.AreEqual(6, logEntries.Count());
+                Assert.AreEqual(threadLogScopeID, logScope);
+            }
+            else if (data == "In Noraml")
+            {
+                Assert.AreEqual(normalLogScopeID, logScope);
+            }
+            else
+            {
+                Assert.Fail();
+            }
 
-                logEntries = logEntries.Where(p => (p.GetValue("Title") as GenericPackageData).GetEntryType().FullName == typeof(CustomStringLogTitle).FullName).ToList();
-
-                int logScope = (int)(logEntries.First().GetValue("LogScopeId"));
-                string data = (logEntries.First().GetValue("Title") as GenericPackageData).GetValue("Title") as string;
-                int otherLogScope = (int)(logEntries.Last().GetValue("LogScopeId"));
-                string otherData = (logEntries.Last().GetValue("Title") as GenericPackageData).GetValue("Title") as string; ;
-
-                Assert.AreNotEqual(data, otherData);
-
-                if (data == "In thread")
-                {
-                    Assert.AreEqual(threadLogScopeID, logScope);
-                }
-                else if (data == "In Noraml")
-                {
-                    Assert.AreEqual(normalLogScopeID, logScope);
-                }
-                else
-                {
-                    Assert.Fail();
-                }
-
-                if (otherData == "In thread")
-                {
-                    Assert.AreEqual(threadLogScopeID, otherLogScope);
-                }
-                else if (otherData == "In Noraml")
-                {
-                    Assert.AreEqual(normalLogScopeID, otherLogScope);
-                }
-                else
-                {
-                    Assert.Fail();
-                }
+            if (otherData == "In thread")
+            {
+                Assert.AreEqual(threadLogScopeID, otherLogScope);
+            }
+            else if (otherData == "In Noraml")
+            {
+                Assert.AreEqual(normalLogScopeID, otherLogScope);
+            }
+            else
+            {
+                Assert.Fail();
             }
         }
 

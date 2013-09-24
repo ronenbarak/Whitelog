@@ -1,15 +1,22 @@
+using System;
 using System.Linq;
+using Whitelog.Barak.Common.Events;
 using Whitelog.Interface;
 
 namespace Whitelog.Core.PakageDefinitions.Unpack
 {
     public class CacheStringUnpackageDefinition : IUnpackageDefinition
     {
-        public bool Unpack(IDeserializer deserializer, IUnpacker unpacker,out object data)
+        public event EventHandler<EventArgs<CacheString>> CacheStringDeserializer;
+        public object Unpack(IDeserializer deserializer, IUnpacker unpacker)
         {
-            unpacker.SetCachedString(deserializer.DeserializeVariantInt(), deserializer.DeserializeString());
-            data = null;
-            return false;
+            CacheString cacheString = new CacheString()
+                                      {
+                                          Id = deserializer.DeserializeVariantInt(),
+                                          Value = deserializer.DeserializeString()
+                                      };
+            this.RaiseEvent(CacheStringDeserializer, cacheString);
+            return cacheString;
         }
 
         public string GetTypeDefinition()

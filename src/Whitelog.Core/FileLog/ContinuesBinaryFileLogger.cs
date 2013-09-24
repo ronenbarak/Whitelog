@@ -19,7 +19,7 @@ namespace Whitelog.Core.FileLog
             m_stream = System.IO.File.Open(filePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read);
             bool isNewFile = m_stream.Length == 0;
 
-            var logData = new ExpendableList(m_stream.Length, m_stream, BufferPoolFactory.Instance.CreateBufferAllocator());
+            var logData = new ExpendableList(m_stream);
             m_logEntry = submitLogEntryFactory.CreateSubmitLogEntry(logData);
             var stringCache = submitLogEntryFactory.CreateSubmitLogEntry(logData);
             var definition = submitLogEntryFactory.CreateSubmitLogEntry(logData);

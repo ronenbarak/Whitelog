@@ -1,6 +1,4 @@
-using System;
-
-namespace Whitelog.Interface
+namespace Whitelog.Core
 {
     public sealed class RegisteredPackageDefinition
     {

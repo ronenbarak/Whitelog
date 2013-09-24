@@ -13,19 +13,13 @@ namespace Whitelog.Core
     {
         public static T Unpack<T>(this IUnpacker unpacker,IDeserializer deserializer) where T:class 
         {
-            object data;
-            if (unpacker.Unpack(deserializer,out data))
-            {
-                return data as T;
-            }
-            return default(T);
+            return unpacker.Unpack(deserializer) as T;
         }
     }
 
     public interface IUnpacker
     {
-        bool Unpack(IDeserializer deserializer,out object data);
-        bool SetCachedString(int id, string value);
+        object Unpack(IDeserializer deserializer);
         bool TryGetCachedString(int id, out string value);
         bool TryGetPackageType(Type type, out IUnpackageDefinition packageDefinition);
     }
@@ -44,6 +38,8 @@ namespace Whitelog.Core
     public class Unpacker : IUnpacker
     {
         public event EventHandler<HandledEventArgs<ResolvePakageDefinition>> PakageDefinitionResolve;
+        public event EventHandler<EventArgs<int>> PakageDefinitionRegistered;
+
         private Dictionary<int, IUnpackageDefinition> m_definitionsById = new Dictionary<int, IUnpackageDefinition>();
         private Dictionary<int, string> m_stringCache = new Dictionary<int, string>();
         
@@ -53,24 +49,17 @@ namespace Whitelog.Core
         {
             if (!m_definitionsById.ContainsKey(packageDefinition.DefinitionId))
             {
-                m_definitionsById.Add(packageDefinition.DefinitionId, packageDefinition);   
+                m_definitionsById.Add(packageDefinition.DefinitionId, packageDefinition);
+                this.RaiseEvent(PakageDefinitionRegistered, packageDefinition.DefinitionId);
             }
             //m_definitionsByType.Add(packageDefinition.GetTypeDefinition(), packageDefinition);
         }
 
-        public bool Unpack(IDeserializer deserializer,out object data)
+        public object Unpack(IDeserializer deserializer)
         {
             int packageDefinitionId = deserializer.DeserializeVariantInt();
-            if (packageDefinitionId == 0)
-            {
-                data = null;
-                return true;
-            }
-            else
-            {
-                IUnpackageDefinition packageDefinition = GetPackageById(packageDefinitionId -1);
-                return packageDefinition.Unpack(deserializer, this, out data);
-            }
+            IUnpackageDefinition packageDefinition = GetPackageById(packageDefinitionId -1);
+            return packageDefinition.Unpack(deserializer, this);
         }
 
         public IUnpackageDefinition GetPackageById(int packageDefinitionId)

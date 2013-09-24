@@ -1,6 +1,7 @@
+using Whitelog.Interface;
 using Whitelog.Interface.LogTitles;
 
-namespace Whitelog.Interface
+namespace Whitelog.Core
 {
     public class LogScopeTitle : CustomStringLogTitle
     {
