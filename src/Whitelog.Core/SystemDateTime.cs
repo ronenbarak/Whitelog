@@ -1,7 +1,7 @@
 using System;
 using Whitelog.Barak.Common.SystemTime;
 
-namespace Whitelog.Tests
+namespace Whitelog.Core
 {
     /// <summary>
     /// Wrapper for DateTime.Now

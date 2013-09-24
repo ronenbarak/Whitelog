@@ -5,6 +5,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Whitelog.Core", "Whitelog.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Whitelog.Tests", "Whitelog.Tests\Whitelog.Tests.csproj", "{89952661-AFF6-47BC-BBD3-DC998E8F3E2A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Whitelog.Viewer", "Whitelog.Viewer\Whitelog.Viewer.csproj", "{948BC8DA-795D-42B9-9DC9-5806B4E0690E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Whitelog.Sample", "Whitelog.Sample\Whitelog.Sample.csproj", "{D140EED3-AEB1-4486-AD81-996931F08D1C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +23,14 @@ Global
 		{89952661-AFF6-47BC-BBD3-DC998E8F3E2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89952661-AFF6-47BC-BBD3-DC998E8F3E2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89952661-AFF6-47BC-BBD3-DC998E8F3E2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{948BC8DA-795D-42B9-9DC9-5806B4E0690E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{948BC8DA-795D-42B9-9DC9-5806B4E0690E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{948BC8DA-795D-42B9-9DC9-5806B4E0690E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{948BC8DA-795D-42B9-9DC9-5806B4E0690E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D140EED3-AEB1-4486-AD81-996931F08D1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D140EED3-AEB1-4486-AD81-996931F08D1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D140EED3-AEB1-4486-AD81-996931F08D1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D140EED3-AEB1-4486-AD81-996931F08D1C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

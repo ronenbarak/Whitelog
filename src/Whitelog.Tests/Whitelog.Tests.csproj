@@ -56,7 +56,6 @@
     <Compile Include="AggregatedLogTester.cs" />
     <Compile Include="ListWritersTester.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SystemDateTime.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Whitelog.Core\Whitelog.Core.csproj">

@@ -8,7 +8,7 @@ namespace Whitelog.Core.PakageDefinitions.Pack
     {
         public OpenLogScopeTitlePackageDefinition()
         {
-            DefineCacheString(ObjectHelper.GetProperty<StringLogTitle>(x => x.Title).Name, title => title.Title);
+            DefineCacheString(ObjectHelper.GetProperty<StringLogTitle>(x => x.Message).Name, title => title.Message);
             Define(x => x.ParentLogId, x => x.ParentLogId);
         }
     }

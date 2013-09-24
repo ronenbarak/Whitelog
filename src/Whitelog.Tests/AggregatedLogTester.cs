@@ -115,7 +115,7 @@ namespace Whitelog.Tests
         {
             LogTunnel tunnelLog;
             m_log = tunnelLog = CreateLog();
-            m_cfl = new InMemmoryBinaryFileLogger(new SyncSubmitLogEntryFactory(BufferPoolFactory.Instance.CreateBufferAllocator()));
+            m_cfl = new InMemmoryBinaryFileLogger(new SyncSubmitLogEntryFactory());
             m_cfl.AttachToTunnelLog(tunnelLog);
 
             var readerFactory = new WhitelogBinaryReaderFactory();
@@ -145,7 +145,7 @@ namespace Whitelog.Tests
                 }
             }
 
-            m_log.Log("Some Title", message);
+            m_log.LogInfo("Some Title", message);
             Assert.IsTrue(m_logReader.TryRead());
             var logEntries = m_testConsumer.Logs();
             logEntries.ElementAt(0).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, 0)
@@ -166,7 +166,7 @@ namespace Whitelog.Tests
                 .ValidateLogEntry<LogEntry, InfoLogTitle>(x => x.Title,
                                                             x =>
                                                             x.ValidatePropertyLogEntry<InfoLogTitle, string>(
-                                                                p => p.Title, "SomeInfo"));
+                                                                p => p.Message, "SomeInfo"));
         }
 
         [TestMethod]
@@ -183,12 +183,12 @@ namespace Whitelog.Tests
             logEntries.ElementAt(0).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, 0)
                                     .ValidatePropertyLogEntry<LogEntry, Array>(x => x.Paramaeters, null)
                                     .ValidateLogEntry<LogEntry, InfoLogTitle>(x => x.Title,
-                                            x => x.ValidatePropertyLogEntry<InfoLogTitle, string>(p => p.Title, "SomeInfo"));
+                                            x => x.ValidatePropertyLogEntry<InfoLogTitle, string>(p => p.Message, "SomeInfo"));
 
             logEntries.ElementAt(1).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, 0)
                                     .ValidatePropertyLogEntry<LogEntry, Array>(x => x.Paramaeters, null)
                                     .ValidateLogEntry<LogEntry, ErrorLogTitle>(x => x.Title,
-                                            x => x.ValidatePropertyLogEntry<InfoLogTitle, string>(p => p.Title, "SomeError"));
+                                            x => x.ValidatePropertyLogEntry<InfoLogTitle, string>(p => p.Message, "SomeError"));
         }
 
         [TestMethod]
@@ -203,7 +203,7 @@ namespace Whitelog.Tests
             logEntries.ElementAt(0).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, 0)
                                     .ValidatePropertyLogEntry<LogEntry, Array>(x => x.Paramaeters, null)
                                     .ValidateLogEntry<LogEntry, InfoLogTitle>(x => x.Title,
-                                            x => x.ValidatePropertyLogEntry<InfoLogTitle, string>(p => p.Title, "SomeInfo"));
+                                            x => x.ValidatePropertyLogEntry<InfoLogTitle, string>(p => p.Message, "SomeInfo"));
 
             m_log.LogError("SomeError");
 
@@ -214,7 +214,7 @@ namespace Whitelog.Tests
             logEntries.ElementAt(0).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, 0)
                                     .ValidatePropertyLogEntry<LogEntry, Array>(x => x.Paramaeters, null)
                                     .ValidateLogEntry<LogEntry, ErrorLogTitle>(x => x.Title,
-                                            x => x.ValidatePropertyLogEntry<ErrorLogTitle, string>(p => p.Title, "SomeError"));
+                                            x => x.ValidatePropertyLogEntry<ErrorLogTitle, string>(p => p.Message, "SomeError"));
         }
 
         [TestMethod]
@@ -234,7 +234,7 @@ namespace Whitelog.Tests
 
             logEntries.ElementAt(0).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, scopeid)
                                             .ValidateLogEntry<LogEntry, OpenLogScopeTitle>(x => x.Title,
-                                                x => x.ValidatePropertyLogEntry<OpenLogScopeTitle, string>(p => p.Title, "ScopeTile"),
+                                                x => x.ValidatePropertyLogEntry<OpenLogScopeTitle, string>(p => p.Message, "ScopeTile"),
                                                 x => x.ValidatePropertyLogEntry<OpenLogScopeTitle, int>(p => p.ParentLogId, 0));
 
             logEntries.ElementAt(1).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, scopeid)
@@ -309,7 +309,7 @@ namespace Whitelog.Tests
                 {
                     threadLogScopeID = threadScope.LogScopeId;
                     manualResetEvent.Set();
-                    m_log.Log("In thread");
+                    m_log.LogInfo("In thread");
                     manualResetEvent2.WaitOne();
                 }
                 countdownEvent.Signal();
@@ -321,7 +321,7 @@ namespace Whitelog.Tests
             {
                 normalLogScopeID = normalScope.LogScopeId;
                 manualResetEvent.WaitOne();
-                m_log.Log("In Noraml");
+                m_log.LogInfo("In Noraml");
                 manualResetEvent2.Set();
             }
             countdownEvent.Signal();
@@ -335,12 +335,12 @@ namespace Whitelog.Tests
             var logEntries = m_testConsumer.Logs();
             Assert.AreEqual(6, logEntries.Count());
 
-            logEntries = logEntries.Where(p => (p.GetValue("Title") as GenericPackageData).GetEntryType().FullName == typeof(CustomStringLogTitle).FullName).ToList();
+            logEntries = logEntries.Where(p => (p.GetValue("Title") as GenericPackageData).GetEntryType().FullName == typeof(InfoLogTitle).FullName).ToList();
 
             int logScope = (int)(logEntries.First().GetValue("LogScopeId"));
-            string data = (logEntries.First().GetValue("Title") as GenericPackageData).GetValue("Title") as string;
+            string data = (logEntries.First().GetValue("Title") as GenericPackageData).GetValue("Message") as string;
             int otherLogScope = (int)(logEntries.Last().GetValue("LogScopeId"));
-            string otherData = (logEntries.Last().GetValue("Title") as GenericPackageData).GetValue("Title") as string; ;
+            string otherData = (logEntries.Last().GetValue("Title") as GenericPackageData).GetValue("Message") as string; ;
 
             Assert.AreNotEqual(data, otherData);
 

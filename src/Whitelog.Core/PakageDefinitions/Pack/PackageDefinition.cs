@@ -39,7 +39,7 @@ namespace Whitelog.Core.PakageDefinitions.Pack
 
         public virtual IEnumerable<IPropertyDefinition> GetPropertyDefinition()
         {
-            return ((IEnumerable<IPropertyDefinition>)m_definitions).Union(m_constDefinitions);
+            return ((IEnumerable<IPropertyDefinition>)m_definitions).Union(m_constDefinitions).ToList();
         }
 
         public virtual void PackData(IBinaryPackager packager, ISerializer serializer, object data)

@@ -5,18 +5,11 @@ namespace Whitelog.Core.FileLog.SubmitLogEntry
 {
     public class SyncSubmitLogEntry : ISubmitLogEntry
     {
-        private IListWriter m_listWriter;
-        private IBufferAllocator m_bufferAllocator;
+        private IListWriter m_listWriter;        
 
-        public SyncSubmitLogEntry(IListWriter listWriter, IBufferAllocator bufferAllocator)
+        public SyncSubmitLogEntry(IListWriter listWriter)
         {
-            m_bufferAllocator = bufferAllocator;
             m_listWriter = listWriter;
-        }
-
-        public IBuffer Allocate()
-        {
-            return m_bufferAllocator.Allocate();
         }
 
         public void AddLogEntry(IRawData buffer)

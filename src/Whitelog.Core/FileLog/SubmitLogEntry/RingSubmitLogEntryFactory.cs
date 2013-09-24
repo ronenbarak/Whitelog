@@ -8,8 +8,8 @@ namespace Whitelog.Core.FileLog.SubmitLogEntry
 {
     public enum RingConsumeOption
     {
-        ThreadYield,
-        //ThreadOnDemeand
+        //BusySpin,
+        SpinWait
     }
 
     /// <summary>
@@ -28,7 +28,7 @@ namespace Whitelog.Core.FileLog.SubmitLogEntry
         {
             m_ring = new RingBuffer<RingLogBuffer>(ringSize, ring1 => new RingLogBuffer(BufferSize, ring1));
             m_consumer = new Consumer<RingLogBuffer>(m_ring,OnConsume);
-            if (ringConsumeOption == RingConsumeOption.ThreadYield)
+            if (ringConsumeOption == RingConsumeOption.SpinWait)
             {
                 Thread t = new Thread(ConsumeLoop);
                 t.IsBackground = true;
@@ -39,6 +39,7 @@ namespace Whitelog.Core.FileLog.SubmitLogEntry
         private void ConsumeLoop()
         {
             m_isIdeal = false;
+            SpinWait spinWait = new SpinWait();
             while(true)
             {
                 if (!m_consumer.TryConsume())
@@ -47,7 +48,11 @@ namespace Whitelog.Core.FileLog.SubmitLogEntry
                     {
                         m_isIdeal = true;
                     }
-                    System.Threading.Thread.Sleep(1);
+                    spinWait.SpinOnce();
+                }
+                else
+                {
+                    spinWait.Reset();   
                 }
             }
         }

@@ -120,6 +120,7 @@
     <Compile Include="Serializer\StreamDeserilizer.cs" />
     <Compile Include="PakageDefinitions\Pack\StringLogTitlePackageDefinition.cs" />
     <Compile Include="PakageDefinitions\Pack\StringCachePackageDefinition.cs" />
+    <Compile Include="SystemDateTime.cs" />
     <Compile Include="UnkownPackageException.cs" />
     <Compile Include="PakageDefinitions\Unpack\UnpackageDefinition.cs" />
     <Compile Include="Unpacker.cs" />

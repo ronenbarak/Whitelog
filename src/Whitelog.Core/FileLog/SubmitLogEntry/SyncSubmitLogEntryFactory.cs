@@ -6,11 +6,10 @@ namespace Whitelog.Core.FileLog.SubmitLogEntry
 {
     public class SyncSubmitLogEntryFactory : ISubmitLogEntryFactory
     {
-        private IBufferAllocator m_rawDataProvider;
         Dictionary<IListWriter, ISubmitLogEntry> m_asyncFactory = new Dictionary<IListWriter, ISubmitLogEntry>();
-        public SyncSubmitLogEntryFactory(IBufferAllocator rawDataProvider)
+        
+        public SyncSubmitLogEntryFactory()
         {
-            m_rawDataProvider = rawDataProvider;
         }
 
         public ISubmitLogEntry CreateSubmitLogEntry(IListWriter listWriter)
@@ -18,7 +17,7 @@ namespace Whitelog.Core.FileLog.SubmitLogEntry
             ISubmitLogEntry submitLogEntry;
             if (!m_asyncFactory.TryGetValue(listWriter, out submitLogEntry))
             {
-                submitLogEntry = new SyncSubmitLogEntry(listWriter, m_rawDataProvider);
+                submitLogEntry = new SyncSubmitLogEntry(listWriter);
                 m_asyncFactory.Add(listWriter, submitLogEntry);
             }
 

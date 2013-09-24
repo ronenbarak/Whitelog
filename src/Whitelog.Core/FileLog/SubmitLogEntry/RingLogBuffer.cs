@@ -23,6 +23,7 @@ namespace Whitelog.Core.FileLog.SubmitLogEntry
         {
             m_buffer = new byte[size];
             m_ring = ring;
+            m_rawDataSerializer.Init(this);
         }
 
         public void SetLength(int length)

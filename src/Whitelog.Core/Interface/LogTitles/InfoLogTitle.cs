@@ -2,9 +2,14 @@ namespace Whitelog.Interface.LogTitles
 {
     public class InfoLogTitle : StringLogTitle
     {
-        public InfoLogTitle(string title)
-            : base(title)
+        public InfoLogTitle(string message)
+            : base(message)
         {
+        }
+
+        public override string Title
+        {
+            get { return "Info"; }
         }
     }
 }
