@@ -48,7 +48,10 @@ namespace Whitelog.Viewer
                 }
                 else if (titleInfo.Type == "Whitelog.Core.CloseLogScopeTitle")
                 {
-                    m_openNodes.Remove(scopeId);
+                    if (m_openNodes.ContainsKey(scopeId))
+                    {
+                        m_openNodes.Remove(scopeId);
+                    }
                 }
                 else
                 {

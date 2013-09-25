@@ -39,14 +39,14 @@
             this.label1 = new System.Windows.Forms.Label();
             this.m_loggerTypes = new System.Windows.Forms.ComboBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.m_btnClose = new System.Windows.Forms.Button();
+            this.m_btnOpenScope = new System.Windows.Forms.Button();
+            this.m_txtScopeMessage = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.m_cboLogTitles = new System.Windows.Forms.ComboBox();
             this.m_btnSimpleLog = new System.Windows.Forms.Button();
             this.m_txtSimpleLogMessage = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.m_txtScopeMessage = new System.Windows.Forms.TextBox();
-            this.m_btnOpenScope = new System.Windows.Forms.Button();
-            this.m_btnClose = new System.Windows.Forms.Button();
             this.m_groupBuilder.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -103,9 +103,9 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(15, 51);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(57, 13);
+            this.label3.Size = new System.Drawing.Size(54, 13);
             this.label3.TabIndex = 5;
-            this.label3.Text = "Subbmiter:";
+            this.label3.Text = "Submitter:";
             // 
             // m_txtPath
             // 
@@ -153,7 +153,8 @@
             // 
             // panel1
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.AutoScroll = true;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -165,10 +166,48 @@
             this.panel1.Controls.Add(this.m_btnSimpleLog);
             this.panel1.Controls.Add(this.m_txtSimpleLogMessage);
             this.panel1.Controls.Add(this.label5);
-            this.panel1.Location = new System.Drawing.Point(13, 154);
+            this.panel1.Location = new System.Drawing.Point(13, 153);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(630, 317);
             this.panel1.TabIndex = 1;
+            // 
+            // m_btnClose
+            // 
+            this.m_btnClose.Enabled = false;
+            this.m_btnClose.Location = new System.Drawing.Point(349, 43);
+            this.m_btnClose.Name = "m_btnClose";
+            this.m_btnClose.Size = new System.Drawing.Size(75, 23);
+            this.m_btnClose.TabIndex = 7;
+            this.m_btnClose.Text = "Close";
+            this.m_btnClose.UseVisualStyleBackColor = true;
+            this.m_btnClose.Click += new System.EventHandler(this.m_btnClose_Click);
+            // 
+            // m_btnOpenScope
+            // 
+            this.m_btnOpenScope.Location = new System.Drawing.Point(268, 43);
+            this.m_btnOpenScope.Name = "m_btnOpenScope";
+            this.m_btnOpenScope.Size = new System.Drawing.Size(75, 23);
+            this.m_btnOpenScope.TabIndex = 6;
+            this.m_btnOpenScope.Text = "Open";
+            this.m_btnOpenScope.UseVisualStyleBackColor = true;
+            this.m_btnOpenScope.Click += new System.EventHandler(this.m_btnOpenScope_Click);
+            // 
+            // m_txtScopeMessage
+            // 
+            this.m_txtScopeMessage.Location = new System.Drawing.Point(86, 43);
+            this.m_txtScopeMessage.Name = "m_txtScopeMessage";
+            this.m_txtScopeMessage.Size = new System.Drawing.Size(175, 20);
+            this.m_txtScopeMessage.TabIndex = 5;
+            this.m_txtScopeMessage.Text = "Scope Message";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(18, 43);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(41, 13);
+            this.label6.TabIndex = 4;
+            this.label6.Text = "Scope:";
             // 
             // m_cboLogTitles
             // 
@@ -211,44 +250,6 @@
             this.label5.Size = new System.Drawing.Size(62, 13);
             this.label5.TabIndex = 0;
             this.label5.Text = "Simple Log:";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(18, 43);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(41, 13);
-            this.label6.TabIndex = 4;
-            this.label6.Text = "Scope:";
-            // 
-            // m_txtScopeMessage
-            // 
-            this.m_txtScopeMessage.Location = new System.Drawing.Point(86, 43);
-            this.m_txtScopeMessage.Name = "m_txtScopeMessage";
-            this.m_txtScopeMessage.Size = new System.Drawing.Size(175, 20);
-            this.m_txtScopeMessage.TabIndex = 5;
-            this.m_txtScopeMessage.Text = "Scope Message";
-            // 
-            // m_btnOpenScope
-            // 
-            this.m_btnOpenScope.Location = new System.Drawing.Point(268, 43);
-            this.m_btnOpenScope.Name = "m_btnOpenScope";
-            this.m_btnOpenScope.Size = new System.Drawing.Size(75, 23);
-            this.m_btnOpenScope.TabIndex = 6;
-            this.m_btnOpenScope.Text = "Open";
-            this.m_btnOpenScope.UseVisualStyleBackColor = true;
-            this.m_btnOpenScope.Click += new System.EventHandler(this.m_btnOpenScope_Click);
-            // 
-            // m_btnClose
-            // 
-            this.m_btnClose.Enabled = false;
-            this.m_btnClose.Location = new System.Drawing.Point(349, 43);
-            this.m_btnClose.Name = "m_btnClose";
-            this.m_btnClose.Size = new System.Drawing.Size(75, 23);
-            this.m_btnClose.TabIndex = 7;
-            this.m_btnClose.Text = "Close";
-            this.m_btnClose.UseVisualStyleBackColor = true;
-            this.m_btnClose.Click += new System.EventHandler(this.m_btnClose_Click);
             // 
             // WhitelogSample
             // 
