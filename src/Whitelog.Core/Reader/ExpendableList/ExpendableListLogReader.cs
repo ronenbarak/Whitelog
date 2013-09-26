@@ -130,11 +130,11 @@ namespace Whitelog.Core.Reader.ExpendableList
 
                         m_pendingDefinitonQueue.Dequeue();
                     }
-                    catch (UnkownPackageException unkownPackageException)
+                    catch (UnkownPackageException)
                     {
                         break; // stop try to desilize
                     }
-                    catch (CacheStringNotFoundException cacheStringNotFoundException)
+                    catch (CacheStringNotFoundException)
                     {
                         break; // stop try to desilize
                     }

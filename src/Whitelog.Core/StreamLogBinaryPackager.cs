@@ -21,8 +21,7 @@ namespace Whitelog.Core
                                                                                        object instance)
         {
             var attributes = type.GetCustomAttributes(false);
-            if (attributes.Any(p=>p is CompilerGeneratedAttribute) &&
-                attributes.Any(p=>(p is DebuggerDisplayAttribute) && (p as DebuggerDisplayAttribute).Type == "<Anonymous Type>"))
+            if (attributes.Any(p=>p is CompilerGeneratedAttribute && type.IsGenericType && type.GetGenericArguments().Length == type.GetProperties().Count()))
             {
                 var baseType = typeof (AllPropertiesPackageDefinition<>);
                 var packageDefinitionType = baseType.MakeGenericType(new[] {type});

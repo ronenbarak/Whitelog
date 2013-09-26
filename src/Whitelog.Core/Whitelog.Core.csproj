@@ -143,12 +143,6 @@
     <Compile Include="SerilizeType.cs" />
     <Compile Include="PakageDefinitions\Unpack\UnpackPropertyDefinition.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Common\Common\Barak.Common.csproj">
-      <Project>{4F6A458A-5A2D-40FC-92FF-F5E5C4E28402}</Project>
-      <Name>Barak.Common</Name>
-    </ProjectReference>
-  </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
