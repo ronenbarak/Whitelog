@@ -83,6 +83,8 @@
     <Compile Include="ListWriter\ExpendableList.cs" />
     <Compile Include="ListWriter\IListWriter.cs" />
     <Compile Include="LogScopeSyncImplementation\MultiLogPerApplicationScopeSync.cs" />
+    <Compile Include="ObjectReferanceEquals.cs" />
+    <Compile Include="PakageDefinitions\Pack\AllPropertiesPackageDefinition.cs" />
     <Compile Include="PakageDefinitions\Pack\ConstStringPropertyDefinitoin.cs" />
     <Compile Include="PakageDefinitions\Pack\InheretancePackageDefinition.cs" />
     <Compile Include="PakageDefinitions\Pack\OpenLogScopeTitlePackageDefinition.cs" />

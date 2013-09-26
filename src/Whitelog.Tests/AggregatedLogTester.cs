@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.Remoting.Messaging;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Whitelog.Barak.Common.ExtensionMethods;
@@ -150,7 +151,10 @@ namespace Whitelog.Tests
             var logEntries = m_testConsumer.Logs();
             logEntries.ElementAt(0).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, 0)
                 //.ValidatePropertyLogEntry<LogEntry, IEnumerable>(x => x.Paramaeters, null)
-                .ValidateArrayLogEntry<LogEntry, string>(0, x => x.Paramaeters, data => data.ValidatePropertyLogEntry<string, string>(s => s.ToString(), message));
+                .ValidateLogEntry<LogEntry, string>(entry => entry.Paramaeter, data =>
+                                                                               {
+                                                                                   Assert.AreEqual(message, data.GetValue("ToString"));
+                                                                               });
         }
 
         [TestMethod]
@@ -162,7 +166,7 @@ namespace Whitelog.Tests
 
             Assert.AreEqual(1, logEntries.Count());
             logEntries.ElementAt(0).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, 0)
-                .ValidatePropertyLogEntry<LogEntry, Array>(x => x.Paramaeters, null)
+                .ValidatePropertyLogEntry<LogEntry, object>(x => x.Paramaeter, null)
                 .ValidateLogEntry<LogEntry, InfoLogTitle>(x => x.Title,
                                                             x =>
                                                             x.ValidatePropertyLogEntry<InfoLogTitle, string>(
@@ -181,12 +185,12 @@ namespace Whitelog.Tests
 
             Assert.AreEqual(2, logEntries.Count());
             logEntries.ElementAt(0).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, 0)
-                                    .ValidatePropertyLogEntry<LogEntry, Array>(x => x.Paramaeters, null)
+                                    .ValidatePropertyLogEntry<LogEntry, object>(x => x.Paramaeter, null)
                                     .ValidateLogEntry<LogEntry, InfoLogTitle>(x => x.Title,
                                             x => x.ValidatePropertyLogEntry<InfoLogTitle, string>(p => p.Message, "SomeInfo"));
 
             logEntries.ElementAt(1).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, 0)
-                                    .ValidatePropertyLogEntry<LogEntry, Array>(x => x.Paramaeters, null)
+                                    .ValidatePropertyLogEntry<LogEntry, object>(x => x.Paramaeter, null)
                                     .ValidateLogEntry<LogEntry, ErrorLogTitle>(x => x.Title,
                                             x => x.ValidatePropertyLogEntry<InfoLogTitle, string>(p => p.Message, "SomeError"));
         }
@@ -201,7 +205,7 @@ namespace Whitelog.Tests
 
             Assert.AreEqual(1, logEntries.Count());
             logEntries.ElementAt(0).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, 0)
-                                    .ValidatePropertyLogEntry<LogEntry, Array>(x => x.Paramaeters, null)
+                                    .ValidatePropertyLogEntry<LogEntry, object>(x => x.Paramaeter, null)
                                     .ValidateLogEntry<LogEntry, InfoLogTitle>(x => x.Title,
                                             x => x.ValidatePropertyLogEntry<InfoLogTitle, string>(p => p.Message, "SomeInfo"));
 
@@ -212,7 +216,7 @@ namespace Whitelog.Tests
 
             Assert.AreEqual(1, logEntries.Count());
             logEntries.ElementAt(0).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, 0)
-                                    .ValidatePropertyLogEntry<LogEntry, Array>(x => x.Paramaeters, null)
+                                    .ValidatePropertyLogEntry<LogEntry, object>(x => x.Paramaeter, null)
                                     .ValidateLogEntry<LogEntry, ErrorLogTitle>(x => x.Title,
                                             x => x.ValidatePropertyLogEntry<ErrorLogTitle, string>(p => p.Message, "SomeError"));
         }

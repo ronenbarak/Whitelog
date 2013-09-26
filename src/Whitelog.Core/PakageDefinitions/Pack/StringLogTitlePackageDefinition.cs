@@ -23,7 +23,7 @@ namespace Whitelog.Core.PakageDefinitions.Pack
             {
                 DefineConstString(x => x.Title, title => title.Title, instance.Title);
             }
-            Define(x => x.Message, x => x.Message);
+            DefineCacheString(x => x.Message, x => x.Message);
         }
 
         public override IBinaryPackageDefinition Clone(Type type, object instance)
@@ -39,7 +39,7 @@ namespace Whitelog.Core.PakageDefinitions.Pack
         public override void PackData(IBinaryPackager packager, ISerializer serializer, object data)
         {
             StringLogTitle t = (StringLogTitle)data;
-            serializer.Serialize(t.Message);
+            serializer.SerializeVariant(packager.GetCacheStringId(t.Message));
         }
     }
 
@@ -55,7 +55,7 @@ namespace Whitelog.Core.PakageDefinitions.Pack
         {
             m_type = type;
             DefineCacheString(x => x.Title, title => title.Title);
-            Define(x => x.Message, x => x.Message);
+            DefineCacheString(x => x.Message, x => x.Message);
         }
 
         public override Type GetTypeDefinition()
@@ -72,6 +72,7 @@ namespace Whitelog.Core.PakageDefinitions.Pack
         {
             CustomStringLogTitle t = (CustomStringLogTitle) data;
             serializer.SerializeVariant(packager.GetCacheStringId(t.Title));
+            serializer.SerializeVariant(packager.GetCacheStringId(t.Message));
         }
     }
 }

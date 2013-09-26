@@ -14,7 +14,7 @@ namespace Whitelog.Core.PakageDefinitions.Pack
             Define(x => x.Time, entry => entry.Time)
             .Define(x => x.LogScopeId, entry => entry.LogScopeId)
             .Define(x => x.Title, entry => entry.Title)
-            .DefineArray(x => x.Paramaeters, entry => entry.Paramaeters);
+            .Define(x => x.Paramaeter, entry => entry.Paramaeter);
         }
 
         public LogEntryPackageDefinition():this(typeof(LogEntry))
@@ -37,20 +37,7 @@ namespace Whitelog.Core.PakageDefinitions.Pack
             serializer.Serialize(t.Time.Ticks);
             serializer.Serialize(t.LogScopeId);
             packager.Pack(t.Title,serializer);
-            var parms = t.Paramaeters;
-            if (parms == null)
-            {
-                serializer.SerializeVariant(0);
-            }
-            else
-            {
-                serializer.SerializeVariant(parms.Length + 1); // we add one more to tell it is not null
-
-                for (int i = 0; i < parms.Length;i++)
-                {
-                    packager.Pack(parms[i], serializer);
-                }
-            }
+            packager.Pack(t.Paramaeter,serializer);
         }
     }
 }

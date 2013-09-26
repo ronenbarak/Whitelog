@@ -1,4 +1,8 @@
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using Whitelog.Core.Generic;
 using Whitelog.Core.PakageDefinitions;
 using Whitelog.Core.PakageDefinitions.Pack;
@@ -11,6 +15,28 @@ namespace Whitelog.Core
         private Unpacker m_unpacker;
         private readonly Dictionary<string, List<GenericUnpackageDefinition>> m_streamDefinition = new Dictionary<string, List<GenericUnpackageDefinition>>();
         private IBufferAllocator m_bufferAllocatorRegistration;
+
+        protected override RegisteredPackageDefinition GetInheretancePackageDefinition(Type type,
+                                                                                       RegisteredPackageDefinition sourcePackageDefinition,
+                                                                                       object instance)
+        {
+            var attributes = type.GetCustomAttributes(false);
+            if (attributes.Any(p=>p is CompilerGeneratedAttribute) &&
+                attributes.Any(p=>(p is DebuggerDisplayAttribute) && (p as DebuggerDisplayAttribute).Type == "<Anonymous Type>"))
+            {
+                var baseType = typeof (AllPropertiesPackageDefinition<>);
+                var packageDefinitionType = baseType.MakeGenericType(new[] {type});
+                var packageDefinitionInstance = Activator.CreateInstance(packageDefinitionType) as IBinaryPackageDefinition;
+
+                RegisteredPackageDefinition regPackageDefinitionInstance;
+                RegisterDefinition(packageDefinitionInstance, sourcePackageDefinition.DefinitionId, out regPackageDefinitionInstance);
+                return regPackageDefinitionInstance;
+            }
+            else
+            {
+                return base.GetInheretancePackageDefinition(type, sourcePackageDefinition, instance);   
+            }
+        }
 
         public StreamLogBinaryPackager()
         {

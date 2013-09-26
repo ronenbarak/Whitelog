@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Whitelog.Barak.Common.DataStructures.Dictionary;
 using Whitelog.Barak.Common.Events;
@@ -40,7 +41,9 @@ namespace Whitelog.Core
         public event EventHandler<EventArgs<CacheString>> StringChached;
 
         protected readonly ReadSafeDictionary<Type, RegisteredPackageDefinition> m_PackageDefinitions = new ReadSafeDictionary<Type, RegisteredPackageDefinition>(new TypeComparer());
-        protected readonly ReadSafeDictionary<string, int> m_StringCache = new ReadSafeDictionary<string, int>(new StringComparer());
+
+        protected readonly ReadSafeDictionary<object, int> m_stringCacheByObjectReferance = new ReadSafeDictionary<object, int>(new ObjectReferanceEquals());
+        protected readonly ReadSafeDictionary<string, int> m_stringCacheByString = new ReadSafeDictionary<string, int>(new StringComparer());
         protected readonly object m_definitionSyncObjectLock = new object();
         private int m_cacheStringIdentity = 1;
         private int m_packegeId = 1;
@@ -99,22 +102,29 @@ namespace Whitelog.Core
         public int GetCacheStringId(string value)
         {
             int identityId;
-            if (!m_StringCache.TryGetValue(value,out identityId))
+            if (!m_stringCacheByObjectReferance.TryGetValue(value, out identityId))
             {
-                lock (m_definitionSyncObjectLock)
+                if (!m_stringCacheByString.TryGetValue(value, out identityId))
                 {
-                    if (!m_StringCache.TryGetValue(value, out identityId))
+                    lock (m_definitionSyncObjectLock)
                     {
-                        var cacheString = new CacheString
-                                              {
-                                                  Id =  m_cacheStringIdentity++, 
-                                                  Value = value
-                                              };
+                        if (!m_stringCacheByObjectReferance.TryGetValue(value, out identityId))
+                        {
+                            if (!m_stringCacheByString.TryGetValue(value, out identityId))
+                            {
+                                var cacheString = new CacheString
+                                                  {
+                                                      Id = m_cacheStringIdentity++,
+                                                      Value = value
+                                                  };
 
-                        this.RaiseEvent(StringChached, cacheString);
+                                this.RaiseEvent(StringChached, cacheString);
 
-                        m_StringCache.TryAdd(value, cacheString.Id);
-                        identityId = cacheString.Id;
+                                m_stringCacheByObjectReferance.TryAdd(value, cacheString.Id);
+                                m_stringCacheByString.TryAdd(value, cacheString.Id);
+                                identityId = cacheString.Id;
+                            }
+                        }
                     }
                 }
             }
@@ -173,7 +183,7 @@ namespace Whitelog.Core
             return RegisterDefinition(packageDefinition, m_packegeId++,(int)KnownPackageDefinition.NoDefinition, out registeredPackageDefinition);
         }
 
-        private bool RegisterDefinition(IBinaryPackageDefinition packageDefinition,int baseDefinitionId, out RegisteredPackageDefinition registeredPackageDefinition)
+        protected bool RegisterDefinition(IBinaryPackageDefinition packageDefinition,int baseDefinitionId, out RegisteredPackageDefinition registeredPackageDefinition)
         {
             return RegisterDefinition(packageDefinition, m_packegeId++, baseDefinitionId, out registeredPackageDefinition);
         }

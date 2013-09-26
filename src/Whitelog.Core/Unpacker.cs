@@ -58,6 +58,10 @@ namespace Whitelog.Core
         public object Unpack(IDeserializer deserializer)
         {
             int packageDefinitionId = deserializer.DeserializeVariantInt();
+            if (packageDefinitionId == 0)
+            {
+                return null;
+            }
             IUnpackageDefinition packageDefinition = GetPackageById(packageDefinitionId -1);
             return packageDefinition.Unpack(deserializer, this);
         }
