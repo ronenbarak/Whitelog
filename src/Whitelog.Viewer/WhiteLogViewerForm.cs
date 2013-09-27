@@ -10,8 +10,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using BrightIdeasSoftware;
-using Whitelog.Core.Reader;
-using Whitelog.Core.Reader.ExpendableList;
+using Whitelog.Core.Binary.Reader;
+using Whitelog.Core.Binary.Reader.ExpendableList;
 
 namespace Whitelog.Viewer
 {
@@ -57,9 +57,10 @@ namespace Whitelog.Viewer
                     if (m_strem != null)
                     {
                         m_strem.Dispose();
+                        m_strem = null;
                     }
 
-                    m_strem = System.IO.File.OpenRead(fileDialog.FileName);
+                    m_strem =  System.IO.File.Open(fileDialog.FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                     var whitelogConsumer = new WhiteLogConsumer();
                     var logReader = readerFactory.GetLogReader(m_strem, whitelogConsumer);
 

@@ -6,13 +6,14 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Whitelog.Barak.Common.ExtensionMethods;
 using Whitelog.Core;
-using Whitelog.Core.FileLog;
-using Whitelog.Core.FileLog.SubmitLogEntry;
-using Whitelog.Core.ListWriter;
-using Whitelog.Core.PakageDefinitions.Pack;
-using Whitelog.Core.PakageDefinitions.Unpack;
-using Whitelog.Core.Serializer;
-using Whitelog.Core.Serializer.MemoryBuffer;
+using Whitelog.Core.Binary;
+using Whitelog.Core.Binary.FileLog;
+using Whitelog.Core.Binary.FileLog.SubmitLogEntry;
+using Whitelog.Core.Binary.ListWriter;
+using Whitelog.Core.Binary.PakageDefinitions.Pack;
+using Whitelog.Core.Binary.PakageDefinitions.Unpack;
+using Whitelog.Core.Binary.Serializer;
+using Whitelog.Core.Binary.Serializer.MemoryBuffer;
 using Whitelog.Interface;
 
 namespace Whitelog.Tests

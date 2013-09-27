@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Whitelog.Core;
-using Whitelog.Core.FileLog;
-using Whitelog.Core.FileLog.SubmitLogEntry;
+using Whitelog.Core.Binary.FileLog;
+using Whitelog.Core.Binary.FileLog.SubmitLogEntry;
+using Whitelog.Core.Binary.Reader;
+using Whitelog.Core.Binary.Reader.ExpendableList;
+using Whitelog.Core.Loggers;
 using Whitelog.Core.LogScopeSyncImplementation;
-using Whitelog.Core.Reader;
-using Whitelog.Core.Reader.ExpendableList;
 using Whitelog.Interface;
 
 namespace Whitelog.Tests

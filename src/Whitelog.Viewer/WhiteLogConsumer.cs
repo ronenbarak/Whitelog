@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using BrightIdeasSoftware;
 using Whitelog.Core;
-using Whitelog.Core.Generic;
-using Whitelog.Core.Reader;
+using Whitelog.Core.Binary;
+using Whitelog.Core.Binary.Generic;
+using Whitelog.Core.Binary.Reader;
 
 namespace Whitelog.Viewer
 {

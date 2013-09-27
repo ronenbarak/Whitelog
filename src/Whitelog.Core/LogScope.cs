@@ -57,7 +57,6 @@ namespace Whitelog.Core
                 OnDispose();
 
                 m_logScopeSyncImplementation.LogScope = m_parent;
-                GC.SuppressFinalize(this);
             }      
         }
     }

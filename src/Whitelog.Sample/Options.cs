@@ -1,5 +1,5 @@
-﻿using Whitelog.Core.FileLog;
-using Whitelog.Core.Serializer.MemoryBuffer;
+﻿using Whitelog.Core.Binary.FileLog;
+using Whitelog.Core.Binary.Serializer.MemoryBuffer;
 
 namespace Whitelog.Sample
 {

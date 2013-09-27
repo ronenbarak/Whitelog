@@ -7,11 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Whitelog.Core;
-using Whitelog.Core.FileLog;
-using Whitelog.Core.FileLog.SubmitLogEntry;
+using Whitelog.Core.Binary.FileLog;
+using Whitelog.Core.Binary.FileLog.SubmitLogEntry;
+using Whitelog.Core.Binary.Serializer.MemoryBuffer;
+using Whitelog.Core.Loggers;
 using Whitelog.Core.LogScopeSyncImplementation;
-using Whitelog.Core.Reader;
-using Whitelog.Core.Serializer.MemoryBuffer;
 using Whitelog.Interface;
 
 namespace Whitelog.Sample
