@@ -13,6 +13,7 @@ using Whitelog.Core.Binary.FileLog.SubmitLogEntry;
 using Whitelog.Core.Binary.Generic;
 using Whitelog.Core.Binary.Reader;
 using Whitelog.Core.Binary.Reader.ExpendableList;
+using Whitelog.Core.Binary.Serializer.MemoryBuffer;
 using Whitelog.Core.Loggers;
 using Whitelog.Core.LogScopeSyncImplementation;
 using Whitelog.Interface;
@@ -117,7 +118,7 @@ namespace Whitelog.Tests
         {
             LogTunnel tunnelLog;
             m_log = tunnelLog = CreateLog();
-            m_cfl = new InMemmoryBinaryFileLogger(new SyncSubmitLogEntryFactory());
+            m_cfl = new InMemmoryBinaryFileLogger(new SyncSubmitLogEntryFactory(), BufferPoolFactory.Instance);
             m_cfl.AttachToTunnelLog(tunnelLog);
 
             var readerFactory = new WhitelogBinaryReaderFactory();

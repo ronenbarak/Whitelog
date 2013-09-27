@@ -25,6 +25,7 @@ namespace Whitelog.Sample
             InitializeComponent();
             m_txtPath.Text = System.IO.Path.Combine(Environment.CurrentDirectory, "Sample.Log");
             m_loggerTypes.Items.Add(typeof (ContinuesBinaryFileLogger).Name);
+            m_loggerTypes.Items.Add(typeof(InMemmoryBinaryFileLogger).Name);
 
             var ringBufferLogger = new RingSubmitLogEntryFactory(RingConsumeOption.SpinWait, 1000);
             m_submitterType.Items.Add(new SubmiterOption(new AsyncSubmitLogEntryFactory(), "Async - Eventually consistent"));
@@ -48,7 +49,12 @@ namespace Whitelog.Sample
             {
                 if (m_loggerTypes.SelectedItem.ToString() == typeof(ContinuesBinaryFileLogger).Name)
                 {
-                    ContinuesBinaryFileLogger fileLogger = new ContinuesBinaryFileLogger(m_txtPath.Text, ((SubmiterOption)m_submitterType.SelectedItem).SubmitLogEntryFactory, ((BufferOption)m_bufferTypes.SelectedItem).BufferAllocatorFactory);
+                    var fileLogger = new ContinuesBinaryFileLogger(m_txtPath.Text, ((SubmiterOption)m_submitterType.SelectedItem).SubmitLogEntryFactory, ((BufferOption)m_bufferTypes.SelectedItem).BufferAllocatorFactory);
+                    fileLogger.AttachToTunnelLog(m_log);
+                }
+                else if (m_loggerTypes.SelectedItem.ToString() == typeof(InMemmoryBinaryFileLogger).Name)
+                {
+                    var fileLogger = new InMemmoryBinaryFileLogger(((SubmiterOption)m_submitterType.SelectedItem).SubmitLogEntryFactory, ((BufferOption)m_bufferTypes.SelectedItem).BufferAllocatorFactory);
                     fileLogger.AttachToTunnelLog(m_log);
                 }
             }

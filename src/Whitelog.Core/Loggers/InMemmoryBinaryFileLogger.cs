@@ -18,7 +18,7 @@ namespace Whitelog.Core.Loggers
             get { return m_stream; }
         }
 
-        public InMemmoryBinaryFileLogger(ISubmitLogEntryFactory submitLogEntryFactory)
+        public InMemmoryBinaryFileLogger(ISubmitLogEntryFactory submitLogEntryFactory,IBufferAllocatorFactory bufferAllocatorFactory)
         {
             m_stream = new MemoryStream();
 
@@ -32,9 +32,9 @@ namespace Whitelog.Core.Loggers
             var logDataSign = logData.GetListWriterSignature();
             m_stream.Write(logDataSign, 0, logDataSign.Length);
 
-            m_baseFileLog = new BaseFileLog(new BaseFileLog.BufferAndSubmiterTuple(logEntry, BufferPoolFactory.Instance.CreateBufferAllocator()),
-                                            new BaseFileLog.BufferAndSubmiterTuple(stringCache, BufferPoolFactory.Instance.CreateBufferAllocator()),
-                                            new BaseFileLog.BufferAndSubmiterTuple(definition, BufferPoolFactory.Instance.CreateBufferAllocator()));
+            m_baseFileLog = new BaseFileLog(new BaseFileLog.BufferAndSubmiterTuple(logEntry, bufferAllocatorFactory.CreateBufferAllocator()),
+                                            new BaseFileLog.BufferAndSubmiterTuple(stringCache, bufferAllocatorFactory.CreateBufferAllocator()),
+                                            new BaseFileLog.BufferAndSubmiterTuple(definition, bufferAllocatorFactory.CreateBufferAllocator()));
         }
 
         public void AttachToTunnelLog(LogTunnel logTunnel)
