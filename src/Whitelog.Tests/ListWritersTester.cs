@@ -14,6 +14,7 @@ using Whitelog.Core.Binary.PakageDefinitions.Pack;
 using Whitelog.Core.Binary.PakageDefinitions.Unpack;
 using Whitelog.Core.Binary.Serializer;
 using Whitelog.Core.Binary.Serializer.MemoryBuffer;
+using Whitelog.Core.PackageDefinitions;
 using Whitelog.Interface;
 
 namespace Whitelog.Tests

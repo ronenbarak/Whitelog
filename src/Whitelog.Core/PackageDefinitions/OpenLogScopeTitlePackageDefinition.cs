@@ -1,7 +1,7 @@
 using Whitelog.Barak.Common.ExtensionMethods;
 using Whitelog.Interface.LogTitles;
 
-namespace Whitelog.Core.Binary.PakageDefinitions.Pack
+namespace Whitelog.Core.PackageDefinitions
 {
     public class OpenLogScopeTitlePackageDefinition : PackageDefinition<OpenLogScopeTitle>
     {

@@ -1,3 +1,5 @@
+using Whitelog.Core.PackageDefinitions;
+
 namespace Whitelog.Core.Binary.PakageDefinitions.Pack
 {
     class ConstPropertyDefinitionDefinition : PackageDefinition<ConstStringPropertyDefinitoin>
@@ -15,7 +17,7 @@ namespace Whitelog.Core.Binary.PakageDefinitions.Pack
         }
     }
 
-    class PropertyDefinitionDefinition : PackageDefinition<ISimplePropertyDefinition>
+    class PropertyDefinitionDefinition : PackageDefinition<ISimpleBinaryPropertyDefinition>
     {
         public static int ConstDefinitionId
         {

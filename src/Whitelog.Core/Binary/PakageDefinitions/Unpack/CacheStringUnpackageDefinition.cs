@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Whitelog.Barak.Common.Events;
+using Whitelog.Core.PackageDefinitions;
 
 namespace Whitelog.Core.Binary.PakageDefinitions.Unpack
 {

@@ -1,3 +1,5 @@
+using Whitelog.Core.PackageDefinitions;
+
 namespace Whitelog.Core.Binary.PakageDefinitions.Pack
 {
     public class StringCachePackageDefinition : PackageDefinition<CacheString>

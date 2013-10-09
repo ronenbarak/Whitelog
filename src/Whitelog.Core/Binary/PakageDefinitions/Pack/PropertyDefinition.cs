@@ -1,15 +1,16 @@
 using System;
+using Whitelog.Core.PackageDefinitions;
 
 namespace Whitelog.Core.Binary.PakageDefinitions.Pack
 {
-    public class BasePropertyDefinition<T> : IPropertyDefinition
+    public class BaseBinaryPropertyDefinition<T> : ISimpleBinaryPropertyDefinition
     {
         private readonly Action<T, IBinaryPackager, ISerializer> m_serilizer;
 
         public string Name { get; protected set; }
         public SerilizeType SerilizeType { get; protected set; }
 
-        public BasePropertyDefinition(string property, SerilizeType serilizeType, Action<T, IBinaryPackager, ISerializer> serilizer)
+        public BaseBinaryPropertyDefinition(string property, SerilizeType serilizeType, Action<T, IBinaryPackager, ISerializer> serilizer)
         {
             m_serilizer = serilizer;
             Name = property;
@@ -22,9 +23,9 @@ namespace Whitelog.Core.Binary.PakageDefinitions.Pack
         }
     }
 
-    public class PropertyDefinition<T> : BasePropertyDefinition<T>,ISimplePropertyDefinition
+    public class BinaryBinaryPropertyDefinition<T> : BaseBinaryPropertyDefinition<T>
     {
-        public PropertyDefinition(string property, SerilizeType serilizeType, Action<T, IBinaryPackager, ISerializer> serilizer):base(property, serilizeType, serilizer)
+        public BinaryBinaryPropertyDefinition(string property, SerilizeType serilizeType, Action<T, IBinaryPackager, ISerializer> serilizer):base(property, serilizeType, serilizer)
         {
         }
     }

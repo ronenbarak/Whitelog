@@ -3,26 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
 using Whitelog.Barak.Common.ExtensionMethods;
+using Whitelog.Core.Binary;
+using Whitelog.Core.Binary.PakageDefinitions.Pack;
+using Whitelog.Core.String;
 
-namespace Whitelog.Core.Binary.PakageDefinitions.Pack
+namespace Whitelog.Core.PackageDefinitions
 {
-    class DuplicatedPropertyDefinitionException : Exception
-    {
-        public string Property { get; protected set; }
-
-        public DuplicatedPropertyDefinitionException(string property):base(string.Format("The property '{0}' is already defined in package",property))
-        {
-            Property = property;
-        }
-    }
-
-    public class PackageDefinition<T> : IBinaryPackageDefinition
+    public class PackageDefinition<T> : IBinaryPackageDefinition, IStringPackageDefinition
     {
         private static readonly byte[] ZeroByteArray = BitConverter.GetBytes((int)-1);
 
-        protected BasePropertyDefinition<T>[] m_definitions = new BasePropertyDefinition<T>[0];
+        protected BaseBinaryPropertyDefinition<T>[] m_definitions = new BaseBinaryPropertyDefinition<T>[0];
         protected List<ConstStringPropertyDefinitoin> m_constDefinitions = new List<ConstStringPropertyDefinitoin>();
+
+        protected StringPropertyDefinition<T>[] m_stringDefinitions = new StringPropertyDefinition<T>[0];
 
         public virtual IBinaryPackageDefinition Clone(Type type, object instance)
         {
@@ -49,11 +45,31 @@ namespace Whitelog.Core.Binary.PakageDefinitions.Pack
             }
         }
 
+        public virtual void Render(object data, IStringRenderer stringRenderer, StringBuilder stringBuilder)
+        {
+            T instance = (T)data;
+            var temp = m_stringDefinitions;
+            for (int i = 0; i < temp.Length; i++)
+            {
+                if (i != 0)
+                {
+                    stringBuilder.Append(" ");
+                }
+                temp[i].Render(instance, stringRenderer,stringBuilder);
+            }
+        }
+
         protected void AddDefinition(string property, SerilizeType serilizeType, Action<T, IBinaryPackager, ISerializer> serilizer)
         {
             ValidateDefinitionUniq(property);
             Array.Resize(ref m_definitions, m_definitions.Length + 1);
-            m_definitions[m_definitions.Length -1] = new PropertyDefinition<T>(property, serilizeType, serilizer);
+            m_definitions[m_definitions.Length -1] = new BinaryBinaryPropertyDefinition<T>(property, serilizeType, serilizer);
+        }
+
+        protected void AddStringDefinition(string property, Action<T,IStringRenderer,StringBuilder> valueAppender)
+        {
+            Array.Resize(ref m_stringDefinitions, m_stringDefinitions.Length + 1);
+            m_stringDefinitions[m_stringDefinitions.Length - 1] = new StringPropertyDefinition<T>(property, valueAppender);
         }
 
         private void ValidateDefinitionUniq(string property)
@@ -142,54 +158,63 @@ namespace Whitelog.Core.Binary.PakageDefinitions.Pack
         public PackageDefinition<T> Define(string property, Func<T, int> dataExtractor)
         {
             AddDefinition(property, SerilizeType.Int32, (arg, packager, serializer) => serializer.Serialize(dataExtractor.Invoke(arg)));
+            AddStringDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
             return this;
         }
 
         public PackageDefinition<T> DefineVariant(string property, Func<T, int> dataExtractor)
         {
             AddDefinition(property, SerilizeType.VariantUInt32, (arg, packager, serializer) => serializer.SerializeVariant(dataExtractor.Invoke(arg)));
+            AddStringDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
             return this;
         }
 
         public PackageDefinition<T> Define(string property, Func<T, double> dataExtractor)
         {
             AddDefinition(property, SerilizeType.Double, (arg, packager, serializer) => serializer.Serialize(dataExtractor.Invoke(arg)));
+            AddStringDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
             return this;
         }
 
         public PackageDefinition<T> Define(string property, Func<T, bool> dataExtractor)
         {
             AddDefinition(property, SerilizeType.Bool, (arg, packager, serializer) => serializer.Serialize(dataExtractor.Invoke(arg)));
+            AddStringDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
             return this;
         }
 
         public PackageDefinition<T> Define(string property, Func<T, byte> dataExtractor)
         {
             AddDefinition(property, SerilizeType.Byte, (arg, packager, serializer) => serializer.Serialize(dataExtractor.Invoke(arg)));
+            AddStringDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
             return this;
         }
 
         public PackageDefinition<T> Define(string property, Func<T, DateTime> dataExtractor)
         {
             AddDefinition(property, SerilizeType.DateTime, (arg, packager, serializer) => serializer.Serialize(dataExtractor.Invoke(arg).Ticks));
+            AddStringDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
             return this;
         }
 
         public PackageDefinition<T> Define(string property, Func<T, long> dataExtractor)
         {
             AddDefinition(property, SerilizeType.Int64, (arg, packager, serializer) => serializer.Serialize(dataExtractor.Invoke(arg)));
+            AddStringDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
             return this;
         }
 
         public PackageDefinition<T> Define(string property, Func<T, Guid> dataExtractor)
         {
             AddDefinition(property, SerilizeType.Guid, (arg, packager, serializer) => serializer.Serialize(dataExtractor.Invoke(arg).ToByteArray(),0, 16));
+            AddStringDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
             return this;
         }
 
         public PackageDefinition<T> Define(string property, Func<T, string> dataExtractor)
         {
             AddDefinition(property, SerilizeType.String, (arg, packager, serializer) => serializer.Serialize(dataExtractor.Invoke(arg)));
+            AddStringDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
 
             return this;
         }
@@ -197,6 +222,7 @@ namespace Whitelog.Core.Binary.PakageDefinitions.Pack
         public PackageDefinition<T> DefineCacheString(string property, Func<T, string> dataExtractor)
         {
             AddDefinition(property, SerilizeType.CacheString, (arg1, packager, serializer) => serializer.SerializeVariant(packager.GetCacheStringId(dataExtractor.Invoke(arg1))));
+            AddStringDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
             return this;
         }
 
@@ -204,6 +230,8 @@ namespace Whitelog.Core.Binary.PakageDefinitions.Pack
         {
             ValidateDefinitionUniq(property);
             m_constDefinitions.Add(new ConstStringPropertyDefinitoin(property,o => dataExtractor.Invoke((T)o),initialValue));
+            
+            AddStringDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
             return this;
         }
 
@@ -232,6 +260,30 @@ namespace Whitelog.Core.Binary.PakageDefinitions.Pack
                                                                  }
                                                              });
 
+            AddStringDefinition(property, (arg, renderer,sb) => 
+                                          {
+                                              var enumerable = dataExtractor.Invoke(arg);
+                                              if (enumerable == null)
+                                              {
+                                                  // Do nothing its empty
+                                              }
+                                              else
+                                              {
+                                                  sb.Append("{");
+                                                  bool isFirst = true;
+                                                  foreach (var data in enumerable)
+                                                  {
+                                                      if (isFirst)
+                                                      {
+                                                          sb.Append(",");
+                                                      }
+                                                      isFirst = false;
+                                                      renderer.Render(data,sb);
+                                                  }
+                                                  sb.Append("}");
+                                              }
+                                          });
+
             return this;
         }
 
@@ -252,6 +304,30 @@ namespace Whitelog.Core.Binary.PakageDefinitions.Pack
                     {
                         packager.Pack(item, serializer);
                     }
+                }
+            });
+
+            AddStringDefinition(property, (arg, renderer, sb) =>
+            {
+                var enumerable = dataExtractor.Invoke(arg);
+                if (enumerable == null)
+                {
+                    // Do nothing its empty
+                }
+                else
+                {
+                    sb.Append("{");
+                    bool isFirst = true;
+                    foreach (var data in enumerable)
+                    {
+                        if (isFirst)
+                        {
+                            sb.Append(",");
+                        }
+                        isFirst = false;
+                        renderer.Render(data, sb);
+                    }
+                    sb.Append("}");
                 }
             });
 
@@ -278,12 +354,40 @@ namespace Whitelog.Core.Binary.PakageDefinitions.Pack
                 }
             });
 
+            AddStringDefinition(property, (arg, renderer, sb) =>
+            {
+                var enumerable = dataExtractor.Invoke(arg);
+                if (enumerable == null)
+                {
+                    // Do nothing its empty
+                }
+                else
+                {
+                    sb.Append("{");
+                    bool isFirst = true;
+                    foreach (var data in enumerable)
+                    {
+                        if (isFirst)
+                        {
+                            sb.Append(",");
+                        }
+                        isFirst = false;
+                        renderer.Render(data, sb);
+                    }
+                    sb.Append("}");
+                }
+            });
+
             return this;
         }
 
         public PackageDefinition<T> Define(string property, Func<T, object> dataExtractor)
         {
             AddDefinition(property, SerilizeType.Object, (arg, packager, serializer) => packager.Pack(dataExtractor.Invoke(arg), serializer));
+            AddStringDefinition(property, (arg1, renderer, sb) =>
+                                          {
+                                              renderer.Render(dataExtractor.Invoke(arg1), sb);
+                                          });
             return this;
         }
     }

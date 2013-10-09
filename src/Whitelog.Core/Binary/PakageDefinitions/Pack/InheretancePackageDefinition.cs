@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Whitelog.Core.PackageDefinitions;
 
 namespace Whitelog.Core.Binary.PakageDefinitions.Pack
 {
@@ -7,7 +8,7 @@ namespace Whitelog.Core.Binary.PakageDefinitions.Pack
     {
         private readonly Type m_type;
 
-        public InheritancePackageDefinition(List<BasePropertyDefinition<T>> propertyDefinitions,List<ConstStringPropertyDefinitoin> constStringPropertyDefinitoins, Type type)
+        public InheritancePackageDefinition(List<BaseBinaryPropertyDefinition<T>> propertyDefinitions,List<ConstStringPropertyDefinitoin> constStringPropertyDefinitoins, Type type)
         {
             m_type = type;
             m_definitions = propertyDefinitions.ToArray();

@@ -2,6 +2,7 @@ using System;
 using Whitelog.Barak.Common.Events;
 using Whitelog.Core.Binary.PakageDefinitions.Pack;
 using Whitelog.Core.Binary.Serializer.MemoryBuffer;
+using Whitelog.Core.PackageDefinitions;
 using Whitelog.Interface;
 
 namespace Whitelog.Core.Binary.FileLog

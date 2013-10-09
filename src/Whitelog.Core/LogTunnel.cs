@@ -20,9 +20,9 @@ namespace Whitelog.Core
             m_systemTime = systemTime;
         }
 
-        public void Log(ILogTitle title, params object[] paramaeters)
+        public void Log(ILogTitle title, object paramaeter)
         {
-            Log(new LogEntry(title, paramaeters));
+            Log(new LogEntry(title, paramaeter));
         }
 
         public void Log(LogEntry logEntry)

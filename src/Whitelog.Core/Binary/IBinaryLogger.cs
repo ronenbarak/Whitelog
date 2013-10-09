@@ -1,12 +1,10 @@
 using System;
+using Whitelog.Core.Loggers;
 
 namespace Whitelog.Core.Binary
 {
-    public interface IBinaryLogger : IDisposable
+    public interface IBinaryLogger : ILogger, IDisposable
     {
-        void AttachToTunnelLog(LogTunnel logTunnel);
-        void DetachTunnelLog(LogTunnel logTunnel);
-
         void RegisterDefinition(IBinaryPackageDefinition packageDefinition);
     }
 }

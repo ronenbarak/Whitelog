@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Whitelog.Viewer", "Whitelog
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Whitelog.Sample", "Whitelog.Sample\Whitelog.Sample.csproj", "{D140EED3-AEB1-4486-AD81-996931F08D1C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Whitelog.ConsoleTests", "Whitelog.ConsoleTests\Whitelog.ConsoleTests.csproj", "{5F5F7AE4-917B-40FE-AF7C-182B4F36571C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{D140EED3-AEB1-4486-AD81-996931F08D1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D140EED3-AEB1-4486-AD81-996931F08D1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D140EED3-AEB1-4486-AD81-996931F08D1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F5F7AE4-917B-40FE-AF7C-182B4F36571C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F5F7AE4-917B-40FE-AF7C-182B4F36571C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F5F7AE4-917B-40FE-AF7C-182B4F36571C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F5F7AE4-917B-40FE-AF7C-182B4F36571C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,7 +1,8 @@
 using System;
+using Whitelog.Core.Binary;
 using Whitelog.Interface.LogTitles;
 
-namespace Whitelog.Core.Binary.PakageDefinitions.Pack
+namespace Whitelog.Core.PackageDefinitions
 {
     public sealed class StringLogTitlePackageDefinition : PackageDefinition<StringLogTitle>
     {

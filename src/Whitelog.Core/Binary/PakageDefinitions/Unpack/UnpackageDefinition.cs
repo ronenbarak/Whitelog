@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Whitelog.Core.PackageDefinitions;
 
 namespace Whitelog.Core.Binary.PakageDefinitions.Unpack
 {

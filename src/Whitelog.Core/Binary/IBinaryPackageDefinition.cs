@@ -1,26 +1,11 @@
 using System;
-using System.Collections.Generic;
+using Whitelog.Core.PackageDefinitions;
 
 namespace Whitelog.Core.Binary
 {
-    public interface IPackageDefinition
+    public interface ISimpleBinaryPropertyDefinition : IPropertyDefinition
     {
-        IEnumerable<IPropertyDefinition> GetPropertyDefinition();
-    }
-
-    public interface IStringPackageDefinition : IPackageDefinition
-    {
-        string Render(IBinaryPackager packager, object data);
-    }
-
-    public interface IPropertyDefinition
-    {
-        string Name { get; }
         SerilizeType SerilizeType { get; }
-    }
-
-    public interface ISimplePropertyDefinition : IPropertyDefinition
-    {
     }
 
     public interface IUnpackageDefinition : IPackageDefinition
@@ -37,7 +22,7 @@ namespace Whitelog.Core.Binary
     public interface IBinaryPackageDefinition : IPackageDefinition
     {
         IBinaryPackageDefinition Clone(Type type, object instance);
-        void PackData(IBinaryPackager packager, ISerializer serializer, object data);
         Type GetTypeDefinition();
+        void PackData(IBinaryPackager packager, ISerializer serializer, object data);
     }
 }

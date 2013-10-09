@@ -1,6 +1,8 @@
 using System;
+using Whitelog.Core.Binary;
+using Whitelog.Core.Binary.PakageDefinitions.Pack;
 
-namespace Whitelog.Core.Binary.PakageDefinitions.Pack
+namespace Whitelog.Core.PackageDefinitions
 {
     public sealed class ObjectPackageDefinition : PackageDefinition<object>
     {

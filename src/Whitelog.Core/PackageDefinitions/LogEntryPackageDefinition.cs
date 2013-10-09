@@ -1,7 +1,10 @@
 using System;
+using System.Text;
+using Whitelog.Core.Binary;
+using Whitelog.Core.String;
 using Whitelog.Interface;
 
-namespace Whitelog.Core.Binary.PakageDefinitions.Pack
+namespace Whitelog.Core.PackageDefinitions
 {
     public sealed class LogEntryPackageDefinition : PackageDefinition<LogEntry>
     {

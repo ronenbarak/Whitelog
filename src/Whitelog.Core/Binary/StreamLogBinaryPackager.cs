@@ -6,6 +6,7 @@ using Whitelog.Core.Binary.Generic;
 using Whitelog.Core.Binary.PakageDefinitions;
 using Whitelog.Core.Binary.PakageDefinitions.Pack;
 using Whitelog.Core.Binary.Serializer.MemoryBuffer;
+using Whitelog.Core.PackageDefinitions;
 
 namespace Whitelog.Core.Binary
 {
@@ -19,12 +20,9 @@ namespace Whitelog.Core.Binary
                                                                                        RegisteredPackageDefinition sourcePackageDefinition,
                                                                                        object instance)
         {
-            var attributes = type.GetCustomAttributes(false);
-            if (attributes.Any(p=>p is CompilerGeneratedAttribute && type.IsGenericType && type.GetGenericArguments().Length == type.GetProperties().Count()))
+            if (AnonymousTypesHelper.IsAnonymousType(type))
             {
-                var baseType = typeof (AllPropertiesPackageDefinition<>);
-                var packageDefinitionType = baseType.MakeGenericType(new[] {type});
-                var packageDefinitionInstance = Activator.CreateInstance(packageDefinitionType) as IBinaryPackageDefinition;
+                var packageDefinitionInstance = AllPropertiesPackageDefinitionHelper.CreateInstatnce(type) as IBinaryPackageDefinition;
 
                 RegisteredPackageDefinition regPackageDefinitionInstance;
                 RegisterDefinition(packageDefinitionInstance, sourcePackageDefinition.DefinitionId, out regPackageDefinitionInstance);

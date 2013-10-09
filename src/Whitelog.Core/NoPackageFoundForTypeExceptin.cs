@@ -1,6 +1,6 @@
 using System;
 
-namespace Whitelog.Core.Binary
+namespace Whitelog.Core
 {
     class NoPackageFoundForTypeExceptin : Exception
     {

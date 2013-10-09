@@ -11,17 +11,19 @@ namespace Whitelog.Core
 
         public override string Title
         {
-            get { return "ScopeTitle"; }
+            get { return "OpenScope"; }
         }
     }
 
-    public class OpenLogScopeTitle : LogScopeTitle
+    public class OpenLogScopeTitle : IMessageLogTitle
     {
         public int ParentLogId;
+        private string m_message;
+        public string Message { get { return m_message; } }
 
         public OpenLogScopeTitle(string message)
-            : base(message)
         {
+            m_message = message;
         }
     }
 

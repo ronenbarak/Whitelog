@@ -1,4 +1,5 @@
 using System;
+using Whitelog.Core.PackageDefinitions;
 
 namespace Whitelog.Core.Binary.PakageDefinitions.Unpack
 {

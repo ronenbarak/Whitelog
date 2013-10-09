@@ -1,6 +1,11 @@
 namespace Whitelog.Interface.LogTitles
 {
-    public abstract class StringLogTitle : ILogTitle
+    public interface IMessageLogTitle : ILogTitle
+    {
+        string Message { get; }
+    }
+
+    public abstract class StringLogTitle : IMessageLogTitle
     {
         private readonly string m_message;
         public abstract string Title { get; }

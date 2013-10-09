@@ -6,19 +6,6 @@ using Whitelog.Core.Binary.PakageDefinitions;
 
 namespace Whitelog.Core.Binary
 {
-    public class TypeComparer : IEqualityComparer<Type>
-    {
-        public bool Equals(Type x, Type y)
-        {
-            return x == y;
-        }
-
-        public int GetHashCode(Type obj)
-        {
-            return obj.GetHashCode();
-        }
-    }
-
     public class StringComparer : IEqualityComparer<string>
     {
         public bool Equals(string x, string y)

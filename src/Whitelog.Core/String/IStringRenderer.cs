@@ -1,6 +1,6 @@
-using System.Text;
+﻿using System.Text;
 
-namespace Whitelog.Core
+namespace Whitelog.Core.String
 {
     public interface IStringRenderer
     {
