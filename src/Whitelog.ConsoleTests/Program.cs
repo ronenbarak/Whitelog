@@ -4,10 +4,15 @@ using System.Linq;
 using System.Security;
 using System.Text;
 using Whitelog.Core;
+using Whitelog.Core.Filter;
 using Whitelog.Core.Loggers;
+using Whitelog.Core.Loggers.StringAppender;
+using Whitelog.Core.Loggers.StringAppender.Console;
 using Whitelog.Core.LogScopeSyncImplementation;
 using Whitelog.Core.PackageDefinitions;
+using Whitelog.Core.String.StringBuffer;
 using Whitelog.Interface;
+using Whitelog.Interface.LogTitles;
 
 namespace Whitelog.ConsoleTests
 {
@@ -30,10 +35,11 @@ namespace Whitelog.ConsoleTests
         {
             LogTunnel logTunnel = new LogTunnel(new SystemDateTime(), new SingleLogPerApplicationScopeSync());
 
-            var consoleLogger = new ConsoleLogger();
-
-            consoleLogger.AttachToTunnelLog(logTunnel);
-            consoleLogger.RegisterDefinition(new AllPropertiesPackageDefinition<ComplexData>());
+            var layoutLogger = new LayoutLogger(StringBufferPool.Instance);
+            
+            layoutLogger.AddStringAppender(new ConsoleAppender(new InMaskFilter(ReservedLogTitleIds.All), new DefaultColorSchema()));
+            layoutLogger.AttachToTunnelLog(logTunnel);
+            layoutLogger.RegisterDefinition(new AllPropertiesPackageDefinition<ComplexData>());
 
             using (logTunnel.CreateScope("Starting somthing"))
             {
@@ -44,7 +50,10 @@ namespace Whitelog.ConsoleTests
                                                                                     Complex = new ComplexData(){ Complex2 = new ComplexData()},
                                                                                 });
 
-                logTunnel.LogInfo("Test LogEntry {*}", new
+                logTunnel.LogWarning("My Warning");
+                logTunnel.Log("Custom","Non spesific log title");
+
+                logTunnel.LogError("Test LogEntry {*}", new
                 {
                     IntValue = 5,
                     StringValue = "MyValue",

@@ -56,7 +56,25 @@
     <Compile Include="Barak\ISystemTime.cs" />
     <Compile Include="Barak\ObjectHelper.cs" />
     <Compile Include="Binary\FileLog\BaseFileLog.cs" />
-    <Compile Include="Loggers\ConsoleString.cs" />
+    <Compile Include="Filter\AndMaskFilter.cs" />
+    <Compile Include="Filter\InMaskFilter.cs" />
+    <Compile Include="Filter\NoInMaskFilter.cs" />
+    <Compile Include="Filter\OrMaskFilter.cs" />
+    <Compile Include="Interface\LogTitles\ReservedLogTitleIds.cs" />
+    <Compile Include="Interface\LogTitles\TraceLogTitle.cs" />
+    <Compile Include="Loggers\IStringAppender.cs" />
+    <Compile Include="Loggers\LayoutLogger.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Loggers\StringAppender\Console\ColorLine.cs" />
+    <Compile Include="Loggers\StringAppender\Console\ConditionColorSchema.cs" />
+    <Compile Include="Loggers\StringAppender\Console\ConsoleAppender.cs" />
+    <Compile Include="Filter\IFilter.cs" />
+    <Compile Include="Loggers\StringAppender\Console\DefaultColorSchema.cs" />
+    <Compile Include="Loggers\StringAppender\File\ArchiveNumberingOptions.cs" />
+    <Compile Include="Loggers\StringAppender\File\ArchiveOptions.cs" />
+    <Compile Include="Loggers\StringAppender\File\FileAppender.cs" />
+    <Compile Include="Loggers\StringAppender\File\FileConfiguration.cs" />
     <Compile Include="String\IStringLogger.cs" />
     <Compile Include="String\IStringPackageDefinition.cs" />
     <Compile Include="String\IStringRenderer.cs" />
@@ -74,6 +92,8 @@
     <Compile Include="String\Layout\StringLayoutWriters\NullStringLayoutWriter.cs" />
     <Compile Include="String\Layout\StringLayoutFactory\ThreadIdStringLayoutFactory.cs" />
     <Compile Include="String\Layout\StringParser.cs" />
+    <Compile Include="String\StringBuffer\IStringBuffer.cs" />
+    <Compile Include="String\StringBuffer\StringBufferPool.cs" />
     <Compile Include="TypeComparer.cs" />
     <Compile Include="PackageDefinitions\IPropertyDefinition.cs" />
     <Compile Include="PackageDefinitions\IPackageDefinition.cs" />
@@ -109,7 +129,7 @@
     <Compile Include="Binary\ISerializer.cs" />
     <Compile Include="Binary\ListWriter\ExpendableList.cs" />
     <Compile Include="Binary\ListWriter\IListWriter.cs" />
-    <Compile Include="String\StringLayoutLogger.cs" />
+    <Compile Include="String\StringLayoutRenderer.cs" />
     <Compile Include="LogScopeSyncImplementation\MultiLogPerApplicationScopeSync.cs" />
     <Compile Include="Binary\ObjectReferanceEquals.cs" />
     <Compile Include="PackageDefinitions\AllPropertiesPackageDefinition.cs" />

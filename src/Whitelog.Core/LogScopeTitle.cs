@@ -3,18 +3,6 @@ using Whitelog.Interface.LogTitles;
 
 namespace Whitelog.Core
 {
-    public class LogScopeTitle : StringLogTitle
-    {
-        public LogScopeTitle(string message):base(message)
-        {   
-        }
-
-        public override string Title
-        {
-            get { return "OpenScope"; }
-        }
-    }
-
     public class OpenLogScopeTitle : IMessageLogTitle
     {
         public int ParentLogId;
@@ -25,9 +13,12 @@ namespace Whitelog.Core
         {
             m_message = message;
         }
+
+        public long Id { get { return ReservedLogTitleIds.Open; }}
     }
 
     public class CloseLogScopeTitle : ILogTitle
     {
+        public long Id { get { return ReservedLogTitleIds.Close; } }
     }
 }

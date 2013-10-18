@@ -1,3 +1,4 @@
+using Whitelog.Core.Filter;
 using Whitelog.Interface;
 using Whitelog.Barak.Common.SystemTime;
 
@@ -6,13 +7,11 @@ namespace Whitelog.Core
     public class LogTunnel : ILog
     {
         public delegate void LogEntrySubmitted(LogEntry entry);
-        public delegate void LogEntrySubmittedPreview(LogEntry entry,ref bool cancel);
-
-        public event LogEntrySubmittedPreview PreviewLogEntry;
+        
         public event LogEntrySubmitted LogEntry;
 
-        private ISystemTime m_systemTime;
-        private ILogScopeSyncImplementation m_logScopeSyncImplementation;
+        private readonly ISystemTime m_systemTime;
+        private readonly ILogScopeSyncImplementation m_logScopeSyncImplementation;
 
         public LogTunnel(ISystemTime systemTime,ILogScopeSyncImplementation logScopeSyncImplementation)
         {
@@ -30,42 +29,21 @@ namespace Whitelog.Core
             logEntry.Time = m_systemTime.Now();
             logEntry.LogScopeId = m_logScopeSyncImplementation.GetScopeId();
 
-            bool submitLogEntry = true;
-
-            var tempPreview = PreviewLogEntry;
-            if (tempPreview != null) // Preview
+            var temp = LogEntry;
+            if (temp != null)
             {
-                tempPreview.Invoke(logEntry, ref submitLogEntry);
-            }
-            
-            if (submitLogEntry) // Actual event
-            {
-                var temp = LogEntry;
-                if (temp != null)
-                {
-                    temp.Invoke(logEntry);
-                }   
-            }
+                temp.Invoke(logEntry);
+            }              
         }
 
         public void LogWithNotTimeSet(LogEntry logEntry)
         {
             logEntry.LogScopeId = m_logScopeSyncImplementation.GetScopeId();
-            bool submitLogEntry = true;
-
-            var tempPreview = PreviewLogEntry;
-            if (tempPreview != null) // Preview
+            
+            var temp = LogEntry;
+            if (temp != null)
             {
-                tempPreview.Invoke(logEntry, ref submitLogEntry);
-            }
-
-            if (submitLogEntry) // Actual event
-            {
-                var temp = LogEntry;
-                if (temp != null)
-                {
-                    temp.Invoke(logEntry);
-                }
+                temp.Invoke(logEntry);
             }
         }
 

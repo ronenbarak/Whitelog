@@ -7,13 +7,14 @@ using Whitelog.Barak.Common.Events;
 using Whitelog.Core.PackageDefinitions;
 using Whitelog.Core.String.Layout;
 using Whitelog.Core.String.Layout.StringLayoutFactory;
+using Whitelog.Core.String.StringBuffer;
 using Whitelog.Interface;
 using Whitelog.Interface.LogTitles;
 
 
 namespace Whitelog.Core.String
 {
-    public class StringLayoutLogger : IStringRenderer
+    public class StringLayoutRenderer : IStringRenderer
     {
         public event EventHandler<EventArgs<IStringPackageDefinition>> PackageRegistered;
 
@@ -21,13 +22,9 @@ namespace Whitelog.Core.String
         protected readonly ReadSafeDictionary<Type, IStringPackageDefinition> m_PackageDefinitions = new ReadSafeDictionary<Type, IStringPackageDefinition>(new TypeComparer());
         ReadSafeDictionary<Tuple<string,Type>, IStringLayoutWriter> m_cacheMessageWriter = new ReadSafeDictionary<Tuple<string, Type>, IStringLayoutWriter>();
         private StringParser m_stringParser;
+        private IStringBuffer m_stringBuffer;
 
-        public StringLayoutLogger()
-            : this("${longdate} ${title} ${message}")
-        {    
-        }
-
-        public StringLayoutLogger(string layout)
+        public StringLayoutRenderer(string layout)
         {
             m_stringParser = new StringParser(new FirstLevelPropertyValueExtractorFactory(), layout);
             m_stringParser.Register(new ObjectStringLayoutFactory());
