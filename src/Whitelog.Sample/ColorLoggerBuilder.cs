@@ -62,7 +62,7 @@ namespace Whitelog.Sample
                 if (m_chkDefaultColors.Checked)
                 {
                     var defualtColorSchema = new DefaultColorSchema();
-                    (m_cboLayout.SelectedItem as LayoutLogger).AddStringAppender(new ProxyConsoleAppander(richTextBox, defualtColorSchema));   
+                    (m_cboLayout.SelectedItem as LayoutLogger).AddStringAppender(new ConsoleAppender(new RichTextBoxConsoleLogEntry(richTextBox),defualtColorSchema));   
                 }
                 else
                 {
@@ -92,7 +92,7 @@ namespace Whitelog.Sample
                     colorSchema.AddCondition(entry => entry.Title.Id == ReservedLogTitleIds.Info,new ColorLine(null,infoForeground));
                     colorSchema.AddCondition(entry => entry.Title.Id == ReservedLogTitleIds.Error, new ColorLine(errorBackground, errorForeground));
 
-                    (m_cboLayout.SelectedItem as LayoutLogger).AddStringAppender(new ProxyConsoleAppander(richTextBox, colorSchema));   
+                    (m_cboLayout.SelectedItem as LayoutLogger).AddStringAppender(new ConsoleAppender(new RichTextBoxConsoleLogEntry(richTextBox),colorSchema));   
                 }
             }
             

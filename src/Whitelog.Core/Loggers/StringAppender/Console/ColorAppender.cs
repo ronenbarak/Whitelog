@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Runtime.InteropServices;
 using Whitelog.Core.Filter;
+using Whitelog.Core.Loggers.StringAppender.Console.SubmitConsoleLogEntry;
 using Whitelog.Interface;
 
 namespace Whitelog.Core.Loggers.StringAppender.Console
@@ -11,42 +12,45 @@ namespace Whitelog.Core.Loggers.StringAppender.Console
         private bool m_isConsoleOutputAvaliable;
         private readonly IFilter m_filter;
         private readonly IColorSchema m_colorSchema;
+        private ISubmitConsoleLogEntry m_consoleLogEntrySubmitter;
 
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern IntPtr GetStdHandle(int nStdHandle);
         const int STD_OUTPUT_HANDLE = -11;
 
-        public ConsoleAppender()
-            : this(false,null,null)
+        public ConsoleAppender(ISubmitConsoleLogEntry consoleLogEntrySubmitter)
+            : this(consoleLogEntrySubmitter, false, null, null)
         {
         }
 
-        public ConsoleAppender(bool forceConsoleOutput)
-            : this(forceConsoleOutput, null)
+        public ConsoleAppender(ISubmitConsoleLogEntry consoleLogEntrySubmitter,bool forceConsoleOutput)
+            : this(consoleLogEntrySubmitter, forceConsoleOutput, null)
         {
         }
 
-        public ConsoleAppender(IColorSchema colorSchema)
-            : this(false, null, colorSchema)
+        public ConsoleAppender(ISubmitConsoleLogEntry consoleLogEntrySubmitter, IColorSchema colorSchema)
+            : this(consoleLogEntrySubmitter, false, null, colorSchema)
         {
         }
 
-        public ConsoleAppender(IFilter filter):this(false,filter,null)
+        public ConsoleAppender(ISubmitConsoleLogEntry consoleLogEntrySubmitter, IFilter filter)
+            : this(consoleLogEntrySubmitter, false, filter, null)
         {
         }
 
-        public ConsoleAppender(bool forceConsoleOutput,IColorSchema colorSchema)
-            : this(forceConsoleOutput, null,colorSchema)
+        public ConsoleAppender(ISubmitConsoleLogEntry consoleLogEntrySubmitter,bool forceConsoleOutput,IColorSchema colorSchema)
+            : this(consoleLogEntrySubmitter, forceConsoleOutput, null, colorSchema)
         {
         }
 
-        public ConsoleAppender(IFilter filter, IColorSchema colorSchema)
-            : this(false, filter, colorSchema)
+        public ConsoleAppender(ISubmitConsoleLogEntry consoleLogEntrySubmitter, IFilter filter, IColorSchema colorSchema)
+            : this(consoleLogEntrySubmitter, false, filter, colorSchema)
         {
         }
 
-        public ConsoleAppender(bool forceConsoleOutput, IFilter filter, IColorSchema colorSchema)
+        public ConsoleAppender(ISubmitConsoleLogEntry consoleLogEntrySubmitter, bool forceConsoleOutput, IFilter filter, IColorSchema colorSchema)
         {
+            m_consoleLogEntrySubmitter = consoleLogEntrySubmitter;
             m_colorSchema = colorSchema;
             m_filter = filter;
             if (forceConsoleOutput)
@@ -87,35 +91,13 @@ namespace Whitelog.Core.Loggers.StringAppender.Console
         {
             if (m_colorSchema == null)
             {
-                System.Console.WriteLine(value);
+                m_consoleLogEntrySubmitter.AddLogEntry(value,ColorLine.Empty);
             }
             else
             {
-                ConsoleColor oldBackground = System.Console.BackgroundColor;
-                ConsoleColor oldForeground = System.Console.ForegroundColor;
 
                 var colorLine = m_colorSchema.GetColor(logEntry);
-                if (colorLine.Background.HasValue)
-                {
-                    System.Console.BackgroundColor = colorLine.Background.Value;
-                }
-
-                if (colorLine.Foreground.HasValue)
-                {
-                    System.Console.ForegroundColor = colorLine.Foreground.Value;
-                }
-
-                System.Console.WriteLine(value);
-                
-                if (colorLine.Background.HasValue)
-                {
-                    System.Console.BackgroundColor = oldBackground;
-                }
-
-                if (colorLine.Foreground.HasValue)
-                {
-                    System.Console.ForegroundColor = oldForeground;
-                }
+                m_consoleLogEntrySubmitter.AddLogEntry(value,colorLine);
             }   
         }
     }

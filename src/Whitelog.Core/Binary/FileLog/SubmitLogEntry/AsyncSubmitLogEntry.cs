@@ -88,9 +88,10 @@ namespace Whitelog.Core.Binary.FileLog.SubmitLogEntry
 
         public void WaitForIdle()
         {
+            SpinWait spinWait = new SpinWait();
             while (m_pendingBulksToCollect !=0 || m_useCounter != 0)
             {
-                System.Threading.Thread.Sleep(1);
+                spinWait.SpinOnce();
             }
         }
     }

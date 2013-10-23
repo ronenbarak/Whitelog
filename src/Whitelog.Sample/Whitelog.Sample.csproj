@@ -66,7 +66,7 @@
       <DependentUpon>LoggingSamples.cs</DependentUpon>
     </Compile>
     <Compile Include="Options.cs" />
-    <Compile Include="ProxyConsoleAppander.cs" />
+    <Compile Include="RichTextBoxConsoleLogEntry.cs" />
     <Compile Include="StringLayoutLoggerBuilder.cs">
       <SubType>UserControl</SubType>
     </Compile>

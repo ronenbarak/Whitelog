@@ -8,6 +8,7 @@ using Whitelog.Core.Filter;
 using Whitelog.Core.Loggers;
 using Whitelog.Core.Loggers.StringAppender;
 using Whitelog.Core.Loggers.StringAppender.Console;
+using Whitelog.Core.Loggers.StringAppender.Console.SubmitConsoleLogEntry;
 using Whitelog.Core.LogScopeSyncImplementation;
 using Whitelog.Core.PackageDefinitions;
 using Whitelog.Core.String.StringBuffer;
@@ -37,7 +38,8 @@ namespace Whitelog.ConsoleTests
 
             var layoutLogger = new LayoutLogger(StringBufferPool.Instance);
             
-            layoutLogger.AddStringAppender(new ConsoleAppender(new InMaskFilter(ReservedLogTitleIds.All), new DefaultColorSchema()));
+            ISubmitConsoleLogEntry submitter =  new SyncSubmitConsoleLogEntry();
+            layoutLogger.AddStringAppender(new ConsoleAppender(submitter, new InMaskFilter(ReservedLogTitleIds.All), new DefaultColorSchema()));
             layoutLogger.AttachToTunnelLog(logTunnel);
             layoutLogger.RegisterDefinition(new AllPropertiesPackageDefinition<ComplexData>());
 
@@ -66,6 +68,7 @@ namespace Whitelog.ConsoleTests
                               },
                 });
             }
+            submitter.WaitForIdle();
         }
     }
 }

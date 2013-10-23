@@ -68,9 +68,13 @@
     </Compile>
     <Compile Include="Loggers\StringAppender\Console\ColorLine.cs" />
     <Compile Include="Loggers\StringAppender\Console\ConditionColorSchema.cs" />
-    <Compile Include="Loggers\StringAppender\Console\ConsoleAppender.cs" />
+    <Compile Include="Loggers\StringAppender\Console\ColorAppender.cs" />
     <Compile Include="Filter\IFilter.cs" />
     <Compile Include="Loggers\StringAppender\Console\DefaultColorSchema.cs" />
+    <Compile Include="Loggers\StringAppender\Console\SubmitConsoleLogEntry\AsyncSubmitConsoleLogEntry.cs" />
+    <Compile Include="Loggers\StringAppender\Console\SubmitConsoleLogEntry\ConsoleLogEntry.cs" />
+    <Compile Include="Loggers\StringAppender\Console\SubmitConsoleLogEntry\ISubmitConsoleLogEntry.cs" />
+    <Compile Include="Loggers\StringAppender\Console\SubmitConsoleLogEntry\SyncSubmitConsoleLogEntry.cs" />
     <Compile Include="Loggers\StringAppender\File\ArchiveNumberingOptions.cs" />
     <Compile Include="Loggers\StringAppender\File\ArchiveOptions.cs" />
     <Compile Include="Loggers\StringAppender\File\FileAppender.cs" />
