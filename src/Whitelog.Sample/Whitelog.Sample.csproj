@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ObjectListView">
+      <HintPath>..\packages\Unofficial.ObjectListView.2.6.0\lib\net20\ObjectListView.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,7 +47,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BinaryLoggerBuilder.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BinaryLoggerBuilder.Designer.cs">
+      <DependentUpon>BinaryLoggerBuilder.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ColorLoggerBuilder.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ColorLoggerBuilder.Designer.cs">
+      <DependentUpon>ColorLoggerBuilder.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LoggingSamples.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="LoggingSamples.Designer.cs">
+      <DependentUpon>LoggingSamples.cs</DependentUpon>
+    </Compile>
     <Compile Include="Options.cs" />
+    <Compile Include="ProxyConsoleAppander.cs" />
+    <Compile Include="StringLayoutLoggerBuilder.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StringLayoutLoggerBuilder.Designer.cs">
+      <DependentUpon>StringLayoutLoggerBuilder.cs</DependentUpon>
+    </Compile>
     <Compile Include="WhitelogSample.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -53,6 +81,18 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="BinaryLoggerBuilder.resx">
+      <DependentUpon>BinaryLoggerBuilder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ColorLoggerBuilder.resx">
+      <DependentUpon>ColorLoggerBuilder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LoggingSamples.resx">
+      <DependentUpon>LoggingSamples.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StringLayoutLoggerBuilder.resx">
+      <DependentUpon>StringLayoutLoggerBuilder.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="WhitelogSample.resx">
       <DependentUpon>WhitelogSample.cs</DependentUpon>
     </EmbeddedResource>
@@ -65,6 +105,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -79,6 +120,10 @@
     <ProjectReference Include="..\Whitelog.Core\Whitelog.Core.csproj">
       <Project>{4FFBCA90-0258-49CD-8CEE-51EAA96AF526}</Project>
       <Name>Whitelog.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Whitelog.Viewer\Whitelog.Viewer.csproj">
+      <Project>{948BC8DA-795D-42B9-9DC9-5806B4E0690E}</Project>
+      <Name>Whitelog.Viewer</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

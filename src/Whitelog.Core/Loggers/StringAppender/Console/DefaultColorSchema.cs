@@ -6,21 +6,23 @@ namespace Whitelog.Core.Loggers.StringAppender.Console
 {
     public class DefaultColorSchema : IColorSchema
     {
-        private readonly ColorLine m_empty;
-        private readonly ColorLine m_error;
-        private readonly ColorLine m_warning;
-        private readonly ColorLine m_debug;
-        private readonly ColorLine m_fatal;
-        private readonly ColorLine m_info;
+        public ColorLine Empty { get; set; }
+        public ColorLine Error { get; set; }
+        public ColorLine Warning { get; set; }
+        public ColorLine Debug { get; set; }
+        public ColorLine Fatal { get; set; }
+        public ColorLine Info { get; set; }
+        public ColorLine Trace { get; set; }
 
         public DefaultColorSchema()
         {
-            m_empty = new ColorLine(null, null);
-            m_error = new ColorLine(null, ConsoleColor.Red);
-            m_warning = new ColorLine(null, ConsoleColor.Yellow);
-            m_debug = new ColorLine(null, ConsoleColor.Gray);
-            m_info = new ColorLine(null, ConsoleColor.Cyan);
-            m_fatal = new ColorLine(ConsoleColor.Red, null);
+            Empty = new ColorLine(null, null);
+            Error = new ColorLine(null, ConsoleColor.Red);
+            Warning = new ColorLine(null, ConsoleColor.Yellow);
+            Debug = new ColorLine(null, ConsoleColor.White);
+            Info = new ColorLine(null, ConsoleColor.Cyan);
+            Fatal = new ColorLine(ConsoleColor.Red, null);
+            Trace = new ColorLine(null, ConsoleColor.Gray);
         }
 
         public ColorLine GetColor(LogEntry logEntry)
@@ -28,17 +30,19 @@ namespace Whitelog.Core.Loggers.StringAppender.Console
             switch (logEntry.Title.Id)
             {
                 case ReservedLogTitleIds.Fatal:
-                    return m_fatal;
+                    return Fatal;
                 case ReservedLogTitleIds.Error:
-                    return m_error;
+                    return Error;
                 case ReservedLogTitleIds.Warning:
-                    return m_warning;
+                    return Warning;
                 case ReservedLogTitleIds.Debug:
-                    return m_debug;
+                    return Debug;
                 case ReservedLogTitleIds.Info:
-                    return m_info;
+                    return Info;
+                case ReservedLogTitleIds.Trace:
+                    return Trace;
                 default:
-                    return m_empty;
+                    return Empty;
             }
         }
     }

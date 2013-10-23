@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="LogNode.cs" />
+    <Compile Include="TreeViewLogAppender.cs" />
     <Compile Include="WhiteLogConsumer.cs" />
     <Compile Include="WhiteLogViewerForm.cs">
       <SubType>Form</SubType>

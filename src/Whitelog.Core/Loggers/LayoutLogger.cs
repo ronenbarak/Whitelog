@@ -12,6 +12,13 @@ namespace Whitelog.Core.Loggers
         private object m_lockObject = new object();
         private IStringAppender[] m_stringAppenders = new IStringAppender[0];
         private readonly IFilter m_masterFilter;
+        public string Layout { get; private set; }
+
+
+        public LayoutLogger(string layout, IStringBuffer stringBuffer)
+            : this(layout, stringBuffer, null)
+        {
+        }
 
         public LayoutLogger(IStringBuffer stringBuffer):this("${longdate} ${title} ${message}",stringBuffer,null)
         {
@@ -24,6 +31,7 @@ namespace Whitelog.Core.Loggers
 
         public LayoutLogger(string layout, IStringBuffer stringBuffer,IFilter masterFilter)
         {
+            Layout = layout;
             m_masterFilter = masterFilter;
             m_stringBuffer = stringBuffer;
             m_stringLayoutRenderer = new StringLayoutRenderer(layout);

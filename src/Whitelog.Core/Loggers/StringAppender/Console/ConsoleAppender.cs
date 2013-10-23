@@ -26,6 +26,11 @@ namespace Whitelog.Core.Loggers.StringAppender.Console
         {
         }
 
+        public ConsoleAppender(IColorSchema colorSchema)
+            : this(false, null, colorSchema)
+        {
+        }
+
         public ConsoleAppender(IFilter filter):this(false,filter,null)
         {
         }
@@ -111,8 +116,7 @@ namespace Whitelog.Core.Loggers.StringAppender.Console
                 {
                     System.Console.ForegroundColor = oldForeground;
                 }
-            }
-            
+            }   
         }
     }
 }
