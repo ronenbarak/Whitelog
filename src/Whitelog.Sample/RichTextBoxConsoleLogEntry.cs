@@ -47,26 +47,24 @@ namespace Whitelog.Sample
         public void AddLogEntry(string text, ColorLine colorLine)
         {
             m_richTextBox.Invoke((Action)(() =>
-            {
-                var oldBackcolor = m_richTextBox.SelectionBackColor;
-                var oldColor = m_richTextBox.SelectionColor;
+                                          {
+                                              var lastPosition = m_richTextBox.TextLength;
+                                              m_richTextBox.AppendText(text);
+                                              m_richTextBox.AppendText(Environment.NewLine);
+                                              m_richTextBox.SelectionStart = lastPosition;
+                                              m_richTextBox.SelectionLength = m_richTextBox.TextLength - lastPosition;
+                                              if (colorLine.Background.HasValue)
+                                              {
+                                                  m_richTextBox.SelectionBackColor = m_colors[colorLine.Background.Value];
+                                              }
 
-                if (colorLine.Background.HasValue)
-                {
-                    m_richTextBox.SelectionBackColor = m_colors[colorLine.Background.Value];
-                }
-
-                if (colorLine.Foreground.HasValue)
-                {
-                    m_richTextBox.SelectionColor = m_colors[colorLine.Foreground.Value];
-                }
-
-                m_richTextBox.AppendText(text);
-                m_richTextBox.AppendText(Environment.NewLine);
-
-                m_richTextBox.SelectionBackColor = oldBackcolor;
-                m_richTextBox.SelectionColor = oldColor;
-            }));
+                                              if (colorLine.Foreground.HasValue)
+                                              {
+                                                  m_richTextBox.SelectionColor = m_colors[colorLine.Foreground.Value];
+                                              }
+                                              m_richTextBox.SelectionStart = m_richTextBox.TextLength;
+                                              m_richTextBox.SelectionLength = 0;
+                                          }));
         }
     }
 }
