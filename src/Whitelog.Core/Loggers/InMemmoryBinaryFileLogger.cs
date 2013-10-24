@@ -32,9 +32,9 @@ namespace Whitelog.Core.Loggers
             var logDataSign = logData.GetListWriterSignature();
             m_stream.Write(logDataSign, 0, logDataSign.Length);
 
-            m_baseFileLog = new BaseFileLog(new BaseFileLog.BufferAndSubmiterTuple(logEntry, bufferAllocatorFactory.CreateBufferAllocator()),
-                                            new BaseFileLog.BufferAndSubmiterTuple(stringCache, bufferAllocatorFactory.CreateBufferAllocator()),
-                                            new BaseFileLog.BufferAndSubmiterTuple(definition, bufferAllocatorFactory.CreateBufferAllocator()));
+            m_baseFileLog = new BaseFileLog(new BaseFileLog.BufferAndSubmiterTuple(logEntry, bufferAllocatorFactory.CreateBufferAllocator(logData)),
+                                            new BaseFileLog.BufferAndSubmiterTuple(stringCache, bufferAllocatorFactory.CreateBufferAllocator(logData)),
+                                            new BaseFileLog.BufferAndSubmiterTuple(definition, bufferAllocatorFactory.CreateBufferAllocator(logData)));
         }
 
         public void AttachToTunnelLog(LogTunnel logTunnel)

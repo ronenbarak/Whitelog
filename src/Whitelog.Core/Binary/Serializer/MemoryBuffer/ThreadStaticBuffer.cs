@@ -40,12 +40,6 @@ namespace Whitelog.Core.Binary.Serializer.MemoryBuffer
             byte[] IRawData.Buffer
             {
                 get { return m_buffer; }
-                set
-                {
-                    m_buffer = value;
-                    m_length = 0;
-                    m_rawDataSerializer.Init(this);
-                }
             }
 
             public void Dispose()
@@ -57,12 +51,6 @@ namespace Whitelog.Core.Binary.Serializer.MemoryBuffer
             public ISerializer AttachedSerializer
             {
                 get { return m_rawDataSerializer; }
-            }
-
-
-            public void Replace(IRawData data)
-            {
-
             }
         }
     }

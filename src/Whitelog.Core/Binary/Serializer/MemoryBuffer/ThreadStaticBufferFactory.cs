@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using Whitelog.Core.Binary.ListWriter;
 
 namespace Whitelog.Core.Binary.Serializer.MemoryBuffer
 {
@@ -28,7 +29,7 @@ namespace Whitelog.Core.Binary.Serializer.MemoryBuffer
 
         }
 
-        public IBufferAllocator CreateBufferAllocator()
+        public IBufferAllocator CreateBufferAllocator(IListWriter listWriter)
         {
             IBufferAllocator bufferAllocator;
             if (m_bufferAllocators.TryDequeue(out bufferAllocator))

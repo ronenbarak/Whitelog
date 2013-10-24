@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using Whitelog.Barak.Common.DataStructures.Ring;
@@ -8,73 +10,121 @@ namespace Whitelog.Core.Binary.FileLog.SubmitLogEntry
 {
     public enum RingConsumeOption
     {
-        //BusySpin,
         SpinWait
     }
 
-    /// <summary>
-    /// Not Supported by the reader, dont use!!!
-    /// this class is experamental 
-    /// </summary>
-    public class RingSubmitLogEntryFactory : ISubmitLogEntryFactory, IBufferAllocatorFactory, IBufferAllocator, ISubmitLogEntry
+    public class RingSubmitLogEntryFactory : ISubmitLogEntryFactory, IBufferAllocatorFactory,IDisposable
     {
-        private RingBuffer<RingLogBuffer> m_ring;
-        private IListWriter m_listWriter;
-        private bool m_isIdeal = false;
-        private bool m_isCheckIdeal = false;
-        private Consumer<RingLogBuffer> m_consumer;
+        ConcurrentDictionary<IListWriter,Tuple<ISubmitLogEntry,IBufferAllocator>> m_factories = new ConcurrentDictionary<IListWriter, Tuple<ISubmitLogEntry, IBufferAllocator>>();
+        private RingConsumeOption m_ringConsumeOption;
+        private int m_ringSize;
 
         public RingSubmitLogEntryFactory(RingConsumeOption ringConsumeOption,int ringSize)
         {
+            m_ringSize = ringSize;
+            m_ringConsumeOption = ringConsumeOption;
+        }
+
+        public ISubmitLogEntry CreateSubmitLogEntry(IListWriter listWriter)
+        {
+            Tuple<ISubmitLogEntry, IBufferAllocator> factories = GetFactories(listWriter);
+            return factories.Item1;
+        }
+
+        public IBufferAllocator CreateBufferAllocator(IListWriter listWriter)
+        {
+            Tuple<ISubmitLogEntry, IBufferAllocator> factories  = GetFactories(listWriter);
+            return factories.Item2;
+        }
+
+        private Tuple<ISubmitLogEntry, IBufferAllocator> GetFactories(IListWriter listWriter)
+        {
+            Tuple<ISubmitLogEntry, IBufferAllocator> factories = m_factories.GetOrAdd(listWriter, writer =>
+                                                  {
+                                                      var submiterAndBuffer = new RingSubmitLogEntry(m_ringConsumeOption, m_ringSize, listWriter);
+                                                      factories = new Tuple<ISubmitLogEntry, IBufferAllocator>(submiterAndBuffer, submiterAndBuffer);
+                                                      return factories;
+                                                  });
+            return factories;
+        }
+
+        public void WaitForIdle()
+        {
+            foreach (var factory in m_factories.Values)
+            {
+                factory.Item1.WaitForIdle();
+            }
+        }
+
+        public void Dispose()
+        {
+            foreach (var factory in m_factories.Values)
+            {
+                factory.Item2.Dispose();
+            }
+        }
+    }
+
+    class RingSubmitLogEntry : IBufferAllocator, ISubmitLogEntry
+    {
+        private RingBuffer<RingLogBuffer> m_ring;
+        private Consumer<RingLogBuffer> m_consumer;
+        private Thread m_thread;
+        private bool m_dispose = false;
+        private IListWriter m_listWriter;
+        private bool m_isCheckIdeal = false;
+        private bool m_isIdeal = false;
+
+        public RingSubmitLogEntry(RingConsumeOption ringConsumeOption, int ringSize, IListWriter listWriter)
+        {
+            m_listWriter = listWriter;
             m_ring = new RingBuffer<RingLogBuffer>(ringSize, ring1 => new RingLogBuffer(BufferSize, ring1));
-            m_consumer = new Consumer<RingLogBuffer>(m_ring,OnConsume);
+            m_consumer = new Consumer<RingLogBuffer>(m_ring, OnConsume);
             if (ringConsumeOption == RingConsumeOption.SpinWait)
             {
-                Thread t = new Thread(ConsumeLoop);
-                t.IsBackground = true;
-                t.Start();
+                m_thread = new Thread(ConsumeLoop);
+                m_thread.IsBackground = true;
+                m_thread.Start();
+            }   
+        }
+
+        private void OnConsume(IEnumerable<RingLogBuffer> ringLogBuffers)
+        {
+            lock (m_listWriter.LockObject)
+            {
+                m_listWriter.WriteData(ringLogBuffers);
+                m_listWriter.Flush();
             }
         }
 
         private void ConsumeLoop()
         {
-            m_isIdeal = false;
             SpinWait spinWait = new SpinWait();
-            while(true)
+            while (!m_dispose)
             {
                 if (!m_consumer.TryConsume())
                 {
                     if (m_isCheckIdeal)
                     {
+                        m_isCheckIdeal = false;
                         m_isIdeal = true;
                     }
                     spinWait.SpinOnce();
                 }
                 else
                 {
-                    spinWait.Reset();   
+                    spinWait.Reset();
                 }
             }
         }
 
-        private void OnConsume(IEnumerable<RingLogBuffer> ringLogBuffers)
+        public void Dispose()
         {
-            lock(m_listWriter.LockObject)
-            {
-                m_listWriter.WriteData(ringLogBuffers);
-            }
+            m_dispose = true;
+            m_thread.Join();
         }
 
-        public ISubmitLogEntry CreateSubmitLogEntry(IListWriter listWriter)
-        {
-            m_listWriter = listWriter;
-            return this;
-        }
-
-        public int BufferSize
-        {
-            get { return 1024*4; }
-        }
+        public int BufferSize { get { return 1024; } }
 
         public IBuffer Allocate()
         {
@@ -84,28 +134,22 @@ namespace Whitelog.Core.Binary.FileLog.SubmitLogEntry
             return ringLogBuffer;
         }
 
-        public void Dispose()
-        {
-        }
-
         public void WaitForIdle()
         {
-            m_isCheckIdeal = true;
-            m_isIdeal = false;
-            while(!m_isIdeal)
+            lock (m_ring)
             {
-                System.Threading.Thread.Sleep(1);
+                m_isIdeal = false;
+                m_isCheckIdeal = true;
+                while (!m_isIdeal)
+                {
+                    System.Threading.Thread.Sleep(1);
+                }
             }
         }
 
         public void AddLogEntry(IRawData buffer)
         {
             // Do nothing it will happedn in the buffer dispose
-        }
-
-        public IBufferAllocator CreateBufferAllocator()
-        {
-            return this;
         }
     }
 }

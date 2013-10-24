@@ -11,7 +11,7 @@ namespace Whitelog.Core.Binary.FileLog
     public interface IRawData
     {
         int Length { get; }
-        byte[] Buffer { get; set; }
+        byte[] Buffer { get; }
     }
 
     public interface IBuffer : IRawData,IDisposable

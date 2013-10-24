@@ -26,7 +26,7 @@ namespace Whitelog.Core.Binary.Reader.ExpendableList
         private int m_currentPendingIndex = 0;
         private Queue<Tuple<int,int, IRawData>> m_pendingDefinitonQueue = new Queue<Tuple<int,int, IRawData>>();
         private Queue<Tuple<int, ILogEntryData>> m_pendingUnpackedObjects = new Queue<Tuple<int, ILogEntryData>>();
-        private bool m_tryToDequeuPendingItems = false;
+        private bool m_hasNewDefinisions = false;
         public ExpendableListLogReader(ILogConsumer consumer,IListWriter listWriter)
         {
             m_listWriter = listWriter;
@@ -47,10 +47,7 @@ namespace Whitelog.Core.Binary.Reader.ExpendableList
             m_dataUnpacker.SetCachedString(e.Data.Id, e.Data.Value);
             if (m_currentPendingIndex != 0)
             {
-                if (m_pendingDefinitonQueue.Peek().Item2 == e.Data.Id)
-                {
-                    m_tryToDequeuPendingItems = true;
-                }
+                m_hasNewDefinisions = true;
             }
         }
 
@@ -59,10 +56,7 @@ namespace Whitelog.Core.Binary.Reader.ExpendableList
             m_dataUnpacker.AddPackageDefinition(eventArgs.Data);
             if (m_currentPendingIndex != 0)
             {
-                if (m_pendingDefinitonQueue.Peek().Item2 == eventArgs.Data.DefinitionId)
-                {
-                    m_tryToDequeuPendingItems = true;
-                }
+                m_hasNewDefinisions = true;
             }
         }
 
@@ -77,7 +71,7 @@ namespace Whitelog.Core.Binary.Reader.ExpendableList
             try
             {
                 var data = m_dataUnpacker.Unpack<ILogEntryData>(m_deserilizer);
-                if (m_tryToDequeuPendingItems)
+                if (m_hasNewDefinisions)
                 {
                     TryDequeuPendingItems();
                 }
@@ -109,7 +103,7 @@ namespace Whitelog.Core.Binary.Reader.ExpendableList
 
         private void TryDequeuPendingItems()
         {
-            m_tryToDequeuPendingItems = false;
+            m_hasNewDefinisions = false;
             while (m_pendingDefinitonQueue.Count != 0)
             {
                 var currentDequeueItem = m_pendingDefinitonQueue.Peek();

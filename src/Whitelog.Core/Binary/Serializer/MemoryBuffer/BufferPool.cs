@@ -41,10 +41,6 @@ namespace Whitelog.Core.Binary.Serializer.MemoryBuffer
             byte[] IRawData.Buffer
             {
                 get { return m_buffer; }
-                set
-                {
-                    throw new NotImplementedException("Not Implemented BufferPool.Buffer.set_Buffer");
-                }
             }
 
             public void Dispose()

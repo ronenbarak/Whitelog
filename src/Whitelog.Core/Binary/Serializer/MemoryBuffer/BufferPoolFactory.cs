@@ -1,3 +1,5 @@
+using Whitelog.Core.Binary.ListWriter;
+
 namespace Whitelog.Core.Binary.Serializer.MemoryBuffer
 {
     public class BufferPoolFactory : IBufferAllocatorFactory
@@ -16,7 +18,7 @@ namespace Whitelog.Core.Binary.Serializer.MemoryBuffer
         private BufferPoolFactory()
         {
         }
-        public IBufferAllocator CreateBufferAllocator()
+        public IBufferAllocator CreateBufferAllocator(IListWriter listWriter)
         {
             return m_bufferPoolProxy;
         }

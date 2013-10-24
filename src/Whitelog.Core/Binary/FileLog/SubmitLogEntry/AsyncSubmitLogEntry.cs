@@ -29,10 +29,6 @@ namespace Whitelog.Core.Binary.FileLog.SubmitLogEntry
         public byte[] Buffer
         {
             get { return m_newBuffer; }
-            set
-            {
-                throw new NotImplementedException("Not Implemented CloneRawData.set_Buffer");
-            }
         }
     }
 

@@ -26,6 +26,7 @@ namespace Whitelog.Tests
         public DateTime DateTimeData { get; set; }
         public List<PackData> ArrayPackData { get; set; }
     }
+
     public static class ListWriterExtensions
     {
         class BufferConsumer : IBufferConsumer
@@ -76,7 +77,7 @@ namespace Whitelog.Tests
         [TestMethod]
         public void TestInstanceCreatorPackUnpack()
         {
-            using (var buffer = BufferPoolFactory.Instance.CreateBufferAllocator().Allocate())
+            using (IBuffer buffer = new SimpleBuffer())
             {
                 RawDataSerializer ms = new RawDataSerializer(buffer);
                 BinaryPackager packer = new BinaryPackager();
@@ -99,7 +100,7 @@ namespace Whitelog.Tests
         [TestMethod]
         public void TestSimplePropertyPackUnpack()
         {
-            using (var buffer = BufferPoolFactory.Instance.CreateBufferAllocator().Allocate())
+            using (IBuffer buffer = new SimpleBuffer())
             {
                 RawDataSerializer ms = new RawDataSerializer(buffer);
                 BinaryPackager packer = new BinaryPackager();
@@ -142,7 +143,7 @@ namespace Whitelog.Tests
         [TestMethod]
         public void TestArrayWithSimplePropertyPackUnpack()
         {
-            using (var buffer = BufferPoolFactory.Instance.CreateBufferAllocator().Allocate())
+            using (IBuffer buffer = new SimpleBuffer())
             {
                 RawDataSerializer ms = new RawDataSerializer(buffer);
                 BinaryPackager packer = new BinaryPackager();
