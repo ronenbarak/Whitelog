@@ -11,7 +11,7 @@ namespace Whitelog.Sample
 {
     public partial class WhitelogSample : Form
     {
-        private LogTunnel m_log = new LogTunnel(new SystemDateTime(), new SingleLogPerApplicationScopeSync());
+        private LogTunnel m_log = new LogTunnel(new SystemDateTime(), LogScopeSyncFactory.Create());
         
         public WhitelogSample()
         {

@@ -75,15 +75,6 @@ namespace Whitelog.Tests
         }
     }
 
-    [TestClass]
-    public class AggregatedLogMultiAplicationTester : AggregatedLogSingleApplicationTester
-    {
-        protected override LogTunnel CreateLog()
-        {
-            return new LogTunnel(new SystemDateTime(), new MultiLogPerApplicationScopeSync());
-        }
-    }
-
     class TestConsumer : ILogConsumer
     {
         private List<ILogEntryData> m_logs = new List<ILogEntryData>();
@@ -100,6 +91,7 @@ namespace Whitelog.Tests
         }
         
     }
+
     [TestClass]
     public class AggregatedLogSingleApplicationTester
     {
@@ -110,7 +102,7 @@ namespace Whitelog.Tests
 
         protected virtual LogTunnel CreateLog()
         {
-            return new LogTunnel(new SystemDateTime(), new SingleLogPerApplicationScopeSync());
+            return new LogTunnel(new SystemDateTime(), LogScopeSyncFactory.Create());
         }
 
         [TestInitialize]

@@ -1,9 +1,12 @@
 using System;
+using System.Linq;
+using System.Reflection;
 using Whitelog.Interface;
 
 namespace Whitelog.Core.LogScopeSyncImplementation
 {
-    public class SingleLogPerApplicationScopeSync : ILogScopeSyncImplementation
+    // This is a major hack and will be needed to be fixed some how....
+    class LogScopeSync<T> : ILogScopeSyncImplementation
     {
         [ThreadStatic] 
         private static LogScope S_LogScope;

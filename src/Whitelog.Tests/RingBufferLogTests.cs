@@ -21,7 +21,7 @@ namespace Whitelog.Tests
         [TestMethod]
         public void SimpleLogMessageWork()
         {
-            var log = new LogTunnel(new SystemDateTime(), new SingleLogPerApplicationScopeSync());
+            var log = new LogTunnel(new SystemDateTime(), LogScopeSyncFactory.Create());
 
             using (var ringBufferLogFactory = new RingSubmitLogEntryFactory(RingConsumeOption.SpinWait, 100))
             {

@@ -25,7 +25,7 @@ namespace Whitelog.Tests
 
         protected virtual LogTunnel CreateLog()
         {
-            return new LogTunnel(new SystemDateTime(), new SingleLogPerApplicationScopeSync());
+            return new LogTunnel(new SystemDateTime(), LogScopeSyncFactory.Create());
         }
 
         [TestInitialize]

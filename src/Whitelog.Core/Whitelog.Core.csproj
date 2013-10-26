@@ -79,6 +79,7 @@
     <Compile Include="Loggers\StringAppender\File\ArchiveOptions.cs" />
     <Compile Include="Loggers\StringAppender\File\FileAppender.cs" />
     <Compile Include="Loggers\StringAppender\File\FileConfiguration.cs" />
+    <Compile Include="LogScopeSyncImplementation\LogScopeSyncFactory.cs" />
     <Compile Include="StringParser.cs" />
     <Compile Include="String\IStringLogger.cs" />
     <Compile Include="String\IStringPackageDefinition.cs" />
@@ -135,7 +136,6 @@
     <Compile Include="Binary\ListWriter\ExpendableList.cs" />
     <Compile Include="Binary\ListWriter\IListWriter.cs" />
     <Compile Include="String\StringLayoutRenderer.cs" />
-    <Compile Include="LogScopeSyncImplementation\MultiLogPerApplicationScopeSync.cs" />
     <Compile Include="Binary\ObjectReferanceEquals.cs" />
     <Compile Include="PackageDefinitions\AllPropertiesPackageDefinition.cs" />
     <Compile Include="Binary\PakageDefinitions\Pack\ConstStringPropertyDefinitoin.cs" />
@@ -151,7 +151,7 @@
     <Compile Include="Binary\Generic\GenericPropertyUnpackageDefinition.cs" />
     <Compile Include="Binary\Generic\GenericUnpackageDefinition.cs" />
     <Compile Include="Binary\PakageDefinitions\Unpack\UnkwonSerilizeTypeException.cs" />
-    <Compile Include="LogScopeSyncImplementation\SingleLogPerApplicationScopeSync.cs" />
+    <Compile Include="LogScopeSyncImplementation\LogScopeSync.cs" />
     <Compile Include="Binary\BinaryPackager.cs" />
     <Compile Include="Binary\PakageDefinitions\Unpack\BinaryPackageDefinitionToGenericUnpackageDefinition.cs" />
     <Compile Include="Loggers\ContinuesBinaryFileLogger.cs" />
@@ -195,7 +195,9 @@
     <Compile Include="Binary\SerilizeType.cs" />
     <Compile Include="Binary\PakageDefinitions\Unpack\UnpackPropertyDefinition.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Configuration\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

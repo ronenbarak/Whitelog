@@ -34,7 +34,7 @@ namespace Whitelog.ConsoleTests
 
         static void Main(string[] args)
         {
-            LogTunnel logTunnel = new LogTunnel(new SystemDateTime(), new SingleLogPerApplicationScopeSync());
+            LogTunnel logTunnel = new LogTunnel(new SystemDateTime(), LogScopeSyncFactory.Create());
 
             var layoutLogger = new LayoutLogger(StringBufferPool.Instance);
             
