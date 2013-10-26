@@ -79,6 +79,7 @@
     <Compile Include="Loggers\StringAppender\File\ArchiveOptions.cs" />
     <Compile Include="Loggers\StringAppender\File\FileAppender.cs" />
     <Compile Include="Loggers\StringAppender\File\FileConfiguration.cs" />
+    <Compile Include="StringParser.cs" />
     <Compile Include="String\IStringLogger.cs" />
     <Compile Include="String\IStringPackageDefinition.cs" />
     <Compile Include="String\IStringRenderer.cs" />
@@ -95,7 +96,7 @@
     <Compile Include="String\Layout\StringLayoutWriters\DelegatePropertyStringLayoutWriter.cs" />
     <Compile Include="String\Layout\StringLayoutWriters\NullStringLayoutWriter.cs" />
     <Compile Include="String\Layout\StringLayoutFactory\ThreadIdStringLayoutFactory.cs" />
-    <Compile Include="String\Layout\StringParser.cs" />
+    <Compile Include="String\Layout\StringLayoutParser.cs" />
     <Compile Include="String\StringBuffer\IStringBuffer.cs" />
     <Compile Include="String\StringBuffer\StringBufferPool.cs" />
     <Compile Include="TypeComparer.cs" />

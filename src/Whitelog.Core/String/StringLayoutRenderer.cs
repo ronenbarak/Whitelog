@@ -21,16 +21,16 @@ namespace Whitelog.Core.String
         protected readonly object m_definitionSyncObjectLock = new object();
         protected readonly ReadSafeDictionary<Type, IStringPackageDefinition> m_PackageDefinitions = new ReadSafeDictionary<Type, IStringPackageDefinition>(new TypeComparer());
         ReadSafeDictionary<Tuple<string,Type>, IStringLayoutWriter> m_cacheMessageWriter = new ReadSafeDictionary<Tuple<string, Type>, IStringLayoutWriter>();
-        private StringParser m_stringParser;
+        private StringLayoutParser m_stringLayoutParser;
         private IStringBuffer m_stringBuffer;
 
         public StringLayoutRenderer(string layout)
         {
-            m_stringParser = new StringParser(new FirstLevelPropertyValueExtractorFactory(), layout);
-            m_stringParser.Register(new ObjectStringLayoutFactory());
-            m_stringParser.Register(new TitleStringLayoutFactory());
-            m_stringParser.Register(new DateStringLayoutFactory());
-            m_stringParser.Register(new ThreadIdStringLayoutFactory());
+            m_stringLayoutParser = new StringLayoutParser(new FirstLevelPropertyValueExtractorFactory(), layout);
+            m_stringLayoutParser.Register(new ObjectStringLayoutFactory());
+            m_stringLayoutParser.Register(new TitleStringLayoutFactory());
+            m_stringLayoutParser.Register(new DateStringLayoutFactory());
+            m_stringLayoutParser.Register(new ThreadIdStringLayoutFactory());
 
             RegisterDefinition(new ObjectPackageDefinition());
 
@@ -83,7 +83,7 @@ namespace Whitelog.Core.String
                 {
                     if (!m_cacheMessageWriter.TryGetValue(new Tuple<string, Type>(titleMessage, type),out stringLayoutWriter))
                     {
-                        stringLayoutWriter = m_stringParser.Parse(titleMessage, type);
+                        stringLayoutWriter = m_stringLayoutParser.Parse(titleMessage, type);
                         m_cacheMessageWriter.Add(new Tuple<string, Type>(titleMessage, type),stringLayoutWriter);
                     }
                 }
