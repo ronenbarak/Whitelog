@@ -1,19 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security;
-using System.Text;
-using Whitelog.Core;
-using Whitelog.Core.Filter;
-using Whitelog.Core.Loggers;
-using Whitelog.Core.Loggers.StringAppender;
-using Whitelog.Core.Loggers.StringAppender.Console;
-using Whitelog.Core.Loggers.StringAppender.Console.SubmitConsoleLogEntry;
-using Whitelog.Core.LogScopeSyncImplementation;
+﻿using Whitelog.Core.Configuration.Fluent;
 using Whitelog.Core.PackageDefinitions;
-using Whitelog.Core.String.StringBuffer;
 using Whitelog.Interface;
-using Whitelog.Interface.LogTitles;
 
 namespace Whitelog.ConsoleTests
 {
@@ -34,41 +21,55 @@ namespace Whitelog.ConsoleTests
 
         static void Main(string[] args)
         {
-            LogTunnel logTunnel = new LogTunnel(new SystemDateTime(), LogScopeSyncFactory.Create());
+            ILog logTunnel = Whilelog.FluentConfiguration
+                        .StringLayout(builder => builder.SetLayout("${longdate} ${title} ${message}")
+                                                        .Extensions(extensions => extensions.All)
+                                                        .Define(new AllPropertiesPackageDefinition<ComplexData>())
+                              .Appenders.Console(consoleBuilder => consoleBuilder.Sync.Colors.Default))
+                .CreateLog();
 
-            var layoutLogger = new LayoutLogger(StringBufferPool.Instance);
-            
-            ISubmitConsoleLogEntry submitter =  new SyncSubmitConsoleLogEntry();
-            layoutLogger.AddStringAppender(new ConsoleAppender(submitter, new InMaskFilter(ReservedLogTitleIds.All), new DefaultColorSchema()));
-            layoutLogger.AttachToTunnelLog(logTunnel);
-            layoutLogger.RegisterDefinition(new AllPropertiesPackageDefinition<ComplexData>());
+            WriteSomeLogs(logTunnel);
 
+            // just as good
+            ILog logTunnel2 = Whilelog.FluentConfiguration
+                        .StringLayout(builder => builder.Appenders.Console())
+                        .CreateLog();
+
+            WriteSomeLogs(logTunnel2);
+        }
+
+        private static void WriteSomeLogs(ILog logTunnel)
+        {
             using (logTunnel.CreateScope("Starting somthing"))
             {
                 logTunnel.LogInfo("Test LogEntry {IntValue} {StringValue}", new
-                                                                                {
-                                                                                    IntValue = 5,
-                                                                                    StringValue = "MyValue",
-                                                                                    Complex = new ComplexData(){ Complex2 = new ComplexData()},
-                                                                                });
+                                                                            {
+                                                                                IntValue = 5,
+                                                                                StringValue = "MyValue",
+                                                                                Complex =
+                                                                                    new ComplexData()
+                                                                                    {
+                                                                                        Complex2 =
+                                                                                            new ComplexData()
+                                                                                    },
+                                                                            });
 
                 logTunnel.LogWarning("My Warning");
-                logTunnel.Log("Custom","Non spesific log title");
+                logTunnel.Log("Custom", "Non spesific log title");
 
                 logTunnel.LogError("Test LogEntry {*}", new
-                {
-                    IntValue = 5,
-                    StringValue = "MyValue",
-                    Complex = new ComplexData()
-                              {
-                                  Complex2 = new ComplexData()
-                                             {
-                                                 Prop1 = 6,
-                                             }
-                              },
-                });
+                                                        {
+                                                            IntValue = 5,
+                                                            StringValue = "MyValue",
+                                                            Complex = new ComplexData()
+                                                                      {
+                                                                          Complex2 = new ComplexData()
+                                                                                     {
+                                                                                         Prop1 = 6,
+                                                                                     }
+                                                                      },
+                                                        });
             }
-            submitter.WaitForIdle();
         }
     }
 }

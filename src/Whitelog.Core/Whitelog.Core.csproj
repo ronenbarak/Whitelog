@@ -55,7 +55,17 @@
     <Compile Include="Barak\EventArgs.cs" />
     <Compile Include="Barak\ISystemTime.cs" />
     <Compile Include="Barak\ObjectHelper.cs" />
+    <Compile Include="Barak\SystemTime\SystemUtcTime.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Binary\FileLog\BaseFileLog.cs" />
+    <Compile Include="Configuration\Fluent\StringLayout\ConsoleBuilder.cs" />
+    <Compile Include="Configuration\Fluent\StringLayout\ConsoleColorConditions.cs" />
+    <Compile Include="Configuration\Fluent\StringLayout\IConsoleBuilder.cs" />
+    <Compile Include="Configuration\Fluent\StringLayout\LayoutExtensions.cs" />
+    <Compile Include="Configuration\Fluent\StringLayout\IStringLayoutBuilder.cs" />
+    <Compile Include="Configuration\Fluent\StringLayout\StringLayoutBuilder.cs" />
+    <Compile Include="Configuration\Fluent\WhiteLogBuilder.cs" />
     <Compile Include="Filter\AndMaskFilter.cs" />
     <Compile Include="Filter\InMaskFilter.cs" />
     <Compile Include="Filter\NoInMaskFilter.cs" />
@@ -176,7 +186,7 @@
     <Compile Include="PackageDefinitions\StringLogTitlePackageDefinition.cs" />
     <Compile Include="Binary\PakageDefinitions\Pack\StringCachePackageDefinition.cs" />
     <Compile Include="String\StringPropertyDefinition.cs" />
-    <Compile Include="SystemDateTime.cs" />
+    <Compile Include="Barak\SystemTime\SystemDateTime.cs" />
     <Compile Include="Binary\UnkownPackageException.cs" />
     <Compile Include="Binary\PakageDefinitions\Unpack\UnpackageDefinition.cs" />
     <Compile Include="Binary\Unpacker.cs" />
@@ -195,9 +205,7 @@
     <Compile Include="Binary\SerilizeType.cs" />
     <Compile Include="Binary\PakageDefinitions\Unpack\UnpackPropertyDefinition.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Configuration\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

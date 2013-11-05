@@ -27,13 +27,12 @@ namespace Whitelog.Core.String
         public StringLayoutRenderer(string layout)
         {
             m_stringLayoutParser = new StringLayoutParser(new FirstLevelPropertyValueExtractorFactory(), layout);
-            m_stringLayoutParser.Register(new ObjectStringLayoutFactory());
-            m_stringLayoutParser.Register(new TitleStringLayoutFactory());
-            m_stringLayoutParser.Register(new DateStringLayoutFactory());
-            m_stringLayoutParser.Register(new ThreadIdStringLayoutFactory());
-
             RegisterDefinition(new ObjectPackageDefinition());
+        }
 
+        public void RegisterLayoutExtensions(IStringLayoutFactory layoutFactory)
+        {
+            m_stringLayoutParser.Register(layoutFactory);
         }
 
         protected IStringPackageDefinition GetClosestPackageDefinition(Type currDataType)

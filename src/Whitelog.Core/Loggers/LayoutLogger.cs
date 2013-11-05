@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Whitelog.Core.Filter;
 using Whitelog.Core.String;
+using Whitelog.Core.String.Layout;
 using Whitelog.Core.String.StringBuffer;
 
 namespace Whitelog.Core.Loggers
@@ -11,7 +12,7 @@ namespace Whitelog.Core.Loggers
         private readonly IStringBuffer m_stringBuffer;
         private object m_lockObject = new object();
         private IStringAppender[] m_stringAppenders = new IStringAppender[0];
-        private readonly IFilter m_masterFilter;
+        private readonly IFilter m_filter;
         public string Layout { get; private set; }
 
 
@@ -29,12 +30,17 @@ namespace Whitelog.Core.Loggers
         {
         }
 
-        public LayoutLogger(string layout, IStringBuffer stringBuffer,IFilter masterFilter)
+        public LayoutLogger(string layout, IStringBuffer stringBuffer,IFilter filter)
         {
             Layout = layout;
-            m_masterFilter = masterFilter;
+            m_filter = filter;
             m_stringBuffer = stringBuffer;
             m_stringLayoutRenderer = new StringLayoutRenderer(layout);
+        }
+
+        public void RegisterLayoutExtensions(IStringLayoutFactory layoutFactory)
+        {
+            m_stringLayoutRenderer.RegisterLayoutExtensions(layoutFactory);
         }
 
         public void AttachToTunnelLog(LogTunnel logTunnel)
@@ -69,16 +75,16 @@ namespace Whitelog.Core.Loggers
 
         void logTunnel_LogEntry(Interface.LogEntry entry)
         {
-            if (m_masterFilter != null)
+            if (m_filter != null)
             {
-                if (m_masterFilter.Filter(entry))
+                if (m_filter.Filter(entry))
                 {
                     return;
                 }
             }
 
             // We dont render if no appender exsist
-            // we dont render if no appender pass masterFilter
+            // we dont render if no appender pass filter
             var tempAppender = m_stringAppenders;
             for (int i = 0; i < tempAppender.Length; i++)
             {

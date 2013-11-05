@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Forms;
+using Whitelog.Barak.SystemDateTime;
 using Whitelog.Core;
 using Whitelog.Core.Loggers;
 using Whitelog.Core.LogScopeSyncImplementation;

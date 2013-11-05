@@ -6,6 +6,7 @@ using System.Runtime.Remoting.Messaging;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Whitelog.Barak.Common.ExtensionMethods;
+using Whitelog.Barak.SystemDateTime;
 using Whitelog.Core;
 using Whitelog.Core.Binary;
 using Whitelog.Core.Binary.FileLog;
