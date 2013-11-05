@@ -102,12 +102,14 @@
     <Compile Include="String\Layout\StringLayoutFactory\ObjectStringLayoutFactory.cs" />
     <Compile Include="String\Layout\StringLayoutFactory\ScopeIdStringLayoutFactory.cs" />
     <Compile Include="String\Layout\StringLayoutFactory\TitleStringLayoutFactory.cs" />
+    <Compile Include="String\Layout\StringLayoutParser.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="String\Layout\StringLayoutWriters\CompositeStringLayoutWriter.cs" />
     <Compile Include="String\Layout\StringLayoutWriters\ConstStringLayoutWriter.cs" />
     <Compile Include="String\Layout\StringLayoutWriters\DelegatePropertyStringLayoutWriter.cs" />
     <Compile Include="String\Layout\StringLayoutWriters\NullStringLayoutWriter.cs" />
     <Compile Include="String\Layout\StringLayoutFactory\ThreadIdStringLayoutFactory.cs" />
-    <Compile Include="String\Layout\StringLayoutParser.cs" />
     <Compile Include="String\StringBuffer\IStringBuffer.cs" />
     <Compile Include="String\StringBuffer\StringBufferPool.cs" />
     <Compile Include="TypeComparer.cs" />
