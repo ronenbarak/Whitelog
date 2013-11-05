@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Whitelog.Core.Filter;
 using Whitelog.Core.String;
 using Whitelog.Core.String.Layout;
@@ -41,6 +43,14 @@ namespace Whitelog.Core.Loggers
         public void RegisterLayoutExtensions(IStringLayoutFactory layoutFactory)
         {
             m_stringLayoutRenderer.RegisterLayoutExtensions(layoutFactory);
+        }
+
+        public void RegisterLayoutExtensions(IEnumerable<IStringLayoutFactory> layoutFactory)
+        {
+            foreach (var stringLayoutFactory in layoutFactory)
+            {
+                m_stringLayoutRenderer.RegisterLayoutExtensions(stringLayoutFactory);   
+            }
         }
 
         public void AttachToTunnelLog(LogTunnel logTunnel)

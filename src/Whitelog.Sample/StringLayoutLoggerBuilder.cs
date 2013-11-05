@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using Whitelog.Core;
 using Whitelog.Core.Loggers;
+using Whitelog.Core.String.Layout.StringLayoutFactory;
 using Whitelog.Core.String.StringBuffer;
 
 namespace Whitelog.Sample
@@ -70,6 +71,7 @@ namespace Whitelog.Sample
         private void m_btnBuild_Click(object sender, EventArgs e)
         {
             var logger = new LayoutLogger(m_txtLayout.Text,StringBufferPool.Instance);
+            logger.RegisterLayoutExtensions(AllLayoutFactories.Factories);
             LayoutLoggers.Add(logger);
             logger.AttachToTunnelLog(LogTunnel);
         }

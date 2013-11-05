@@ -100,6 +100,7 @@
     <Compile Include="String\Layout\IMessageParamaterHanlderFactory.cs" />
     <Compile Include="String\Layout\IStringLayoutFactory.cs" />
     <Compile Include="String\Layout\FirstLevelPropertyValueExtractorFactory.cs" />
+    <Compile Include="String\Layout\StringLayoutFactory\AllLayoutFactories.cs" />
     <Compile Include="String\Layout\StringLayoutFactory\DateStringLayoutFactory.cs" />
     <Compile Include="String\Layout\StringLayoutFactory\NewLineStringLayoutFactory.cs" />
     <Compile Include="String\Layout\StringLayoutFactory\ObjectStringLayoutFactory.cs" />

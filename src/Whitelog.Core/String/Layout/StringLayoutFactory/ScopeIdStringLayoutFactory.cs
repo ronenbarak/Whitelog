@@ -22,7 +22,7 @@ namespace Whitelog.Core.String.Layout.StringLayoutFactory
 
         public IStringLayoutWriter Create(string pattern)
         {
-            return new CompositeStringLayoutWriter();
+            return new LogScopeIdStringLayoutWriter();
         }
     }
 }
