@@ -26,25 +26,25 @@ namespace Whitelog.Core.Configuration.Fluent.StringLayout
         }
         public IConsoleColorConditions Condition(LogTitles logTitle, ConsoleColor foreground)
         {
-            m_conditionColorSchema.AddCondition(m_titleToFunction[logTitle],new ColorLine(foreground,null));
+            m_conditionColorSchema.AddCondition(m_titleToFunction[logTitle],new ColorLine(null,foreground));
             return this;
         }
 
         public IConsoleColorConditions Condition(LogTitles logTitle, ConsoleColor foreground, ConsoleColor background)
         {
-            m_conditionColorSchema.AddCondition(m_titleToFunction[logTitle], new ColorLine(foreground, background));
+            m_conditionColorSchema.AddCondition(m_titleToFunction[logTitle], new ColorLine(background,foreground));
             return this;
         }
 
         public IConsoleColorConditions Condition(Func<LogEntry, bool> condition, ConsoleColor foreground)
         {
-            m_conditionColorSchema.AddCondition(condition, new ColorLine(foreground, null));
+            m_conditionColorSchema.AddCondition(condition, new ColorLine(null, foreground));
             return this;
         }
 
         public IConsoleColorConditions Condition(Func<LogEntry, bool> condition, ConsoleColor foreground, ConsoleColor background)
         {
-            m_conditionColorSchema.AddCondition(condition,new ColorLine(foreground,background));
+            m_conditionColorSchema.AddCondition(condition, new ColorLine(background,foreground));
             return this;
         }
     }

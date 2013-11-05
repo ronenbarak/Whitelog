@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Whitelog.Core.Filter;
 using Whitelog.Core.Loggers;
 using Whitelog.Core.PackageDefinitions;
 using Whitelog.Core.String;
@@ -7,12 +8,7 @@ using Whitelog.Core.String.StringBuffer;
 
 namespace Whitelog.Core.Configuration.Fluent.StringLayout
 {
-    interface IStringAppenderBuilder
-    {
-        IStringAppender Build();
-    }
-
-    class StringLayoutBuilder : IStringLayoutBuilder, IStringAppenders,ILoggerBuilder 
+    class StringLayoutBuilder : IStringLayoutBuilder, IStringAppenders, ILoggerBuilder, IFilterBuilder<IStringLayoutBuilder>
     {
         class CustomStringAppenderBuilder : IStringAppenderBuilder
         {
@@ -32,9 +28,13 @@ namespace Whitelog.Core.Configuration.Fluent.StringLayout
         private string m_layout = null;
 
         private List<IStringAppenderBuilder> m_stringAppenders = new List<IStringAppenderBuilder>();
-        public IFilterBuilder<IStringLayoutBuilder> Filter { get; private set; }
         public List<IStringPackageDefinition> m_definitions = new List<IStringPackageDefinition>();
         private LayoutExtensions m_layoutExtensions;
+        private FilterBuilder<StringLayoutBuilder> m_filterBuilder;
+        public StringLayoutBuilder()
+        {
+            m_filterBuilder = new FilterBuilder<StringLayoutBuilder>(this);
+        }
 
         public ILogger Build()
         {
@@ -43,8 +43,8 @@ namespace Whitelog.Core.Configuration.Fluent.StringLayout
             {
                 layout = "${longdate} ${title} ${message}";
             }
-
-            var layoutLogger = new LayoutLogger(layout, StringBufferPool.Instance);
+            var filter = m_filterBuilder.Build();
+            var layoutLogger = new LayoutLogger(layout, StringBufferPool.Instance, filter);
             if (m_layoutExtensions == null)
             {
                 m_layoutExtensions = new LayoutExtensions();
@@ -63,6 +63,9 @@ namespace Whitelog.Core.Configuration.Fluent.StringLayout
             }
             return layoutLogger;
         }
+
+
+        public IFilterBuilder<IStringLayoutBuilder> Filter { get { return this; }}
 
         public IStringLayoutBuilder SetLayout(string layout)
         {
@@ -112,5 +115,24 @@ namespace Whitelog.Core.Configuration.Fluent.StringLayout
             m_stringAppenders.Add(new CustomStringAppenderBuilder(stringAppender));
             return this;
         }
+        
+        #region Filter
+        
+        public IStringLayoutBuilder Include(params LogTitles[] logTitles)
+        {
+            return m_filterBuilder.Include(logTitles);
+        }
+
+        public IStringLayoutBuilder Exclude(params LogTitles[] logTitles)
+        {
+            return m_filterBuilder.Exclude(logTitles);
+        }
+
+        public IStringLayoutBuilder Custom(IFilter filter)
+        {
+            return m_filterBuilder.Custom(filter);
+        }
+
+        #endregion
     }
 }

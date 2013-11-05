@@ -1,4 +1,5 @@
-﻿using Whitelog.Core.Configuration.Fluent;
+﻿using System;
+using Whitelog.Core.Configuration.Fluent;
 using Whitelog.Core.PackageDefinitions;
 using Whitelog.Interface;
 
@@ -24,11 +25,18 @@ namespace Whitelog.ConsoleTests
             ILog logTunnel = Whilelog.FluentConfiguration
                         .StringLayout(builder => builder.SetLayout("${longdate} ${title} ${message}")
                                                         .Extensions(extensions => extensions.All)
+                                                        .Filter.Exclude(LogTitles.Close)
                                                         .Define(new AllPropertiesPackageDefinition<ComplexData>())
-                              .Appenders.Console(consoleBuilder => consoleBuilder.Sync.Colors.Default))
+                              .Appenders.Console(consoleBuilder => consoleBuilder.Sync
+                                                                                 .Filter
+                                                                                 .Exclude(LogTitles.Open)
+                                                                                 .Colors.Conditions(conditions => conditions.Condition(LogTitles.Info,ConsoleColor.DarkGreen)
+                                                                                                                            .Condition(LogTitles.Warning, ConsoleColor.DarkMagenta,ConsoleColor.White))))
                 .CreateLog();
 
             WriteSomeLogs(logTunnel);
+            
+            Console.WriteLine();
 
             // just as good
             ILog logTunnel2 = Whilelog.FluentConfiguration

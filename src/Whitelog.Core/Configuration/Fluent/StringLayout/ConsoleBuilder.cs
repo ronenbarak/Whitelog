@@ -1,14 +1,22 @@
 ﻿using System;
+using Whitelog.Core.Filter;
 using Whitelog.Core.Loggers;
 using Whitelog.Core.Loggers.StringAppender.Console;
 using Whitelog.Core.Loggers.StringAppender.Console.SubmitConsoleLogEntry;
 
 namespace Whitelog.Core.Configuration.Fluent.StringLayout
 {
-    class ConsoleBuilder : IStringAppenderBuilder, IConsoleBuilder, IConsoleColors
+    class ConsoleBuilder : IStringAppenderBuilder, IConsoleBuilder, IConsoleColors, IFilterBuilder<IConsoleBuilder>
     {
         private IColorSchema m_colorSchema = new DefaultColorSchema();
         private ISubmitConsoleLogEntry m_submitLogEntry;
+        private FilterBuilder<ConsoleBuilder> m_filterBuilder;
+        
+        public ConsoleBuilder()
+        {
+            m_filterBuilder = new FilterBuilder<ConsoleBuilder>(this);
+        }
+
         public IStringAppender Build()
         {
             ISubmitConsoleLogEntry submit = m_submitLogEntry;
@@ -16,7 +24,8 @@ namespace Whitelog.Core.Configuration.Fluent.StringLayout
             {
                 submit = new SyncSubmitConsoleLogEntry();
             }
-            return new ConsoleAppender(submit, m_colorSchema);
+            var filter = m_filterBuilder.Build();
+            return new ConsoleAppender(submit, filter, m_colorSchema);
         }
 
         public IConsoleColors Colors { get { return this; } }
@@ -39,7 +48,7 @@ namespace Whitelog.Core.Configuration.Fluent.StringLayout
             }
         }
 
-        public IFilterBuilder<IConsoleBuilder> Filter { get; private set; }
+        public IFilterBuilder<IConsoleBuilder> Filter { get { return this; } }
 
         public IConsoleBuilder None { get { m_colorSchema = null; return this; } }
 
@@ -57,5 +66,24 @@ namespace Whitelog.Core.Configuration.Fluent.StringLayout
             m_colorSchema = colorSchema;
             return this;
         }
+
+        #region Filter
+        
+        public IConsoleBuilder Include(params LogTitles[] logTitles)
+        {
+            return m_filterBuilder.Include(logTitles);
+        }
+
+        public IConsoleBuilder Exclude(params LogTitles[] logTitles)
+        {
+            return m_filterBuilder.Exclude(logTitles);
+        }
+
+        public IConsoleBuilder Custom(IFilter filter)
+        {
+            return m_filterBuilder.Custom(filter);
+        }
+
+        #endregion
     }
 }

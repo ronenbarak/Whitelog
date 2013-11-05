@@ -6,7 +6,7 @@ namespace Whitelog.Core
 {
     public class LogScope : ILogScope
     {
-        private static int m_logScopeIdCount = 1;
+        private static int m_logScopeIdCount = 0;
         private readonly int m_longScopeScopeId;
         private bool m_isDisposed = false;
 

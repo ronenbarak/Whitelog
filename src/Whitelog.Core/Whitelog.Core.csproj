@@ -59,16 +59,19 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Binary\FileLog\BaseFileLog.cs" />
+    <Compile Include="Configuration\Fluent\IFilterBuilder.cs" />
     <Compile Include="Configuration\Fluent\StringLayout\ConsoleBuilder.cs" />
     <Compile Include="Configuration\Fluent\StringLayout\ConsoleColorConditions.cs" />
     <Compile Include="Configuration\Fluent\StringLayout\IConsoleBuilder.cs" />
+    <Compile Include="Configuration\Fluent\StringLayout\IStringAppenderBuilder.cs" />
     <Compile Include="Configuration\Fluent\StringLayout\LayoutExtensions.cs" />
     <Compile Include="Configuration\Fluent\StringLayout\IStringLayoutBuilder.cs" />
+    <Compile Include="Configuration\Fluent\LogTitles.cs" />
     <Compile Include="Configuration\Fluent\StringLayout\StringLayoutBuilder.cs" />
     <Compile Include="Configuration\Fluent\WhiteLogBuilder.cs" />
     <Compile Include="Filter\AndMaskFilter.cs" />
-    <Compile Include="Filter\InMaskFilter.cs" />
-    <Compile Include="Filter\NoInMaskFilter.cs" />
+    <Compile Include="Filter\InclusiveMaskFilter.cs" />
+    <Compile Include="Filter\ExclusiveMaskFilter.cs" />
     <Compile Include="Filter\OrMaskFilter.cs" />
     <Compile Include="Interface\LogTitles\ReservedLogTitleIds.cs" />
     <Compile Include="Interface\LogTitles\TraceLogTitle.cs" />

@@ -3,11 +3,11 @@ using Whitelog.Interface.LogTitles;
 
 namespace Whitelog.Core.Filter
 {
-    public class InMaskFilter : IFilter
+    public class ExclusiveMaskFilter : IFilter
     {
         private long m_mask;
 
-        public InMaskFilter(params long[] values)
+        public ExclusiveMaskFilter(params long[] values)
         {
             m_mask = 0;
 
@@ -24,9 +24,9 @@ namespace Whitelog.Core.Filter
         {
             if ((logEntry.Title.Id & ReservedLogTitleIds.ReservedLogTitle) == ReservedLogTitleIds.ReservedLogTitle)
             {
-                return (logEntry.Title.Id & m_mask) == 0;   
+                return (logEntry.Title.Id & m_mask) != 0;
             }
-            return true;
+            return false;
         }
     }
 }
