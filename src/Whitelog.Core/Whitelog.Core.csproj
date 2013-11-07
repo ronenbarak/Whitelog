@@ -73,9 +73,16 @@
     <Compile Include="Configuration\Fluent\LogTitles.cs" />
     <Compile Include="Configuration\Fluent\StringLayout\StringLayoutBuilder.cs" />
     <Compile Include="Configuration\Fluent\WhiteLogBuilder.cs" />
+    <Compile Include="File\FileConfiguration.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="File\FileHandle.cs" />
-    <Compile Include="File\FileStreamProvider.cs" />
-    <Compile Include="File\InMemoryStreamProvider.cs" />
+    <Compile Include="File\FileStreamProvider.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="File\InMemoryStreamProvider.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Filter\AndMaskFilter.cs" />
     <Compile Include="Filter\InclusiveMaskFilter.cs" />
     <Compile Include="Filter\ExclusiveMaskFilter.cs" />
@@ -96,7 +103,6 @@
     <Compile Include="Loggers\StringAppender\Console\SubmitConsoleLogEntry\ISubmitConsoleLogEntry.cs" />
     <Compile Include="Loggers\StringAppender\Console\SubmitConsoleLogEntry\SyncSubmitConsoleLogEntry.cs" />
     <Compile Include="Loggers\StringAppender\File\StringFileAppender.cs" />
-    <Compile Include="File\FileConfiguration.cs" />
     <Compile Include="Loggers\StringAppender\File\StringListWriter.cs" />
     <Compile Include="LogScopeSyncImplementation\LogScopeSyncFactory.cs" />
     <Compile Include="StringParser.cs" />
