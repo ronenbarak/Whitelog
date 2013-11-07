@@ -27,20 +27,24 @@ namespace Whitelog.ConsoleTests
 
         static void Main(string[] args)
         {
-            var stringWriter = new StringListWriter(new FileStreamProvider(new FileConfiguration()));
             ILog logTunnel = Whilelog.FluentConfiguration
+                        .Binary(binary => binary.Buffer(Buffers.ThreadStatic)
+                                                .ExecutionMode(ExecutionMode.Async)
+                                                .Config(file=>file.FilePath("BinaryLog.dat")))
                         .StringLayout(builder => builder.SetLayout("${longdate} ${title} ${message}")
                                                         .Extensions(extensions => extensions.All)
                                                         .Filter.Exclude(LogTitles.Close)
                                                         .Define(new AllPropertiesPackageDefinition<ComplexData>())
                               .Appenders
 
-                              .Custom(new StringFileAppender(ThreadStaticBufferFactory.Instance.CreateBufferAllocator(stringWriter), new SyncSubmitLogEntry(stringWriter)))
+                              .File(file => file.ExecutionMode(ExecutionMode.Async)
+                                                .Buffer(Buffers.ThreadStatic)
+                                                .Config(config => config.FilePath("TextLog.txt")))
                                 .Console(consoleBuilder => consoleBuilder.Sync
-                                                                                 .Filter
-                                                                                 .Exclude(LogTitles.Open)
-                                                                                 .Colors.Conditions(conditions => conditions.Condition(LogTitles.Info,ConsoleColor.DarkGreen)
-                                                                                                                            .Condition(LogTitles.Warning, ConsoleColor.DarkMagenta,ConsoleColor.White))))
+                                                                        .Filter
+                                                                        .Exclude(LogTitles.Open)
+                                                                        .Colors.Conditions(conditions => conditions.Condition(LogTitles.Info,ConsoleColor.DarkGreen)
+                                                                                                                .Condition(LogTitles.Warning, ConsoleColor.DarkMagenta,ConsoleColor.White))))
                 .CreateLog();
 
             WriteSomeLogs(logTunnel);

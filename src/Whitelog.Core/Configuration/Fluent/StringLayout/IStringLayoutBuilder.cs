@@ -1,4 +1,5 @@
 ﻿using System;
+using Whitelog.Core.Configuration.Fluent.StringLayout.File;
 using Whitelog.Core.Loggers;
 using Whitelog.Core.PackageDefinitions;
 using Whitelog.Core.String;
@@ -20,9 +21,11 @@ namespace Whitelog.Core.Configuration.Fluent.StringLayout
 
     public interface IStringAppenders
     {
+        IStringAppenders File();
+        IStringAppenders File(Func<IStringFileAppenderBuilder, object> file);
         IStringAppenders Console();
         IStringAppenders Console(Func<IConsoleBuilder, object> console);
-
+        
         IStringAppenders Custom(IStringAppender stringAppender);
     }
 

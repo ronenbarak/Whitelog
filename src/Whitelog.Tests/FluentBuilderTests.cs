@@ -22,8 +22,9 @@ namespace Whitelog.Tests
                                     .Condition(entry => entry.Paramaeter == null, ConsoleColor.Gray)
                                     .Condition(LogTitles.Debug,ConsoleColor.Blue)
                                     .Condition(LogTitles.Info, ConsoleColor.DarkYellow,ConsoleColor.Green))))
-                    .Binary(x =>x.Async
-                                 .Buffer(Buffers.ThreadStatic))
+                    .Binary(x =>x.ExecutionMode(ExecutionMode.Async)
+                                 .Buffer(Buffers.ThreadStatic)
+                                 .Config(file => file.FilePath(@"{basedir}\log.dat")))
                     .CreateLog();
         }
     }

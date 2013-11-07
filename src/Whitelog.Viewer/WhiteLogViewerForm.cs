@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Whitelog.Viewer
@@ -31,6 +33,7 @@ namespace Whitelog.Viewer
                     {
                         m_treeViewLogAppender.Dispose();
                     }
+
                     m_treeViewLogAppender = new TreeViewLogAppender(m_logTreeView);
                     m_treeViewLogAppender.OpenFile(fileDialog.FileName);
                 }

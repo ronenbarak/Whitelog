@@ -44,6 +44,11 @@ namespace Whitelog.Core.Binary.FileLog.SubmitLogEntry
 
     class AsyncSubmitLogEntry : ISubmitLogEntry
     {
+        ~AsyncSubmitLogEntry()
+        {
+            WaitForIdle();
+        }
+
         public AsyncSubmitLogEntry(IListWriter listWriter)
         {
             m_listWriter = listWriter;

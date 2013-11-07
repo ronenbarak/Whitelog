@@ -59,10 +59,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Binary\FileLog\BaseFileLog.cs" />
+    <Compile Include="Configuration\Fluent\Binary\IBinaryBuilder.cs" />
     <Compile Include="Configuration\Fluent\IFilterBuilder.cs" />
-    <Compile Include="Configuration\Fluent\StringLayout\ConsoleBuilder.cs" />
-    <Compile Include="Configuration\Fluent\StringLayout\ConsoleColorConditions.cs" />
-    <Compile Include="Configuration\Fluent\StringLayout\IConsoleBuilder.cs" />
+    <Compile Include="Configuration\Fluent\StringLayout\Console\ConsoleBuilder.cs" />
+    <Compile Include="Configuration\Fluent\StringLayout\Console\ConsoleColorConditions.cs" />
+    <Compile Include="Configuration\Fluent\StringLayout\Console\IConsoleBuilder.cs" />
+    <Compile Include="Configuration\Fluent\StringLayout\File\StringFileAppenderBuilder.cs" />
+    <Compile Include="Configuration\Fluent\StringLayout\File\IStringFileAppenderBuilder.cs" />
+    <Compile Include="Configuration\Fluent\IFileConfigurationBuilder.cs" />
     <Compile Include="Configuration\Fluent\StringLayout\IStringAppenderBuilder.cs" />
     <Compile Include="Configuration\Fluent\StringLayout\LayoutExtensions.cs" />
     <Compile Include="Configuration\Fluent\StringLayout\IStringLayoutBuilder.cs" />

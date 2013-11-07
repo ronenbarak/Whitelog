@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Whitelog.Core.Configuration.Fluent.StringLayout.File;
 using Whitelog.Core.Filter;
 using Whitelog.Core.Loggers;
 using Whitelog.Core.PackageDefinitions;
@@ -95,6 +96,20 @@ namespace Whitelog.Core.Configuration.Fluent.StringLayout
         }
 
         public IStringAppenders Appenders { get { return this; } }
+
+        public IStringAppenders File()
+        {
+            m_stringAppenders.Add(new StringFileAppenderBuilder());
+            return this;
+        }
+
+        public IStringAppenders File(Func<IStringFileAppenderBuilder, object> file)
+        {
+            var fileAppender = new StringFileAppenderBuilder();
+            file.Invoke(fileAppender);
+            m_stringAppenders.Add(fileAppender);
+            return this;
+        }
 
         public IStringAppenders Console()
         {

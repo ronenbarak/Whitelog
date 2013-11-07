@@ -4,6 +4,7 @@ using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using Whitelog.Barak.Common.SystemTime;
 using Whitelog.Barak.SystemDateTime;
+using Whitelog.Core.Configuration.Fluent.Binary;
 using Whitelog.Core.Configuration.Fluent.StringLayout;
 using Whitelog.Core.Loggers;
 using Whitelog.Core.LogScopeSyncImplementation;
@@ -11,12 +12,6 @@ using Whitelog.Interface;
 
 namespace Whitelog.Core.Configuration.Fluent
 {
-    public interface IFile<T>
-    {
-        IFile<T> Name(string path);
-        T Return { get; }
-    }
-
     public enum Buffers
     {
         /// <summary>
@@ -27,15 +22,13 @@ namespace Whitelog.Core.Configuration.Fluent
         BufferPool,
         MemoryAllocation,  
     }
-    public interface IBinaryBuilder
-    {
-        IBinaryBuilder Buffer(Buffers buffers);
-        IBinaryBuilder Sync { get; }
-        IBinaryBuilder Async { get; }
 
-        IFile<IBinaryBuilder> File { get; } 
+    public enum ExecutionMode
+    {
+        Async,
+        Sync,
     }
-    
+
     public enum SystemTime
     {
         DateTimeNow,
@@ -97,8 +90,17 @@ namespace Whitelog.Core.Configuration.Fluent
             return this;
         }
 
+        public WhilelogFluentBuilder Binary()
+        {
+            m_loggers.Add(new BinaryBuilder());
+            return this;
+        }
+
         public WhilelogFluentBuilder Binary(Func<IBinaryBuilder, object> binary)
         {
+            var binaryBuilder = new BinaryBuilder();
+            binary.Invoke(binaryBuilder);
+            m_loggers.Add(binaryBuilder);
             return this;
         }
 
