@@ -99,7 +99,6 @@ namespace Whitelog.Viewer
         {
             var readerFactory = new WhitelogBinaryReaderFactory();
             readerFactory.RegisterReaderFactory(new ExpandableLogReaderFactory());
-            readerFactory.RegisterReaderFactory(new InMemoryLogReaderFactory());
 
             m_strem = System.IO.File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             var whitelogConsumer = new WhiteLogConsumer();

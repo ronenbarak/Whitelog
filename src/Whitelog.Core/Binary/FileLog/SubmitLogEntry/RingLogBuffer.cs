@@ -49,6 +49,8 @@ namespace Whitelog.Core.Binary.FileLog.SubmitLogEntry
             get { return m_buffer; }
         }
 
+        public DateTime DateTime { get; set; }
+
         public void Dispose()
         {
             m_ring.Commit(m_sequance);

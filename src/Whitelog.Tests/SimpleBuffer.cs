@@ -1,4 +1,5 @@
-﻿using Whitelog.Core.Binary;
+﻿using System;
+using Whitelog.Core.Binary;
 using Whitelog.Core.Binary.FileLog;
 using Whitelog.Core.Binary.Serializer;
 
@@ -39,6 +40,8 @@ namespace Whitelog.Tests
         {
             get { return m_buffer; }
         }
+
+        public DateTime DateTime { get; set; }
 
         public void Dispose()
         {

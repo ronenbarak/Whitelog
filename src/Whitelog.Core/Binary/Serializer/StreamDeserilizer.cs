@@ -67,21 +67,21 @@ namespace Whitelog.Core.Binary.Serializer
 
         public string DeserializeString()
         {
-            var stringLegnth = DeserializeVariantInt();
-            if (stringLegnth == 0)
+            var stringLegnth = DeserializeInt();
+            if (stringLegnth == -1)
             {
                 return null;
             }
             else
             {
-                if (stringLegnth == 1)
+                if (stringLegnth == 0)
                 {
                     return string.Empty;
                 }
                 else
                 {
-                    var value = string.Intern(Encoding.GetString(m_buffer, m_ioIndex, stringLegnth -1));
-                    m_ioIndex += (stringLegnth -1);
+                    var value = Encoding.GetString(m_buffer, m_ioIndex, stringLegnth);
+                    m_ioIndex += stringLegnth;
                     return value;      
                 }
             }

@@ -69,6 +69,9 @@
     <Compile Include="Configuration\Fluent\LogTitles.cs" />
     <Compile Include="Configuration\Fluent\StringLayout\StringLayoutBuilder.cs" />
     <Compile Include="Configuration\Fluent\WhiteLogBuilder.cs" />
+    <Compile Include="File\FileHandle.cs" />
+    <Compile Include="File\FileStreamProvider.cs" />
+    <Compile Include="File\InMemoryStreamProvider.cs" />
     <Compile Include="Filter\AndMaskFilter.cs" />
     <Compile Include="Filter\InclusiveMaskFilter.cs" />
     <Compile Include="Filter\ExclusiveMaskFilter.cs" />
@@ -88,10 +91,9 @@
     <Compile Include="Loggers\StringAppender\Console\SubmitConsoleLogEntry\ConsoleLogEntry.cs" />
     <Compile Include="Loggers\StringAppender\Console\SubmitConsoleLogEntry\ISubmitConsoleLogEntry.cs" />
     <Compile Include="Loggers\StringAppender\Console\SubmitConsoleLogEntry\SyncSubmitConsoleLogEntry.cs" />
-    <Compile Include="Loggers\StringAppender\File\ArchiveNumberingOptions.cs" />
-    <Compile Include="Loggers\StringAppender\File\ArchiveOptions.cs" />
-    <Compile Include="Loggers\StringAppender\File\FileAppender.cs" />
-    <Compile Include="Loggers\StringAppender\File\FileConfiguration.cs" />
+    <Compile Include="Loggers\StringAppender\File\StringFileAppender.cs" />
+    <Compile Include="File\FileConfiguration.cs" />
+    <Compile Include="Loggers\StringAppender\File\StringListWriter.cs" />
     <Compile Include="LogScopeSyncImplementation\LogScopeSyncFactory.cs" />
     <Compile Include="StringParser.cs" />
     <Compile Include="String\IStringLogger.cs" />
@@ -121,7 +123,6 @@
     <Compile Include="PackageDefinitions\IPackageDefinition.cs" />
     <Compile Include="Loggers\ILogger.cs" />
     <Compile Include="PackageDefinitions\DuplicatedPropertyDefinitionException.cs" />
-    <Compile Include="Loggers\InMemmoryBinaryFileLogger.cs" />
     <Compile Include="Binary\FileLog\SubmitLogEntry\AsyncSubmitLogEntry.cs" />
     <Compile Include="Binary\FileLog\SubmitLogEntry\AsyncSubmitLogEntryFactory.cs" />
     <Compile Include="Binary\FileLog\SubmitLogEntry\RingLogBuffer.cs" />

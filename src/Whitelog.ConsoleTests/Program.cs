@@ -1,5 +1,10 @@
 ﻿using System;
+using Whitelog.Barak.SystemDateTime;
+using Whitelog.Core.Binary.FileLog.SubmitLogEntry;
+using Whitelog.Core.Binary.Serializer.MemoryBuffer;
 using Whitelog.Core.Configuration.Fluent;
+using Whitelog.Core.File;
+using Whitelog.Core.Loggers.StringAppender.File;
 using Whitelog.Core.PackageDefinitions;
 using Whitelog.Interface;
 
@@ -22,12 +27,16 @@ namespace Whitelog.ConsoleTests
 
         static void Main(string[] args)
         {
+            var stringWriter = new StringListWriter(new FileStreamProvider(new FileConfiguration()));
             ILog logTunnel = Whilelog.FluentConfiguration
                         .StringLayout(builder => builder.SetLayout("${longdate} ${title} ${message}")
                                                         .Extensions(extensions => extensions.All)
                                                         .Filter.Exclude(LogTitles.Close)
                                                         .Define(new AllPropertiesPackageDefinition<ComplexData>())
-                              .Appenders.Console(consoleBuilder => consoleBuilder.Sync
+                              .Appenders
+
+                              .Custom(new StringFileAppender(ThreadStaticBufferFactory.Instance.CreateBufferAllocator(stringWriter), new SyncSubmitLogEntry(stringWriter)))
+                                .Console(consoleBuilder => consoleBuilder.Sync
                                                                                  .Filter
                                                                                  .Exclude(LogTitles.Open)
                                                                                  .Colors.Conditions(conditions => conditions.Condition(LogTitles.Info,ConsoleColor.DarkGreen)

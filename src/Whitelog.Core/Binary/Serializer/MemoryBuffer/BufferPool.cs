@@ -43,6 +43,8 @@ namespace Whitelog.Core.Binary.Serializer.MemoryBuffer
                 get { return m_buffer; }
             }
 
+            public DateTime DateTime { get; set; }
+
             public void Dispose()
             {
                 m_rawDataSerializer.Reset();

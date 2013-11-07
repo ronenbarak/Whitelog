@@ -237,6 +237,9 @@ namespace Whitelog.Core.PackageDefinitions
 
         public PackageDefinition<T> Define(string property, Func<T, IEnumerable> dataExtractor)
         {
+            // it is possiple to serilize an array more efficiently by reserving space for size of array in advance,
+            // but that will require change in the serilizer interface
+            // and i dont want to do it.
             AddDefinition(property, SerilizeType.Enumerable, (arg, packager, serializer) =>
                                                              {
                                                                  var enumerable = dataExtractor.Invoke(arg);

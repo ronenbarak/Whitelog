@@ -20,14 +20,14 @@ namespace Whitelog.Core.Binary.Reader.ExpendableList
     public class ExpendableListLogReader : ILogReader, IBufferConsumer
     {        
         private readonly ILogConsumer m_consumer;
-        private IListWriter m_listWriter;
+        private IListReader m_listWriter;
         private Unpacker m_dataUnpacker = new Unpacker();
         private StreamDeserilizer m_deserilizer = new StreamDeserilizer();
         private int m_currentPendingIndex = 0;
         private Queue<Tuple<int,int, IRawData>> m_pendingDefinitonQueue = new Queue<Tuple<int,int, IRawData>>();
         private Queue<Tuple<int, ILogEntryData>> m_pendingUnpackedObjects = new Queue<Tuple<int, ILogEntryData>>();
         private bool m_hasNewDefinisions = false;
-        public ExpendableListLogReader(ILogConsumer consumer,IListWriter listWriter)
+        public ExpendableListLogReader(ILogConsumer consumer,IListReader listWriter)
         {
             m_listWriter = listWriter;
             m_consumer = consumer;

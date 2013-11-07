@@ -67,6 +67,7 @@ namespace Whitelog.Core.Binary.FileLog
             var buffer = m_logEntryBufferAllocator.Allocate();
             try
             {
+                buffer.DateTime = logEntry.Time;
                 var dataSerializer = buffer.AttachedSerializer;
                 m_streamLogBinaryPackager.Pack(logEntry, dataSerializer);
                 dataSerializer.Flush();
@@ -84,6 +85,7 @@ namespace Whitelog.Core.Binary.FileLog
             var buffer = m_definitionBufferAllocator.Allocate();
             try
             {
+                buffer.DateTime = DateTime.MinValue;
                 var dataSerializer = buffer.AttachedSerializer;
                 m_streamLogBinaryPackager.Pack(e.Data, dataSerializer);
                 dataSerializer.Flush();
@@ -101,6 +103,7 @@ namespace Whitelog.Core.Binary.FileLog
             var buffer = m_stringCacheBufferAllocator.Allocate();
             try
             {
+                buffer.DateTime = DateTime.MinValue;
                 var dataSerializer = buffer.AttachedSerializer;
                 m_streamLogBinaryPackager.Pack(e.Data, dataSerializer);
                 dataSerializer.Flush();

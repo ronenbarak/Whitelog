@@ -12,6 +12,7 @@ namespace Whitelog.Core
 
         private readonly ISystemTime m_systemTime;
         private readonly ILogScopeSyncImplementation m_logScopeSyncImplementation;
+        public ISystemTime Time { get { return m_systemTime; } }
 
         public LogTunnel(ISystemTime systemTime,ILogScopeSyncImplementation logScopeSyncImplementation)
         {

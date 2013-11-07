@@ -112,15 +112,23 @@ namespace Whitelog.Core.Binary.Serializer
         {
             if (value == null)
             {
-                SerializeVariant(0);
+                Serialize(-1);
             }
             else
             {
-                int predicted = Encoding.GetByteCount(value);
-                SerializeVariant(predicted + 1);
-                DemandSpace(predicted);
-                Encoding.GetBytes(value, 0, value.Length, m_buffer, m_ioIndex);
-                m_ioIndex += predicted;
+                int predicted = (value.Length + 1) * 2;
+                DemandSpace(predicted + sizeof(int));
+                // We write the string 4 bytes after the index
+                int realSize = Encoding.GetBytes(value, 0, value.Length, m_buffer, m_ioIndex + sizeof(int));
+
+                // and than we add the size added at the index location
+                m_buffer[m_ioIndex] = (byte)realSize;
+                m_buffer[m_ioIndex + 1] = (byte)(realSize >> 8);
+                m_buffer[m_ioIndex + 2] = (byte)(realSize >> 16);
+                m_buffer[m_ioIndex + 3] = (byte)(realSize >> 24);
+
+                // and advance the index
+                m_ioIndex += realSize + sizeof(int);
             }
         }
 

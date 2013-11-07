@@ -10,6 +10,7 @@ using BrightIdeasSoftware;
 using Whitelog.Core;
 using Whitelog.Core.Binary.FileLog.SubmitLogEntry;
 using Whitelog.Core.Binary.Serializer.MemoryBuffer;
+using Whitelog.Core.File;
 using Whitelog.Core.Loggers;
 using Whitelog.Viewer;
 
@@ -24,9 +25,9 @@ namespace Whitelog.Sample
         {
             Dock =DockStyle.Fill;
             InitializeComponent();
-            m_txtPath.Text = System.IO.Path.Combine(Environment.CurrentDirectory, "Sample.Log");
+            m_txtPath.Text = @"{BaseDir}\Sample.Log";
             m_loggerTypes.Items.Add(typeof(ContinuesBinaryFileLogger).Name);
-            m_loggerTypes.Items.Add(typeof(InMemmoryBinaryFileLogger).Name);
+            m_loggerTypes.Items.Add("In Memory");
 
             var ringBufferLogger = new RingSubmitLogEntryFactory(RingConsumeOption.SpinWait, 1000);
             m_submitterType.Items.Add(new SubmiterOption(new AsyncSubmitLogEntryFactory(), "Async - Eventually consistent"));
@@ -63,22 +64,26 @@ namespace Whitelog.Sample
             {
                 if (m_loggerTypes.SelectedItem.ToString() == typeof(ContinuesBinaryFileLogger).Name)
                 {
-                    var fileLogger = new ContinuesBinaryFileLogger(m_txtPath.Text, ((SubmiterOption)m_submitterType.SelectedItem).SubmitLogEntryFactory, ((BufferOption)m_bufferTypes.SelectedItem).BufferAllocatorFactory);
+                    var fileStremProvider = new FileStreamProvider(new FileConfiguration()
+                                                                   {
+                                                                       FilePath = m_txtPath.Text,
+                                                                   });
+                    var fileLogger = new ContinuesBinaryFileLogger(fileStremProvider, ((SubmiterOption)m_submitterType.SelectedItem).SubmitLogEntryFactory, ((BufferOption)m_bufferTypes.SelectedItem).BufferAllocatorFactory);
                     fileLogger.AttachToTunnelLog(LogTunnel);
-                }
-                else if (m_loggerTypes.SelectedItem.ToString() == typeof(InMemmoryBinaryFileLogger).Name)
-                {
-                    var fileLogger = new InMemmoryBinaryFileLogger(((SubmiterOption)m_submitterType.SelectedItem).SubmitLogEntryFactory, ((BufferOption)m_bufferTypes.SelectedItem).BufferAllocatorFactory);
-                    fileLogger.AttachToTunnelLog(LogTunnel);
-                }
 
-                var tabPage = new TabPage("Binary " + System.IO.Path.GetFileName(m_txtPath.Text));
-                DataTreeListView dataTreeListView = new DataTreeListView();
-                dataTreeListView.Dock = DockStyle.Fill;
-                tabPage.Controls.Add(dataTreeListView);
-                var logAppender = new TreeViewLogAppender(dataTreeListView);
-                PreviewTabControl.TabPages.Add(tabPage);
-                logAppender.OpenFile(m_txtPath.Text);
+                    var tabPage = new TabPage("Binary " + System.IO.Path.GetFileName(m_txtPath.Text));
+                    DataTreeListView dataTreeListView = new DataTreeListView();
+                    dataTreeListView.Dock = DockStyle.Fill;
+                    tabPage.Controls.Add(dataTreeListView);
+                    var logAppender = new TreeViewLogAppender(dataTreeListView);
+                    PreviewTabControl.TabPages.Add(tabPage);
+                    logAppender.OpenFile(fileStremProvider.FileName);
+                }
+                else if (m_loggerTypes.SelectedItem.ToString() == "In Memory")
+                {
+                    var fileLogger = new ContinuesBinaryFileLogger(new InMemoryStreamProvider(), ((SubmiterOption)m_submitterType.SelectedItem).SubmitLogEntryFactory, ((BufferOption)m_bufferTypes.SelectedItem).BufferAllocatorFactory);
+                    fileLogger.AttachToTunnelLog(LogTunnel);
+                }
             }
             catch (Exception exception)
             {

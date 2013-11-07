@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -10,6 +11,7 @@ using Whitelog.Core.Binary.FileLog.SubmitLogEntry;
 using Whitelog.Core.Binary.Reader;
 using Whitelog.Core.Binary.Reader.ExpendableList;
 using Whitelog.Core.Binary.Serializer.MemoryBuffer;
+using Whitelog.Core.File;
 using Whitelog.Core.Loggers;
 using Whitelog.Core.LogScopeSyncImplementation;
 using Whitelog.Interface;
@@ -20,7 +22,7 @@ namespace Whitelog.Tests
     public class AnonymousPackerTests
     {
         private ILog m_log;
-        private InMemmoryBinaryFileLogger m_cfl;
+        private ContinuesBinaryFileLogger m_cfl;
         private TestConsumer m_testConsumer;
         private ILogReader m_logReader;
 
@@ -32,16 +34,17 @@ namespace Whitelog.Tests
         [TestInitialize]
         public void ActivateLog()
         {
+            byte[] buffer = new byte[1024 * 1024 * 10];
             LogTunnel tunnelLog;
             m_log = tunnelLog = CreateLog();
-            m_cfl = new InMemmoryBinaryFileLogger(new SyncSubmitLogEntryFactory(), BufferPoolFactory.Instance);
+            m_cfl = new ContinuesBinaryFileLogger(new InMemoryStreamProvider(new MemoryStream(buffer)), new SyncSubmitLogEntryFactory(), BufferPoolFactory.Instance);
             m_cfl.AttachToTunnelLog(tunnelLog);
 
             var readerFactory = new WhitelogBinaryReaderFactory();
             readerFactory.RegisterReaderFactory(new ExpandableLogReaderFactory());
-            readerFactory.RegisterReaderFactory(new InMemoryLogReaderFactory());
             m_testConsumer = new TestConsumer();
-            m_logReader = readerFactory.GetLogReader(m_cfl.Stream, m_testConsumer);
+
+            m_logReader = readerFactory.GetLogReader(new MemoryStream(buffer), m_testConsumer);
         }
 
         [TestCleanup]

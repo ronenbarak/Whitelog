@@ -21,6 +21,14 @@ namespace Whitelog.Core.Binary.FileLog.SubmitLogEntry
             m_newBuffer = newBuffer;
         }
 
+        public CloneRawData(byte[] buffer, int legnth, DateTime dateTime)
+        {
+            DateTime = dateTime;
+            var newBuffer = new byte[legnth];
+            System.Buffer.BlockCopy(buffer, 0, newBuffer, 0, legnth);
+            m_newBuffer = newBuffer;
+        }
+
         public int Length
         {
             get { return m_newBuffer.Length; }
@@ -30,6 +38,8 @@ namespace Whitelog.Core.Binary.FileLog.SubmitLogEntry
         {
             get { return m_newBuffer; }
         }
+
+        public DateTime DateTime { get; set; }
     }
 
     class AsyncSubmitLogEntry : ISubmitLogEntry
@@ -68,17 +78,11 @@ namespace Whitelog.Core.Binary.FileLog.SubmitLogEntry
             while (bContinue)
             {
                 var logEntries = m_queuedBulk.GetBulk();
-                lock (m_listWriter.LockObject) // we lock the file in case some other thred is trying to use it
-                {
-                    m_listWriter.WriteData(logEntries);
-                }
+                m_listWriter.WriteData(logEntries);
                 bContinue = Interlocked.Decrement(ref m_pendingBulksToCollect) != 0;
             }
 
-            lock (m_listWriter.LockObject)
-            {
-                m_listWriter.Flush();
-            }
+            m_listWriter.Flush();
             Interlocked.Decrement(ref m_useCounter); // This line should be thread safe.
         }
 

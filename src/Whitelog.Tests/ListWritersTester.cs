@@ -2,20 +2,16 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Whitelog.Barak.Common.ExtensionMethods;
-using Whitelog.Core;
 using Whitelog.Core.Binary;
 using Whitelog.Core.Binary.FileLog;
 using Whitelog.Core.Binary.FileLog.SubmitLogEntry;
 using Whitelog.Core.Binary.ListWriter;
-using Whitelog.Core.Binary.PakageDefinitions.Pack;
 using Whitelog.Core.Binary.PakageDefinitions.Unpack;
 using Whitelog.Core.Binary.Serializer;
-using Whitelog.Core.Binary.Serializer.MemoryBuffer;
+using Whitelog.Core.File;
 using Whitelog.Core.PackageDefinitions;
-using Whitelog.Interface;
 
 namespace Whitelog.Tests
 {
@@ -39,7 +35,7 @@ namespace Whitelog.Tests
             }
         }
 
-        public static byte[] Read(this IListWriter listWriter)
+        public static byte[] Read(this IListReader listWriter)
         {
             var buffer = new BufferConsumer();
             if (!listWriter.Read(buffer))
@@ -60,13 +56,13 @@ namespace Whitelog.Tests
             {
                 ms.SetLength(1024);
                 ms.Position = 1024;
-                ExpendableList fixSizeWriter = new ExpendableList(ms);
+                ExpendableListWriter fixSizeWriter = new ExpendableListWriter(new InMemoryStreamProvider(ms),(writer, stream) => {});
                 fixSizeWriter.WriteData(new CloneRawData(BitConverter.GetBytes(1)));
                 fixSizeWriter.WriteData(new CloneRawData(BitConverter.GetBytes(2)));
                 fixSizeWriter.WriteData(new CloneRawData(BitConverter.GetBytes(3)));
 
                 ms.Position = 1024;
-                ExpendableList readerSizeWriter = new ExpendableList(ms);
+                ExpendableListReader readerSizeWriter = new ExpendableListReader(ms);
                 Assert.AreEqual(1, BitConverter.ToInt32(readerSizeWriter.Read(), 0));
                 Assert.AreEqual(2, BitConverter.ToInt32(readerSizeWriter.Read(), 0));
                 Assert.AreEqual(3, BitConverter.ToInt32(readerSizeWriter.Read(), 0));

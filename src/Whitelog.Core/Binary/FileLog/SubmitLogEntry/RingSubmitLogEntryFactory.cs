@@ -90,11 +90,8 @@ namespace Whitelog.Core.Binary.FileLog.SubmitLogEntry
 
         private void OnConsume(IEnumerable<RingLogBuffer> ringLogBuffers)
         {
-            lock (m_listWriter.LockObject)
-            {
-                m_listWriter.WriteData(ringLogBuffers);
-                m_listWriter.Flush();
-            }
+            m_listWriter.WriteData(ringLogBuffers);
+            m_listWriter.Flush();
         }
 
         private void ConsumeLoop()
