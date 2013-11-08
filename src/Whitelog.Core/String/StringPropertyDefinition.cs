@@ -13,6 +13,8 @@ namespace Whitelog.Core.String
         private Action<T, IStringRenderer, StringBuilder> m_valueExtractor;
         public string Name { get; private set; }
 
+        public Action<T, IStringRenderer, StringBuilder> ValueExtractor {get { return m_valueExtractor; }}
+
         public StringPropertyDefinition(string name, Action<T, IStringRenderer, StringBuilder> valueExtractor)
         {
             Name = name;

@@ -1,6 +1,8 @@
 using System;
+using System.Text;
 using Whitelog.Core.Binary;
 using Whitelog.Core.Binary.PakageDefinitions.Pack;
+using Whitelog.Core.String;
 
 namespace Whitelog.Core.PackageDefinitions
 {
@@ -17,15 +19,27 @@ namespace Whitelog.Core.PackageDefinitions
         public ObjectPackageDefinition():this(typeof(Object))
         {
         }
-        
-        public override IBinaryPackageDefinition Clone(System.Type type, object instance)
+
+        public override IPackageDefinition Clone(System.Type type, object instance)
         {
-            return new ObjectPackageDefinition(type);
+            if (!type.IsClass || type == typeof(string))
+            {
+                return new ObjectPackageDefinition(type);
+            }
+            else
+            {
+                return PackageDefinitionHelper.CreateInstatnce(type);
+            }
         }
         
         public override System.Type GetTypeDefinition()
         {
             return m_type;
+        }
+
+        public override void Render(object data, IStringRenderer stringRenderer, StringBuilder stringBuilder)
+        {
+            base.Render(data, stringRenderer, stringBuilder);
         }
 
         public override void PackData(IBinaryPackager packager, ISerializer serializer, object data)

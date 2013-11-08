@@ -25,6 +25,15 @@ namespace Whitelog.ConsoleTests
             public ComplexData Complex2 { get; set; }
         }
 
+        public class ComplexDataDerived :ComplexData
+        {
+            public ComplexDataDerived()
+            {
+                ExtraProp = 2;
+            }
+            public int ExtraProp { get; set; }
+        }
+
         static void Main(string[] args)
         {
             ILog logTunnel = Whilelog.FluentConfiguration
@@ -34,7 +43,6 @@ namespace Whitelog.ConsoleTests
                         .StringLayout(builder => builder.SetLayout("${longdate} ${title} ${message}")
                                                         .Extensions(extensions => extensions.All)
                                                         .Filter.Exclude(LogTitles.Close)
-                                                        .Define(new AllPropertiesPackageDefinition<ComplexData>())
                               .Appenders
 
                               .File(file => file.ExecutionMode(ExecutionMode.Async)
@@ -84,12 +92,11 @@ namespace Whitelog.ConsoleTests
                                                             StringValue = "MyValue",
                                                             Complex = new ComplexData()
                                                                       {
-                                                                          Complex2 = new ComplexData()
-                                                                                     {
-                                                                                         Prop1 = 6,
-                                                                                     }
-                                                                      },
+                                                                          //ExtraProp = 2,
+                                                                          Complex2 = new ComplexDataDerived(),
+                                                                      }
                                                         });
+
             }
         }
     }

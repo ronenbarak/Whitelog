@@ -22,10 +22,10 @@ namespace Whitelog.Core.Binary
         {
             if (AnonymousTypesHelper.IsAnonymousType(type))
             {
-                var packageDefinitionInstance = AllPropertiesPackageDefinitionHelper.CreateInstatnce(type) as IBinaryPackageDefinition;
+                var packageDefinitionInstance = PackageDefinitionHelper.CreateInstatnce(type) as IBinaryPackageDefinition;
 
                 RegisteredPackageDefinition regPackageDefinitionInstance;
-                RegisterDefinition(packageDefinitionInstance, sourcePackageDefinition.DefinitionId, out regPackageDefinitionInstance);
+                RegisterDefinition(packageDefinitionInstance, out regPackageDefinitionInstance);
                 return regPackageDefinitionInstance;
             }
             else

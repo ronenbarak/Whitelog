@@ -107,14 +107,9 @@ namespace Whitelog.Core.String
                     {
                         if (!m_PackageDefinitions.TryGetValue(type, out packageDefinition))
                         {
-                            if (AnonymousTypesHelper.IsAnonymousType(type))
-                            {
-                                   packageDefinition = AllPropertiesPackageDefinitionHelper.CreateInstatnce(type) as IStringPackageDefinition;
-                            }
-                            else
-                            {
-                                packageDefinition = GetClosestPackageDefinition(type);   
-                            }
+                            packageDefinition = GetClosestPackageDefinition(type);
+                            packageDefinition = packageDefinition.Clone(type, data);
+                            m_PackageDefinitions.Add(type, packageDefinition);
                         }
                     }
                 }

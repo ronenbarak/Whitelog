@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using Whitelog.Core.Binary;
 using Whitelog.Core.Binary.FileLog;
 using Whitelog.Core.Binary.FileLog.SubmitLogEntry;
 using Whitelog.Core.Binary.Serializer.MemoryBuffer;
 using Whitelog.Core.File;
 using Whitelog.Core.Loggers;
+using Whitelog.Core.PackageDefinitions;
 
 namespace Whitelog.Core.Configuration.Fluent.Binary
 {
@@ -12,6 +15,8 @@ namespace Whitelog.Core.Configuration.Fluent.Binary
         IBinaryBuilder Config(Func<IFileConfigurationBuilder, object> file);
         IBinaryBuilder Buffer(Buffers buffers);
         IBinaryBuilder ExecutionMode(ExecutionMode executionMode);
+        IBinaryBuilder Map<T>(Func<PackageDefinition<T>, object> define);
+        IBinaryBuilder Map(IBinaryPackageDefinition definition);
     }
 
     public class BinaryBuilder : IBinaryBuilder , ILoggerBuilder
@@ -19,6 +24,7 @@ namespace Whitelog.Core.Configuration.Fluent.Binary
         private FileConfigurationBuilder m_fileConfigurationBuilder = new FileConfigurationBuilder(@"{basepath}\Log.dat");
         private Buffers m_buffers = Buffers.ThreadStatic;
         private ExecutionMode m_executionMode = Fluent.ExecutionMode.Async;
+        public List<IBinaryPackageDefinition> m_definitions = new List<IBinaryPackageDefinition>();
 
         public IBinaryBuilder Config(Func<IFileConfigurationBuilder, object> file)
         {
@@ -36,6 +42,20 @@ namespace Whitelog.Core.Configuration.Fluent.Binary
         public IBinaryBuilder ExecutionMode(ExecutionMode executionMode)
         {
             m_executionMode = executionMode;
+            return this;
+        }
+
+        public IBinaryBuilder Map<T>(Func<PackageDefinition<T>, object> define)
+        {
+            var packageDefinition = new PackageDefinition<T>();
+            define.Invoke(packageDefinition);
+            m_definitions.Add(packageDefinition);
+            return this;
+        }
+
+        public IBinaryBuilder Map(IBinaryPackageDefinition definition)
+        {
+            m_definitions.Add(definition);
             return this;
         }
 
@@ -62,7 +82,14 @@ namespace Whitelog.Core.Configuration.Fluent.Binary
                 bufferAllocator = ThreadStaticBufferFactory.Instance;
             }
 
-            return new ContinuesBinaryFileLogger(fileStreamProvider, subbmiter, bufferAllocator);
+            var logger = new ContinuesBinaryFileLogger(fileStreamProvider, subbmiter, bufferAllocator);
+
+            foreach (var binaryPackageDefinition in m_definitions)
+            {
+                logger.RegisterDefinition(binaryPackageDefinition);
+            }
+
+            return logger;
         }
     }
 }

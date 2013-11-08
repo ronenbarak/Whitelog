@@ -26,7 +26,7 @@ namespace Whitelog.Core.PackageDefinitions
             DefineCacheString(x => x.Message, x => x.Message);
         }
 
-        public override IBinaryPackageDefinition Clone(Type type, object instance)
+        public override IPackageDefinition Clone(Type type, object instance)
         {
             return new StringLogTitlePackageDefinition(type, (StringLogTitle)instance);
         }
@@ -63,7 +63,7 @@ namespace Whitelog.Core.PackageDefinitions
             return m_type;
         }
 
-        public override IBinaryPackageDefinition Clone(System.Type type, object instance)
+        public override IPackageDefinition Clone(System.Type type, object instance)
         {
             return new CustomStringLogTitlePackageDefinition(type);
         }

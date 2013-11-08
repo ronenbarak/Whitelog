@@ -81,7 +81,7 @@ namespace Whitelog.Core.Configuration.Fluent.StringLayout
             return this;
         }
 
-        public IStringLayoutBuilder Define<T>(Func<PackageDefinition<T>, object> define)
+        public IStringLayoutBuilder Map<T>(Func<PackageDefinition<T>, object> define)
         {
             var packageDefinition = new PackageDefinition<T>();
             define.Invoke(packageDefinition);
@@ -89,7 +89,7 @@ namespace Whitelog.Core.Configuration.Fluent.StringLayout
             return this;
         }
 
-        public IStringLayoutBuilder Define(IStringPackageDefinition definition)
+        public IStringLayoutBuilder Map(IStringPackageDefinition definition)
         {
             m_definitions.Add(definition);
             return this;

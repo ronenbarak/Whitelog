@@ -23,7 +23,7 @@ namespace Whitelog.Core.PackageDefinitions
         {
         }
 
-        public override IBinaryPackageDefinition Clone(System.Type type, object instance)
+        public override IPackageDefinition Clone(System.Type type, object instance)
         {
             return new LogEntryPackageDefinition(type);
         }

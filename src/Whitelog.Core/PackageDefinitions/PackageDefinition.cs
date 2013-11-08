@@ -15,14 +15,30 @@ namespace Whitelog.Core.PackageDefinitions
     {
         private static readonly byte[] ZeroByteArray = BitConverter.GetBytes((int)-1);
 
-        protected BaseBinaryPropertyDefinition<T>[] m_definitions = new BaseBinaryPropertyDefinition<T>[0];
+        protected BinaryPropertyDefinition<T>[] m_definitions = new BinaryPropertyDefinition<T>[0];
         protected List<ConstStringPropertyDefinitoin> m_constDefinitions = new List<ConstStringPropertyDefinitoin>();
 
         protected StringPropertyDefinition<T>[] m_stringDefinitions = new StringPropertyDefinition<T>[0];
 
-        public virtual IBinaryPackageDefinition Clone(Type type, object instance)
+        public virtual IPackageDefinition Clone(Type type, object instance)
         {
-            return new InheritancePackageDefinition<T>(m_definitions.ToList(), m_constDefinitions.Select(p=>p.Clone(instance)).ToList(), type);
+            var baseType = typeof(InheritancePackageDefinition<,>);
+            var packageDefinitionType = baseType.MakeGenericType(new[] { type, typeof(T) });
+            var packageDefinitionInstance = Activator.CreateInstance(packageDefinitionType,
+                                                                        m_definitions.ToList(),
+                                                                        m_constDefinitions.Select(p => p.Clone(instance)).ToList(),
+                                                                        m_stringDefinitions.ToList()) as IPackageDefinition;
+            return packageDefinitionInstance;
+        }
+
+        IBinaryPackageDefinition IBinaryPackageDefinition.Clone(Type type, object instance)
+        {
+            return Clone(type, instance) as IBinaryPackageDefinition;
+        }
+
+        IStringPackageDefinition IStringPackageDefinition.Clone(Type type, object instance)
+        {
+            return Clone(type, instance) as IStringPackageDefinition;
         }
 
         public virtual Type GetTypeDefinition()
@@ -63,7 +79,7 @@ namespace Whitelog.Core.PackageDefinitions
         {
             ValidateDefinitionUniq(property);
             Array.Resize(ref m_definitions, m_definitions.Length + 1);
-            m_definitions[m_definitions.Length -1] = new BinaryBinaryPropertyDefinition<T>(property, serilizeType, serilizer);
+            m_definitions[m_definitions.Length - 1] = new BinaryPropertyDefinition<T>(property, serilizeType, serilizer);
         }
 
         protected void AddStringDefinition(string property, Action<T,IStringRenderer,StringBuilder> valueAppender)

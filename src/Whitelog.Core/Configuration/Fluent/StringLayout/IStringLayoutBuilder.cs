@@ -34,8 +34,8 @@ namespace Whitelog.Core.Configuration.Fluent.StringLayout
         IFilterBuilder<IStringLayoutBuilder> Filter { get; }
         IStringLayoutBuilder SetLayout(string layout);
         IStringLayoutBuilder Extensions(Func<ILayoutExtensions, object> extensions);
-        IStringLayoutBuilder Define<T>(Func<PackageDefinition<T>, object> define);
-        IStringLayoutBuilder Define(IStringPackageDefinition definition);
+        IStringLayoutBuilder Map<T>(Func<PackageDefinition<T>, object> define);
+        IStringLayoutBuilder Map(IStringPackageDefinition definition);
 
         IStringAppenders Appenders { get; }
     }
