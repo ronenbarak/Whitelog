@@ -34,7 +34,12 @@ namespace Whitelog.Viewer
             m_logTreeView.AllColumns.Add(olvTimeColumn);
             m_logTreeView.AllColumns.Add(olvTitleColumn);
             m_logTreeView.AllColumns.Add(olvMessageColumn);
-            
+            m_logTreeView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[]
+                                           {
+                                               olvTimeColumn,
+                                               olvTitleColumn,
+                                               olvMessageColumn
+                                           });
             m_logTreeView.DataSource = null;
             m_logTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
             m_logTreeView.FullRowSelect = true;

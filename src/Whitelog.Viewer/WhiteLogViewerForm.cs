@@ -34,6 +34,7 @@ namespace Whitelog.Viewer
                         m_treeViewLogAppender.Dispose();
                     }
 
+                    m_logTreeView.Columns.Clear();
                     m_treeViewLogAppender = new TreeViewLogAppender(m_logTreeView);
                     m_treeViewLogAppender.OpenFile(fileDialog.FileName);
                 }

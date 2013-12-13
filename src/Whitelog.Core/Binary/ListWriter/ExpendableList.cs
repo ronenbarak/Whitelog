@@ -83,33 +83,40 @@ namespace Whitelog.Core.Binary.ListWriter
             bool hasAnyRead = false;
             while (!ended)
             {
-                m_stream.Read(intSizeBuffer, 0, intSizeBuffer.Length);
-                int sizeBuffer = BitConverter.ToInt32(intSizeBuffer, 0);
-                if (sizeBuffer == 0)
+                if (m_stream.Read(intSizeBuffer, 0, intSizeBuffer.Length) != sizeof (int))
                 {
-                    // this is for debug only 
-                    m_stream.Seek(-4, SeekOrigin.Current);
                     ended = true;
                 }
                 else
                 {
-                    if (m_expendableBuffer.Buffer.Length < sizeBuffer)
-                    {
-                        m_expendableBuffer.Buffer = new byte[sizeBuffer];
-                    }
 
-                    if (m_stream.Read(m_expendableBuffer.Buffer, 0, sizeBuffer) != sizeBuffer)
+                    int sizeBuffer = BitConverter.ToInt32(intSizeBuffer, 0);
+                    if (sizeBuffer == 0)
                     {
-                        throw new CorruptedDataException();
+                        // this is for debug only 
+                        m_stream.Seek(-4, SeekOrigin.Current);
+                        ended = true;
                     }
                     else
                     {
-                        m_readIndex = m_stream.Position;
-                        m_expendableBuffer.Length = sizeBuffer;
-                        bufferConsumer.Consume(m_expendableBuffer);
-                        hasAnyRead = true;
+                        if (m_expendableBuffer.Buffer.Length < sizeBuffer)
+                        {
+                            m_expendableBuffer.Buffer = new byte[sizeBuffer];
+                        }
+
+                        if (m_stream.Read(m_expendableBuffer.Buffer, 0, sizeBuffer) != sizeBuffer)
+                        {
+                            throw new CorruptedDataException();
+                        }
+                        else
+                        {
+                            m_readIndex = m_stream.Position;
+                            m_expendableBuffer.Length = sizeBuffer;
+                            bufferConsumer.Consume(m_expendableBuffer);
+                            hasAnyRead = true;
+                        }
+                        ended = !(m_readIndex < maxRead);
                     }
-                    ended = !(m_readIndex < maxRead);
                 }
             }
             return hasAnyRead;
