@@ -19,6 +19,7 @@ Whitelog was design to change all of that:
 Status
 ======
 The current status of the project is an early alpha, Interfaces are not guaranteed not to change.
+<a href="http://ronenbarak.no-ip.org:8086/viewType.html?buildTypeId=btN&guest=1"><img src="http://ronenbarak.no-ip.org:8086/app/rest/builds/buildType:WhiteLog_BuildAllAndTests/statusIcon"/></a>
 
 Licence
 =======
