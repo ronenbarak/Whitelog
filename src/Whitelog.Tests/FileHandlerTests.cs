@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Dynamic;
 using System.IO;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Whitelog.Core.File;
 
 namespace Whitelog.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class FileHandlerTests
     {
         private void Delete(string filePath)
@@ -33,7 +33,7 @@ namespace Whitelog.Tests
             }
         }
 
-        [TestMethod]
+        [Test]
         public void CreateAFileFromEmptyConfigurationWorks()
         {
             Delete("Log.Txt");
@@ -52,7 +52,7 @@ namespace Whitelog.Tests
             Assert.IsTrue(System.IO.File.Exists("Log.1.Txt"));
         }
 
-        [TestMethod]
+        [Test]
         public void CreateAFileFromUsingTemplatesWorks()
         {
             Delete(string.Format("MyLog-{0}.Txt", DateTime.Now.ToString("yyyy.MM.dd")));
@@ -66,7 +66,7 @@ namespace Whitelog.Tests
             Assert.IsTrue(System.IO.File.Exists(string.Format("MyLog-{0}.Txt", DateTime.Now.ToString("yyyy.MM.dd"))));
         }
 
-        [TestMethod]
+        [Test]
         public void ArchiveingAFileUsingSequenceWorks()
         {
             Delete("MyLog.Tests.2.Txt");
@@ -123,7 +123,7 @@ namespace Whitelog.Tests
 
         }
 
-        [TestMethod]
+        [Test]
         public void ArchivingToNonExsisitngDirectory()
         {
             Delete(@"Dir\MyLog.Tests.txt");
@@ -153,7 +153,7 @@ namespace Whitelog.Tests
 
         }
 
-        [TestMethod]
+        [Test]
         public void ArchiveAFileWhenTimeIsDue()
         {
             Delete("MyLog.Tests.1.Txt");

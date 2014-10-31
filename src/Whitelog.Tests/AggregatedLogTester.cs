@@ -5,7 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.Remoting.Messaging;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Whitelog.Barak.Common.ExtensionMethods;
 using Whitelog.Barak.SystemDateTime;
 using Whitelog.Core;
@@ -95,7 +95,7 @@ namespace Whitelog.Tests
         
     }
 
-    [TestClass]
+    [TestFixture]
     public class AggregatedLogSingleApplicationTester
     {
         private ILog m_log;
@@ -108,7 +108,7 @@ namespace Whitelog.Tests
             return new LogTunnel(new SystemDateTime(), LogScopeSyncFactory.Create());
         }
 
-        [TestInitialize]
+        [TestFixtureSetUp]
         public void ActivateLog()
         {
             byte[] buffer = new byte[1024*1024*10];
@@ -124,13 +124,13 @@ namespace Whitelog.Tests
             m_logReader = readerFactory.GetLogReader(new MemoryStream(buffer), m_testConsumer);
         }
 
-        [TestCleanup]
+        [TestFixtureTearDown]
         public void DeactivateLog()
         {
             m_cfl.Dispose();
         }
 
-        [TestMethod]
+        [Test]
         public void Can_Read_And_Write_Logs_Larger_Then_The_Buffer()
         {
             int messageSize = 1024 * 1024; // 1M
@@ -155,7 +155,7 @@ namespace Whitelog.Tests
                                                                                });
         }
 
-        [TestMethod]
+        [Test]
         public void CanWriteSingleLogEntry()
         {
             m_log.LogInfo("SomeInfo");
@@ -171,7 +171,7 @@ namespace Whitelog.Tests
                                                                 p => p.Message, "SomeInfo"));
         }
 
-        [TestMethod]
+        [Test]
         public void CanWriteMultiLogEntry()
         {
             m_log.LogInfo("SomeInfo");
@@ -193,7 +193,7 @@ namespace Whitelog.Tests
                                             x => x.ValidatePropertyLogEntry<InfoLogTitle, string>(p => p.Message, "SomeError"));
         }
 
-        [TestMethod]
+        [Test]
         public void CanReadTheSecondTime()
         {
             m_log.LogInfo("SomeInfo");
@@ -219,7 +219,7 @@ namespace Whitelog.Tests
                                             x => x.ValidatePropertyLogEntry<ErrorLogTitle, string>(p => p.Message, "SomeError"));
         }
 
-        [TestMethod]
+        [Test]
         public void ScopeCreateOpenAndCloseScope()
         {
             int scopeid;
@@ -243,7 +243,7 @@ namespace Whitelog.Tests
                                             .ValidateLogEntry<LogEntry, CloseLogScopeTitle>(x => x.Title, x => { });
         }
 
-        [TestMethod]
+        [Test]
         public void DeepLogAggregationWorks()
         {
             int firstScopeId;
@@ -297,7 +297,7 @@ namespace Whitelog.Tests
             logEntries.ElementAt(9).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, 0); // EndData
         }
 
-        [TestMethod]
+        [Test]
         public void LogCanWorkFromMutliThreads()
         {
             ManualResetEvent manualResetEvent = new ManualResetEvent(false);

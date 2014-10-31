@@ -63,6 +63,7 @@ namespace Whitelog.Core.PackageDefinitions
 
         public virtual void Render(object data, IStringRenderer stringRenderer, StringBuilder stringBuilder)
         {
+            stringBuilder.Append("{");
             T instance = (T)data;
             var temp = m_stringDefinitions;
             for (int i = 0; i < temp.Length; i++)
@@ -73,6 +74,7 @@ namespace Whitelog.Core.PackageDefinitions
                 }
                 temp[i].Render(instance, stringRenderer,stringBuilder);
             }
+            stringBuilder.Append("}");
         }
 
         protected void AddDefinition(string property, SerilizeType serilizeType, Action<T, IBinaryPackager, ISerializer> serilizer)
@@ -288,18 +290,18 @@ namespace Whitelog.Core.PackageDefinitions
                                               }
                                               else
                                               {
-                                                  sb.Append("{");
+                                                  sb.Append("[");
                                                   bool isFirst = true;
                                                   foreach (var data in enumerable)
                                                   {
-                                                      if (isFirst)
+                                                      if (!isFirst)
                                                       {
                                                           sb.Append(",");
                                                       }
                                                       isFirst = false;
                                                       renderer.Render(data,sb);
                                                   }
-                                                  sb.Append("}");
+                                                  sb.Append("]");
                                               }
                                           });
 
@@ -335,18 +337,19 @@ namespace Whitelog.Core.PackageDefinitions
                 }
                 else
                 {
-                    sb.Append("{");
+                    sb.Append("[");
                     bool isFirst = true;
                     foreach (var data in enumerable)
                     {
-                        if (isFirst)
+                        if (!isFirst)
                         {
                             sb.Append(",");
                         }
                         isFirst = false;
+                        
                         renderer.Render(data, sb);
                     }
-                    sb.Append("}");
+                    sb.Append("]");
                 }
             });
 
@@ -382,18 +385,18 @@ namespace Whitelog.Core.PackageDefinitions
                 }
                 else
                 {
-                    sb.Append("{");
+                    sb.Append("[");
                     bool isFirst = true;
                     foreach (var data in enumerable)
                     {
-                        if (isFirst)
+                        if (!isFirst)
                         {
                             sb.Append(",");
                         }
                         isFirst = false;
                         renderer.Render(data, sb);
                     }
-                    sb.Append("}");
+                    sb.Append("]");
                 }
             });
 

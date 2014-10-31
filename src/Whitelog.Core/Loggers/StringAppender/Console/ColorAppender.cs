@@ -9,6 +9,8 @@ namespace Whitelog.Core.Loggers.StringAppender.Console
 {
     public class ConsoleAppender : IStringAppender
     {
+        private static readonly bool IsRunningOnMono = Type.GetType("Mono.Runtime") != null;
+
         private bool m_isConsoleOutputAvaliable;
         private readonly IFilter m_filter;
         private readonly IColorSchema m_colorSchema;
@@ -59,15 +61,22 @@ namespace Whitelog.Core.Loggers.StringAppender.Console
             }
             else
             {
-                IntPtr iStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
-                if (iStdOut == IntPtr.Zero)
-                {
-                    m_isConsoleOutputAvaliable = false;
-                }
-                else
+                if (IsRunningOnMono)
                 {
                     m_isConsoleOutputAvaliable = true;
-                }   
+                }
+                else // Windows
+                {
+                    IntPtr iStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+                    if (iStdOut == IntPtr.Zero)
+                    {
+                        m_isConsoleOutputAvaliable = false;
+                    }
+                    else
+                    {
+                        m_isConsoleOutputAvaliable = true;
+                    }      
+                }
             }
         }
 

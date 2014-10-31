@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Whitelog.Barak.Common.ExtensionMethods;
 using Whitelog.Core.Binary;
 using Whitelog.Core.Binary.FileLog;
@@ -46,10 +46,10 @@ namespace Whitelog.Tests
         }
     }
 
-    [TestClass]
+    [TestFixture]
     public class ListWritersTester
     {
-        [TestMethod]
+        [Test]
         public void TestContinuesExpendableList()
         {
             using (MemoryStream ms = new MemoryStream())
@@ -70,7 +70,7 @@ namespace Whitelog.Tests
             }
         }
 
-        [TestMethod]
+        [Test]
         public void TestInstanceCreatorPackUnpack()
         {
             using (IBuffer buffer = new SimpleBuffer())
@@ -88,12 +88,12 @@ namespace Whitelog.Tests
                     Unpacker unpacker = new Unpacker();
                     unpacker.AddPackageDefinition(new EmptyConstractorUnpackageDefinition<PackData>() { DefinitionId = registeredPackageDefinition.DefinitionId });
 
-                    Assert.IsInstanceOfType(unpacker.Unpack<PackData>(deserilizer), typeof(PackData));
+                    Assert.IsInstanceOf<PackData>(unpacker.Unpack<PackData>(deserilizer));
                 }
             }
         }
 
-        [TestMethod]
+        [Test]
         public void TestSimplePropertyPackUnpack()
         {
             using (IBuffer buffer = new SimpleBuffer())
@@ -129,14 +129,14 @@ namespace Whitelog.Tests
                                                                       (data, time) => data.DateTimeData = time));
 
                     var unpackData = unpacker.Unpack<PackData>(deserilizer);
-                    Assert.IsInstanceOfType(unpackData, typeof(PackData));
+                    Assert.IsInstanceOf(typeof(PackData), unpackData);
                     CheckValidPackData(packData, unpackData);
                     Assert.AreEqual(packData.ArrayPackData, unpackData.ArrayPackData);
                 }
             }
         }
 
-        [TestMethod]
+        [Test]
         public void TestArrayWithSimplePropertyPackUnpack()
         {
             using (IBuffer buffer = new SimpleBuffer())
@@ -192,7 +192,7 @@ namespace Whitelog.Tests
                                                       .DefineDateTime("DateTimeData", (data, time) => data.DateTimeData = time));
 
                     var unpackData = unpacker.Unpack<PackData>(deserilizer);
-                    Assert.IsInstanceOfType(unpackData, typeof(PackData));
+                    Assert.IsInstanceOf(typeof(PackData), unpackData);
                     CheckValidPackData(unpackData, packData);
                     Assert.IsNotNull(packData.ArrayPackData);
 

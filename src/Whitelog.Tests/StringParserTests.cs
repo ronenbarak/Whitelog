@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Whitelog.Core;
 
 namespace Whitelog.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class StringParserTests
     {
         private void ValidateEntry(StringParser.SectionPart part, bool isConst, bool isExtension, string value)
@@ -17,7 +17,7 @@ namespace Whitelog.Tests
             Assert.AreEqual(value, part.Value);
         }
 
-        [TestMethod]
+        [Test]
         public void EmptyStringGenerateSingleConstEntry()
         {
             var parts = StringParser.GetParts("");
@@ -25,7 +25,7 @@ namespace Whitelog.Tests
             ValidateEntry(parts[0],true,false,"");
         }
 
-        [TestMethod]
+        [Test]
         public void SimpleStringIsTransformed()
         {
             var parts = StringParser.GetParts("AB");
@@ -33,7 +33,7 @@ namespace Whitelog.Tests
             ValidateEntry(parts[0], true, false, "AB");
         }
 
-        [TestMethod]
+        [Test]
         public void StringWithADollarSignAtStartWorks()
         {
             var parts = StringParser.GetParts("$AB");
@@ -41,7 +41,7 @@ namespace Whitelog.Tests
             ValidateEntry(parts[0], true, false, "$AB");
         }
 
-        [TestMethod]
+        [Test]
         public void StringWithADollarSignAtMiddleWorks()
         {
             var parts = StringParser.GetParts("A$B");
@@ -49,7 +49,7 @@ namespace Whitelog.Tests
             ValidateEntry(parts[0], true, false, "A$B");
         }
 
-        [TestMethod]
+        [Test]
         public void StringWithADollarSignAtEndWorks()
         {
             var parts = StringParser.GetParts("AB$");
@@ -57,7 +57,7 @@ namespace Whitelog.Tests
             ValidateEntry(parts[0], true, false, "AB$");
         }
 
-        [TestMethod]
+        [Test]
         public void ExtensionOnlyWorks()
         {
             var parts = StringParser.GetParts("${AB}");
@@ -65,7 +65,7 @@ namespace Whitelog.Tests
             ValidateEntry(parts[0], false, true, "AB");
         }
 
-        [TestMethod]
+        [Test]
         public void EmptyExtensionOnlyWorks()
         {
             var parts = StringParser.GetParts("${}");
@@ -73,7 +73,7 @@ namespace Whitelog.Tests
             ValidateEntry(parts[0], false, true, "");
         }
 
-        [TestMethod]
+        [Test]
         public void ExtensionWithConstAtFrontWorks()
         {
             var parts = StringParser.GetParts("C${AB}");
@@ -83,7 +83,7 @@ namespace Whitelog.Tests
         }
 
 
-        [TestMethod]
+        [Test]
         public void ExtensionWithConstAtEndtWorks()
         {
             var parts = StringParser.GetParts("${AB}C");
@@ -92,7 +92,7 @@ namespace Whitelog.Tests
             ValidateEntry(parts[1], true, false, "C");
         }
 
-        [TestMethod]
+        [Test]
         public void ExtensionAfterExtensionWorks()
         {
             var parts = StringParser.GetParts("${AB}${CD}");
@@ -101,7 +101,7 @@ namespace Whitelog.Tests
             ValidateEntry(parts[1], false, true, "CD");
         }
 
-        [TestMethod]
+        [Test]
         public void ParameterOnlyWorks()
         {
             var parts = StringParser.GetParts("{AB}");
@@ -109,7 +109,7 @@ namespace Whitelog.Tests
             ValidateEntry(parts[0], false, false, "AB");
         }
 
-        [TestMethod]
+        [Test]
         public void EmptyParameterOnlyWorks()
         {
             var parts = StringParser.GetParts("{}");
@@ -117,7 +117,7 @@ namespace Whitelog.Tests
             ValidateEntry(parts[0], false, false, "");
         }
 
-        [TestMethod]
+        [Test]
         public void ParameterWithConstAtFrontWorks()
         {
             var parts = StringParser.GetParts("C{AB}");
@@ -127,7 +127,7 @@ namespace Whitelog.Tests
         }
 
 
-        [TestMethod]
+        [Test]
         public void ParameterWithConstAtEndtWorks()
         {
             var parts = StringParser.GetParts("{AB}C");
@@ -136,7 +136,7 @@ namespace Whitelog.Tests
             ValidateEntry(parts[1], true, false, "C");
         }
 
-        [TestMethod]
+        [Test]
         public void ParameterAfterParameterWorks()
         {
             var parts = StringParser.GetParts("{AB}{CD}");
@@ -145,7 +145,7 @@ namespace Whitelog.Tests
             ValidateEntry(parts[1], false, false, "CD");
         }
 
-        [TestMethod]
+        [Test]
         public void ExtensionsParamatersAndStrings()
         {
             var parts = StringParser.GetParts("{AB}${CD}{EF}G{H}I");
@@ -158,7 +158,7 @@ namespace Whitelog.Tests
             ValidateEntry(parts[5], true, false, "I");
         }
 
-        [TestMethod]
+        [Test]
         public void DoubleOpenBarakesAreTranslatedToSingleBarakes()
         {
             var parts = StringParser.GetParts("{{AB}");
@@ -166,7 +166,7 @@ namespace Whitelog.Tests
             ValidateEntry(parts[0], true, false, "{AB}");
         }
 
-        [TestMethod]
+        [Test]
         public void DoubleCloseAndOpenBarakesAreTranslatedToSingleBarakes()
         {
             var parts = StringParser.GetParts("{{AB}}");
@@ -174,7 +174,7 @@ namespace Whitelog.Tests
             ValidateEntry(parts[0], true, false, "{AB}}");
         }
 
-        [TestMethod]
+        [Test]
         public void TripleCloseAndOpenBarakesAreTranslatedCorrectly()
         {
             var parts = StringParser.GetParts("{{{AB}}}");
@@ -184,7 +184,7 @@ namespace Whitelog.Tests
             ValidateEntry(parts[2], true, false, "}}");
         }
 
-        [TestMethod]
+        [Test]
         public void ExtentionWithMultiOpenCloseBarakes()
         {
             var parts = StringParser.GetParts("${{AB}}");
@@ -192,7 +192,7 @@ namespace Whitelog.Tests
             ValidateEntry(parts[0], true,false, "${AB}}");
         }
 
-        [TestMethod]
+        [Test]
         public void OpenWithoutCloseIsTransaltedToConst()
         {
             var parts = StringParser.GetParts("{AB");
@@ -200,7 +200,7 @@ namespace Whitelog.Tests
             ValidateEntry(parts[0], true, false, "{AB");
         }
 
-        [TestMethod]
+        [Test]
         public void OpenWithoutCloseExtensionIsTransaltedToConst()
         {
             var parts = StringParser.GetParts("${AB");
@@ -208,7 +208,7 @@ namespace Whitelog.Tests
             ValidateEntry(parts[0], true, false, "${AB");
         }
 
-        [TestMethod]
+        [Test]
         public void OpenWithoutCloseExtensionIsAddedToPreviesConstTransaltedToConst()
         {
             var parts = StringParser.GetParts("0${AB");
@@ -216,7 +216,7 @@ namespace Whitelog.Tests
             ValidateEntry(parts[0], true, false, "0${AB");
         }
 
-        [TestMethod]
+        [Test]
         public void OpenWithoutCloseExtensionIsNotAddedToPreviesExtensionConstTransaltedToConst()
         {
             var parts = StringParser.GetParts("{A}${BC");
@@ -225,7 +225,7 @@ namespace Whitelog.Tests
             ValidateEntry(parts[1], true, false, "${BC");
         }
 
-        [TestMethod]
+        [Test]
         public void InsideBarakesDoubleBarakesShowDoubleBarakes()
         {
             var parts = StringParser.GetParts("{ {{AB}} }");
@@ -233,7 +233,7 @@ namespace Whitelog.Tests
             ValidateEntry(parts[0], false, false, " {{AB}} ");
         }
 
-        [TestMethod]
+        [Test]
         public void InsideExtensionDoubleBarakesShowDoubleBarakes()
         {
             var parts = StringParser.GetParts("${ {{AB}} }");

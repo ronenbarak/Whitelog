@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Whitelog.Barak.SystemDateTime;
 using Whitelog.Core;
 using Whitelog.Core.Binary.FileLog.SubmitLogEntry;
@@ -18,10 +18,10 @@ using Whitelog.Interface.LogTitles;
 
 namespace Whitelog.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class RingBufferLogTests
     {
-        [TestMethod]
+        [Test]
         public void SimpleLogMessageWork()
         {
             var log = new LogTunnel(new SystemDateTime(), LogScopeSyncFactory.Create());

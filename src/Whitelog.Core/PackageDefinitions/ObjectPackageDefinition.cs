@@ -39,7 +39,8 @@ namespace Whitelog.Core.PackageDefinitions
 
         public override void Render(object data, IStringRenderer stringRenderer, StringBuilder stringBuilder)
         {
-            base.Render(data, stringRenderer, stringBuilder);
+            // data connot be null here
+            stringBuilder.Append(data.ToString());   
         }
 
         public override void PackData(IBinaryPackager packager, ISerializer serializer, object data)

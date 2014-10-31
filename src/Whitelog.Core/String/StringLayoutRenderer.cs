@@ -16,11 +16,47 @@ namespace Whitelog.Core.String
 {
     public class StringLayoutRenderer : IStringRenderer
     {
+
+        class TitleTypeTuple : IEquatable<TitleTypeTuple>
+        {
+            public TitleTypeTuple Clone()
+            {
+                return new TitleTypeTuple()
+                {
+                    Layout =  Layout,
+                    Type =  Type,
+                };
+            }
+            public override int GetHashCode()
+            {
+                unchecked
+                {
+                    return ((Layout != null ? Layout.GetHashCode() : 0)*397) ^ (Type != null ? Type.GetHashCode() : 0);
+                }
+            }
+
+            public string Layout { get; set; }
+            public Type Type { get; set; }
+
+            public override bool Equals(object obj)
+            {
+                return Equals((TitleTypeTuple) obj);
+            }
+
+            public bool Equals(TitleTypeTuple other)
+            {
+                return string.Equals(Layout, other.Layout) && object.Equals(Type, other.Type);
+            }
+        }
+
+        [ThreadStatic]
+        private static TitleTypeTuple m_titleTypeTupleCache;
+
         public event EventHandler<EventArgs<IStringPackageDefinition>> PackageRegistered;
 
         protected readonly object m_definitionSyncObjectLock = new object();
         protected readonly ReadSafeDictionary<Type, IStringPackageDefinition> m_PackageDefinitions = new ReadSafeDictionary<Type, IStringPackageDefinition>(new TypeComparer());
-        ReadSafeDictionary<Tuple<string,Type>, IStringLayoutWriter> m_cacheMessageWriter = new ReadSafeDictionary<Tuple<string, Type>, IStringLayoutWriter>();
+        ReadSafeDictionary<TitleTypeTuple, IStringLayoutWriter> m_cacheMessageWriter = new ReadSafeDictionary<TitleTypeTuple, IStringLayoutWriter>();
         private StringLayoutParser m_stringLayoutParser;
         private IStringBuffer m_stringBuffer;
 
@@ -75,15 +111,22 @@ namespace Whitelog.Core.String
                 titleMessage = messageLogTitle.Message;
             }
 
+            if (m_titleTypeTupleCache == null)
+            {
+                m_titleTypeTupleCache = new TitleTypeTuple();
+            }
+
+            m_titleTypeTupleCache.Layout = titleMessage;
+            m_titleTypeTupleCache.Type = type;
             IStringLayoutWriter stringLayoutWriter;
-            if (!m_cacheMessageWriter.TryGetValue(new Tuple<string, Type>(titleMessage, type), out stringLayoutWriter))
+            if (!m_cacheMessageWriter.TryGetValue(m_titleTypeTupleCache, out stringLayoutWriter))
             {
                 lock (m_definitionSyncObjectLock)
                 {
-                    if (!m_cacheMessageWriter.TryGetValue(new Tuple<string, Type>(titleMessage, type),out stringLayoutWriter))
+                    if (!m_cacheMessageWriter.TryGetValue(m_titleTypeTupleCache, out stringLayoutWriter))
                     {
                         stringLayoutWriter = m_stringLayoutParser.Parse(titleMessage, type);
-                        m_cacheMessageWriter.Add(new Tuple<string, Type>(titleMessage, type),stringLayoutWriter);
+                        m_cacheMessageWriter.Add(m_titleTypeTupleCache.Clone(), stringLayoutWriter);
                     }
                 }
             }
@@ -118,9 +161,8 @@ namespace Whitelog.Core.String
                 {
                     throw new NoPackageFoundForTypeExceptin(type);
                 }
-                stringBuilder.Append("{");
+
                 packageDefinition.Render(data, this,stringBuilder);
-                stringBuilder.Append("}");
             }
         }
 

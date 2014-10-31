@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Whitelog.Barak.SystemDateTime;
 using Whitelog.Core;
 using Whitelog.Core.Binary.FileLog;
@@ -18,7 +18,7 @@ using Whitelog.Interface;
 
 namespace Whitelog.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class AnonymousPackerTests
     {
         private ILog m_log;
@@ -31,7 +31,7 @@ namespace Whitelog.Tests
             return new LogTunnel(new SystemDateTime(), LogScopeSyncFactory.Create());
         }
 
-        [TestInitialize]
+        [TestFixtureSetUp]
         public void ActivateLog()
         {
             byte[] buffer = new byte[1024 * 1024 * 10];
@@ -47,13 +47,13 @@ namespace Whitelog.Tests
             m_logReader = readerFactory.GetLogReader(new MemoryStream(buffer), m_testConsumer);
         }
 
-        [TestCleanup]
+        [TestFixtureTearDown]
         public void DeactivateLog()
         {
             m_cfl.Dispose();
         }
 
-        [TestMethod]
+        [Test]
         public void CanWriteDataWithAnnunumonClassWithNoParameters()
         {
             m_log.LogInfo("AnonymousTest", new
@@ -65,7 +65,7 @@ namespace Whitelog.Tests
 
         }
 
-        [TestMethod]
+        [Test]
         public void CanWriteDataWithAnnunumonClass()
         {
             m_log.LogInfo("AnonymousTest", new
@@ -77,7 +77,7 @@ namespace Whitelog.Tests
             var logEntries = m_testConsumer.Logs();
         }
 
-        [TestMethod]
+        [Test]
         public void HittingTheSameAnonymousClassTwice()
         {
             for (int i = 0; i < 2; i++)
@@ -92,7 +92,7 @@ namespace Whitelog.Tests
             var logEntries = m_testConsumer.Logs();
         }
 
-        [TestMethod]
+        [Test]
         public void CanWriteDataWithAnnunumonClassWithArrays()
         {
             m_log.LogInfo("AnonymousTest", new

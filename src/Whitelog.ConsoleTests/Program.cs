@@ -45,7 +45,7 @@ namespace Whitelog.ConsoleTests
                                                         .Filter.Exclude(LogTitles.Close)
                               .Appenders
 
-                              .File(file => file.ExecutionMode(ExecutionMode.Async)
+                              .File(file => file.ExecutionMode(ExecutionMode.Sync)
                                                 .Buffer(Buffers.ThreadStatic)
                                                 .Config(config => config.FilePath("TextLog.txt")))
                                 .Console(consoleBuilder => consoleBuilder.Sync
@@ -65,6 +65,15 @@ namespace Whitelog.ConsoleTests
                         .CreateLog();
 
             WriteSomeLogs(logTunnel2);
+
+            // Let write an array
+
+            logTunnel2.LogInfo("This is an Array: {*}", new
+            {
+                MyArray = new []{1,2}
+            });
+
+            Console.ReadLine();
         }
 
         private static void WriteSomeLogs(ILog logTunnel)
@@ -84,6 +93,7 @@ namespace Whitelog.ConsoleTests
                                                                             });
 
                 logTunnel.LogWarning("My Warning");
+
                 logTunnel.Log("Custom", "Non spesific log title");
 
                 logTunnel.LogError("Test LogEntry {*}", new

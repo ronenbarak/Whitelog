@@ -1,15 +1,15 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Whitelog.Core.Configuration.Fluent;
 using Whitelog.Core.Configuration.Fluent.StringLayout;
 using Whitelog.Interface;
 
 namespace Whitelog.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class FluentBuilderTests
     {
-        [TestMethod]
+        [Test]
         public void BuildLogFromNothing()
         {
             ILog log = Whilelog.FluentConfiguration
