@@ -3,6 +3,7 @@ using NUnit.Framework;
 using Whitelog.Core.Configuration.Fluent;
 using Whitelog.Core.Configuration.Fluent.StringLayout;
 using Whitelog.Interface;
+using System.IO;
 
 namespace Whitelog.Tests
 {
@@ -24,7 +25,7 @@ namespace Whitelog.Tests
                                     .Condition(LogTitles.Info, ConsoleColor.DarkYellow,ConsoleColor.Green))))
                     .Binary(x =>x.ExecutionMode(ExecutionMode.Async)
                                  .Buffer(Buffers.ThreadStatic)
-                                 .Config(file => file.FilePath(@"{basedir}\log.dat")))
+					.Config(file => file.FilePath(@"{basedir}" + Path.DirectorySeparatorChar + "log.dat")))
                     .CreateLog();
         }
     }

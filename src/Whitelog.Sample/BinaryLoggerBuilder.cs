@@ -13,6 +13,7 @@ using Whitelog.Core.Binary.Serializer.MemoryBuffer;
 using Whitelog.Core.File;
 using Whitelog.Core.Loggers;
 using Whitelog.Viewer;
+using System.IO;
 
 namespace Whitelog.Sample
 {
@@ -25,7 +26,7 @@ namespace Whitelog.Sample
         {
             Dock =DockStyle.Fill;
             InitializeComponent();
-            m_txtPath.Text = @"{BaseDir}\Sample.Log";
+			m_txtPath.Text = string.Format(@"{{BaseDir}}{0}Sample.Log",Path.DirectorySeparatorChar);
             m_loggerTypes.Items.Add(typeof(ContinuesBinaryFileLogger).Name);
             m_loggerTypes.Items.Add("In Memory");
 

@@ -88,7 +88,7 @@ namespace Whitelog.Tests
                     Unpacker unpacker = new Unpacker();
                     unpacker.AddPackageDefinition(new EmptyConstractorUnpackageDefinition<PackData>() { DefinitionId = registeredPackageDefinition.DefinitionId });
 
-                    Assert.IsInstanceOf<PackData>(unpacker.Unpack<PackData>(deserilizer));
+					Assert.IsNotNull(unpacker.Unpack<PackData>(deserilizer));
                 }
             }
         }
@@ -129,7 +129,7 @@ namespace Whitelog.Tests
                                                                       (data, time) => data.DateTimeData = time));
 
                     var unpackData = unpacker.Unpack<PackData>(deserilizer);
-                    Assert.IsInstanceOf(typeof(PackData), unpackData);
+					Assert.IsNotNull(unpackData);
                     CheckValidPackData(packData, unpackData);
                     Assert.AreEqual(packData.ArrayPackData, unpackData.ArrayPackData);
                 }
@@ -192,7 +192,7 @@ namespace Whitelog.Tests
                                                       .DefineDateTime("DateTimeData", (data, time) => data.DateTimeData = time));
 
                     var unpackData = unpacker.Unpack<PackData>(deserilizer);
-                    Assert.IsInstanceOf(typeof(PackData), unpackData);
+					Assert.IsNotNull(unpackData);
                     CheckValidPackData(unpackData, packData);
                     Assert.IsNotNull(packData.ArrayPackData);
 
