@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -11,24 +12,32 @@ namespace Whitelog.Viewer
 {
     public class TreeViewLogAppender : IDisposable
     {
-        private DataTreeListView m_logTreeView;
+        private TreeListView m_logTreeView;
         private FileStream m_strem;
         private Timer m_timer = null;
         private bool m_disposed = false;
 
-        public TreeViewLogAppender(DataTreeListView logTreeView)
+        public TreeViewLogAppender(TreeListView logTreeView)
         {
             m_logTreeView = logTreeView;
             InitDataTreeView();
             m_logTreeView.CanExpandGetter = CanExpandGetter;
             m_logTreeView.ChildrenGetter = ChildrenGetter;
+
+            m_logTreeView.CheckBoxes = false;
         }
 
         private void InitDataTreeView()
         {
             var olvTimeColumn = ((BrightIdeasSoftware.OLVColumn) (new BrightIdeasSoftware.OLVColumn()));
+            olvTimeColumn.AspectGetter = rowObject => ((LogNode) rowObject).Time;
+            olvTimeColumn.AspectToStringConverter = rowObject => rowObject.ToString();
             var olvTitleColumn = ((BrightIdeasSoftware.OLVColumn) (new BrightIdeasSoftware.OLVColumn()));
+            olvTitleColumn.AspectGetter = rowObject => ((LogNode)rowObject).Title;
+            olvTitleColumn.AspectToStringConverter = rowObject => rowObject == null ? "": rowObject.ToString();
             var olvMessageColumn = ((BrightIdeasSoftware.OLVColumn) (new BrightIdeasSoftware.OLVColumn()));
+            olvMessageColumn.AspectGetter = rowObject => ((LogNode)rowObject).Message;
+            olvMessageColumn.AspectToStringConverter = rowObject => rowObject == null ? "" : rowObject.ToString();
             ((System.ComponentModel.ISupportInitialize)(this.m_logTreeView)).BeginInit();
             m_logTreeView.AllColumns.Clear();
             m_logTreeView.AllColumns.Add(olvTimeColumn);
@@ -40,47 +49,32 @@ namespace Whitelog.Viewer
                                                olvTitleColumn,
                                                olvMessageColumn
                                            });
-            m_logTreeView.DataSource = null;
-            m_logTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
-            m_logTreeView.FullRowSelect = true;
-            m_logTreeView.HeaderUsesThemes = false;
-            m_logTreeView.HideSelection = false;
-            m_logTreeView.Location = new System.Drawing.Point(0, 24);
-            m_logTreeView.Name = "m_logTreeView";
-            m_logTreeView.OwnerDraw = true;
-            m_logTreeView.RootKeyValueString = "";
-            m_logTreeView.ShowGroups = false;
-            m_logTreeView.Size = new System.Drawing.Size(673, 511);
-            m_logTreeView.TabIndex = 2;
-            m_logTreeView.UseCompatibleStateImageBehavior = false;
-            m_logTreeView.UseFilterIndicator = true;
-            m_logTreeView.UseFiltering = true;
-            m_logTreeView.View = System.Windows.Forms.View.Details;
-            m_logTreeView.VirtualMode = true;
+
+            this.m_logTreeView.Location = new System.Drawing.Point(0, 27);
+            this.m_logTreeView.Name = "m_treeListView";
+            this.m_logTreeView.OwnerDraw = true;
+            this.m_logTreeView.ShowGroups = false;
+            this.m_logTreeView.Size = new System.Drawing.Size(673, 505);
+            this.m_logTreeView.TabIndex = 2;
+            this.m_logTreeView.UseCompatibleStateImageBehavior = false;
+            this.m_logTreeView.View = System.Windows.Forms.View.Details;
+            this.m_logTreeView.VirtualMode = true;
             // 
             // olvTimeColumn
             // 
             olvTimeColumn.AspectName = "Time";
-            olvTimeColumn.CellPadding = null;
-            olvTimeColumn.Groupable = false;
-            olvTimeColumn.Sortable = false;
             olvTimeColumn.Text = "Time";
             olvTimeColumn.Width = 200;
             // 
             // olvTitleColumn
             // 
             olvTitleColumn.AspectName = "Title";
-            olvTitleColumn.CellPadding = null;
-            olvTitleColumn.Sortable = false;
             olvTitleColumn.Text = "Title";
             // 
             // olvMessageColumn
             // 
             olvMessageColumn.AspectName = "Message";
-            olvMessageColumn.CellPadding = null;
             olvMessageColumn.FillsFreeSpace = true;
-            olvMessageColumn.Groupable = false;
-            olvMessageColumn.Sortable = false;
             olvMessageColumn.Text = "Message";
 
             ((System.ComponentModel.ISupportInitialize)(this.m_logTreeView)).EndInit();
@@ -128,7 +122,7 @@ namespace Whitelog.Viewer
                                               }
                                           };
             m_logTreeView.BeginUpdate();
-            logReader.TryRead();
+            logReader.TryRead();            
             m_logTreeView.EndUpdate();
             m_timer.Start();
         }

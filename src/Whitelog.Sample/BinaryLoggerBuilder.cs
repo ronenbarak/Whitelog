@@ -73,7 +73,7 @@ namespace Whitelog.Sample
                     fileLogger.AttachToTunnelLog(LogTunnel);
 
                     var tabPage = new TabPage("Binary " + System.IO.Path.GetFileName(m_txtPath.Text));
-                    DataTreeListView dataTreeListView = new DataTreeListView();
+                    TreeListView dataTreeListView = new TreeListView();
                     dataTreeListView.Dock = DockStyle.Fill;
                     tabPage.Controls.Add(dataTreeListView);
                     var logAppender = new TreeViewLogAppender(dataTreeListView);

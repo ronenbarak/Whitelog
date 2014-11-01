@@ -28,19 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.m_logTreeView = new BrightIdeasSoftware.DataTreeListView();
-            this.olvTimeColumn = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvTitleColumn = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvMessageColumn = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.m_treeListView = new BrightIdeasSoftware.TreeListView();
             this.menuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.m_logTreeView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.m_treeListView)).BeginInit();
             this.SuspendLayout();
             // 
             // statusStrip1
@@ -90,64 +86,58 @@
             this.exitToolStripMenuItem.Text = "&Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
-            // m_logTreeView
+            // m_treeListView
             // 
-            this.m_logTreeView.AllColumns.Add(this.olvTimeColumn);
-            this.m_logTreeView.AllColumns.Add(this.olvTitleColumn);
-            this.m_logTreeView.AllColumns.Add(this.olvMessageColumn);
-            this.m_logTreeView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.olvTimeColumn,
-            this.olvTitleColumn,
-            this.olvMessageColumn});
-            this.m_logTreeView.DataSource = null;
-            this.m_logTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.m_logTreeView.FullRowSelect = true;
-            this.m_logTreeView.HeaderUsesThemes = false;
-            this.m_logTreeView.HideSelection = false;
-            this.m_logTreeView.Location = new System.Drawing.Point(0, 24);
-            this.m_logTreeView.Name = "m_logTreeView";
-            this.m_logTreeView.OwnerDraw = true;
-            this.m_logTreeView.RootKeyValueString = "";
-            this.m_logTreeView.ShowGroups = false;
-            this.m_logTreeView.Size = new System.Drawing.Size(673, 511);
-            this.m_logTreeView.TabIndex = 2;
-            this.m_logTreeView.UseCompatibleStateImageBehavior = false;
-            this.m_logTreeView.UseFilterIndicator = true;
-            this.m_logTreeView.UseFiltering = true;
-            this.m_logTreeView.View = System.Windows.Forms.View.Details;
-            this.m_logTreeView.VirtualMode = true;
+            var olvTimeColumn = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            var olvTitleColumn = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            var olvMessageColumn = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+
+
+            m_treeListView.AllColumns.Add(olvTimeColumn);
+            m_treeListView.AllColumns.Add(olvTitleColumn);
+            m_treeListView.AllColumns.Add(olvMessageColumn);
+
+            m_treeListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[]
+                                           {
+                                               olvTimeColumn,
+                                               olvTitleColumn,
+                                               olvMessageColumn
+                                           });
+            this.m_treeListView.Location = new System.Drawing.Point(0, 27);
+            this.m_treeListView.Name = "m_treeListView";
+            this.m_treeListView.OwnerDraw = true;
+            this.m_treeListView.ShowGroups = false;
+            this.m_treeListView.Size = new System.Drawing.Size(673, 505);
+            this.m_treeListView.TabIndex = 2;
+            this.m_treeListView.UseCompatibleStateImageBehavior = false;
+            this.m_treeListView.View = System.Windows.Forms.View.Details;
+            this.m_treeListView.VirtualMode = true;
+
             // 
             // olvTimeColumn
             // 
-            this.olvTimeColumn.AspectName = "Time";
-            this.olvTimeColumn.CellPadding = null;
-            this.olvTimeColumn.Groupable = false;
-            this.olvTimeColumn.Sortable = false;
-            this.olvTimeColumn.Text = "Time";
-            this.olvTimeColumn.Width = 200;
+            olvTimeColumn.AspectName = "Time";
+            olvTimeColumn.Text = "Time";
+            olvTimeColumn.Width = 200;
             // 
             // olvTitleColumn
             // 
-            this.olvTitleColumn.AspectName = "Title";
-            this.olvTitleColumn.CellPadding = null;
-            this.olvTitleColumn.Sortable = false;
-            this.olvTitleColumn.Text = "Title";
+            olvTitleColumn.AspectName = "Title";
+            olvTitleColumn.Text = "Title";
             // 
             // olvMessageColumn
             // 
-            this.olvMessageColumn.AspectName = "Message";
-            this.olvMessageColumn.CellPadding = null;
-            this.olvMessageColumn.FillsFreeSpace = true;
-            this.olvMessageColumn.Groupable = false;
-            this.olvMessageColumn.Sortable = false;
-            this.olvMessageColumn.Text = "Message";
+            olvMessageColumn.AspectName = "Message";
+            olvMessageColumn.FillsFreeSpace = true;
+            olvMessageColumn.Text = "Message";
+
             // 
             // WhiteLogViewerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(673, 557);
-            this.Controls.Add(this.m_logTreeView);
+            this.Controls.Add(this.m_treeListView);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
@@ -155,7 +145,7 @@
             this.Text = "Whitelog Viewer";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.m_logTreeView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.m_treeListView)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -169,10 +159,7 @@
         private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-        private BrightIdeasSoftware.DataTreeListView m_logTreeView;
-        private BrightIdeasSoftware.OLVColumn olvTimeColumn;
-        private BrightIdeasSoftware.OLVColumn olvTitleColumn;
-        private BrightIdeasSoftware.OLVColumn olvMessageColumn;
+        private BrightIdeasSoftware.TreeListView m_treeListView;
     }
 }
 
