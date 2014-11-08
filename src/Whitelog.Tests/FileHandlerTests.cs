@@ -9,6 +9,8 @@ namespace Whitelog.Tests
 	[TestFixture]
 	public class FileHandlerTests
 	{
+        private static readonly bool IsRunningOnMono = Type.GetType("Mono.Runtime") != null;
+
 		private void Delete(string filePath)
 		{
 			try
@@ -156,6 +158,11 @@ namespace Whitelog.Tests
 		[Test]
 		public void ArchiveAFileWhenTimeIsDue()
 		{
+		    if (IsRunningOnMono)
+		    {
+                Assert.Inconclusive("This test doesnt run on mono, this senerio need to be tetsed manually");
+		    }
+
 			Delete("MyLog.Tests.1.txt");
 			Delete("MyLog.Tests.txt");
 

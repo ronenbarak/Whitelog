@@ -76,7 +76,6 @@
     <Compile Include="File\FileConfiguration.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="File\FileHandle.cs" />
     <Compile Include="File\FileStreamProvider.cs">
       <SubType>Code</SubType>
     </Compile>
