@@ -52,32 +52,40 @@ namespace Whitelog.Core.Binary.PakageDefinitions.Pack
 
             foreach (var propertyInfo in newProperties)
             {
-                var functorParam = Expression.Parameter(type);
-                var lambda = Expression.Lambda(Expression.Property(functorParam, propertyInfo), functorParam);
-                var parmExtractor = lambda.Compile();
+                if (propertyInfo.CanRead)
+                {
+                    var getMethod = propertyInfo.GetGetMethod();
+                    if (getMethod != null)
+                    {
+                        var genericTypeForFunc = typeof (Func<,>);
 
-                if (typeof(ICollection).IsAssignableFrom(propertyInfo.PropertyType))
-                {
-                    DefineCollection(propertyInfo.Name, (Func<T, ICollection>)parmExtractor);
-                }
-                else if ((typeof(IEnumerable).IsAssignableFrom(propertyInfo.PropertyType)) && propertyInfo.PropertyType != (typeof(System.String)))
-                {
-                    Define(propertyInfo.Name, (Func<T, IEnumerable>)parmExtractor);
-                }
-                else
-                {
-                    var foundDirectSerilizetion = methods.FirstOrDefault(p => p.Name == "Define" &&
-                                                  p.GetParameters()[0].ParameterType == typeof(string) &&
-                                                  p.GetParameters()[1].ParameterType.IsGenericType &&
-                                                  p.GetParameters()[1].ParameterType.GetGenericTypeDefinition() == typeof(Func<,>) &&
-                                                  p.GetParameters()[1].ParameterType.GetGenericArguments()[1] == propertyInfo.PropertyType); ;
-                    if (foundDirectSerilizetion != null)
-                    {
-                        foundDirectSerilizetion.Invoke(this, new object[] { propertyInfo.Name, parmExtractor });
-                    }
-                    else
-                    {
-                        objectDefine.Invoke(this, new object[] { propertyInfo.Name, parmExtractor });
+                        var delegateType =  genericTypeForFunc.MakeGenericType(new[] {type, propertyInfo.PropertyType});
+                        var parmExtractor = Delegate.CreateDelegate(delegateType, getMethod);
+
+                        if (typeof(ICollection).IsAssignableFrom(propertyInfo.PropertyType))
+                        {
+                            DefineCollection(propertyInfo.Name, (Func<T, ICollection>)parmExtractor);
+                        }
+                        else if ((typeof(IEnumerable).IsAssignableFrom(propertyInfo.PropertyType)) && propertyInfo.PropertyType != (typeof(System.String)))
+                        {
+                            Define(propertyInfo.Name, (Func<T, IEnumerable>)parmExtractor);
+                        }
+                        else
+                        {
+                            var foundDirectSerilizetion = methods.FirstOrDefault(p => p.Name == "Define" &&
+                                                          p.GetParameters()[0].ParameterType == typeof(string) &&
+                                                          p.GetParameters()[1].ParameterType.IsGenericType &&
+                                                          p.GetParameters()[1].ParameterType.GetGenericTypeDefinition() == typeof(Func<,>) &&
+                                                          p.GetParameters()[1].ParameterType.GetGenericArguments()[1] == propertyInfo.PropertyType); ;
+                            if (foundDirectSerilizetion != null)
+                            {
+                                foundDirectSerilizetion.Invoke(this, new object[] { propertyInfo.Name, parmExtractor });
+                            }
+                            else
+                            {
+                                objectDefine.Invoke(this, new object[] { propertyInfo.Name, parmExtractor });
+                            }
+                        }
                     }
                 }
             }
