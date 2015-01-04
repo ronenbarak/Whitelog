@@ -56,7 +56,7 @@ namespace Whitelog.Tests
         [Test]
         public void CanWriteDataWithAnnunumonClassWithNoParameters()
         {
-            m_log.LogInfo("AnonymousTest", new
+            m_log.Info("AnonymousTest", new
                                      {
                                      });
 
@@ -68,7 +68,7 @@ namespace Whitelog.Tests
         [Test]
         public void CanWriteDataWithAnnunumonClass()
         {
-            m_log.LogInfo("AnonymousTest", new
+            m_log.Info("AnonymousTest", new
             {
                 Item1 = 4,
                 Item2 = "Ronen"
@@ -82,7 +82,7 @@ namespace Whitelog.Tests
         {
             for (int i = 0; i < 2; i++)
             {
-                m_log.LogInfo("AnonymousTest", new
+                m_log.Info("AnonymousTest", new
                 {
                     Item1 = 4 +i,
                     Item2 = "Ronen" +i
@@ -95,7 +95,7 @@ namespace Whitelog.Tests
         [Test]
         public void CanWriteDataWithAnnunumonClassWithArrays()
         {
-            m_log.LogInfo("AnonymousTest", new
+            m_log.Info("AnonymousTest", new
             {
                 Item1 = new List<int>{4,5,6},
                 Item2 = (IEnumerable<int>) new List<int> { 1, 2, 3 }

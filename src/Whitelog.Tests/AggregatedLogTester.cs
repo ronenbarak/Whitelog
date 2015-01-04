@@ -143,7 +143,7 @@ namespace Whitelog.Tests
                 }
             }
 
-            m_log.LogInfo("Some Title", message);
+            m_log.Info("Some Title", message);
             Assert.IsTrue(m_logReader.TryRead());
             var logEntries = m_testConsumer.Logs();
             logEntries.ElementAt(0).ValidatePropertyLogEntry<LogEntry, int>(x => x.LogScopeId, 0)
@@ -157,7 +157,7 @@ namespace Whitelog.Tests
         [Test]
         public void CanWriteSingleLogEntry()
         {
-            m_log.LogInfo("SomeInfo");
+            m_log.Info("SomeInfo");
             Assert.IsTrue(m_logReader.TryRead());
             var logEntries = m_testConsumer.Logs();
 
@@ -173,8 +173,8 @@ namespace Whitelog.Tests
         [Test]
         public void CanWriteMultiLogEntry()
         {
-            m_log.LogInfo("SomeInfo");
-            m_log.LogError("SomeError");
+            m_log.Info("SomeInfo");
+            m_log.Error("SomeError");
 
 
             Assert.IsTrue(m_logReader.TryRead());
@@ -195,7 +195,7 @@ namespace Whitelog.Tests
         [Test]
         public void CanReadTheSecondTime()
         {
-            m_log.LogInfo("SomeInfo");
+            m_log.Info("SomeInfo");
 
             Assert.IsTrue(m_logReader.TryRead());
             var logEntries = m_testConsumer.Logs();
@@ -206,7 +206,7 @@ namespace Whitelog.Tests
                                     .ValidateLogEntry<LogEntry, InfoLogTitle>(x => x.Title,
                                             x => x.ValidatePropertyLogEntry<InfoLogTitle, string>(p => p.Message, "SomeInfo"));
 
-            m_log.LogError("SomeError");
+            m_log.Error("SomeError");
 
             Assert.IsTrue(m_logReader.TryRead());
             logEntries = m_testConsumer.Logs();
@@ -254,19 +254,19 @@ namespace Whitelog.Tests
                 firstScopeId = firstScope.LogScopeId;
                 using (var secondScope = m_log.CreateScope("SecondScope"))
                 {
-                    m_log.LogInfo("SomeLogData");
+                    m_log.Info("SomeLogData");
                     secondScopeId = secondScope.LogScopeId;
                 }
 
-                m_log.LogInfo("MiddleData");
+                m_log.Info("MiddleData");
 
                 using (var thirdScope = m_log.CreateScope("thirdScope"))
                 {
-                    m_log.LogInfo("SomeOtherLogData");
+                    m_log.Info("SomeOtherLogData");
                     thirdScopeId = thirdScope.LogScopeId;
                 }
             }
-            m_log.LogWarning("EndData");
+            m_log.Warning("EndData");
 
             Assert.IsTrue(firstScopeId != secondScopeId && secondScopeId != thirdScopeId && firstScopeId != thirdScopeId);
 
@@ -310,7 +310,7 @@ namespace Whitelog.Tests
                 {
                     threadLogScopeID = threadScope.LogScopeId;
                     manualResetEvent.Set();
-                    m_log.LogInfo("In thread");
+                    m_log.Info("In thread");
                     manualResetEvent2.WaitOne();
                 }
                 countdownEvent.Signal();
@@ -322,7 +322,7 @@ namespace Whitelog.Tests
             {
                 normalLogScopeID = normalScope.LogScopeId;
                 manualResetEvent.WaitOne();
-                m_log.LogInfo("In Noraml");
+                m_log.Info("In Noraml");
                 manualResetEvent2.Set();
             }
             countdownEvent.Signal();

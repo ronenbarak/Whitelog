@@ -14,27 +14,27 @@ namespace Whitelog.Interface
             log.Log(new LogEntry(new CustomStringLogTitle(title, message), paramaeter));
         }
 
-        public static void LogDebug(this ILog log, string message, object paramaeter = null)
+        public static void Debug(this ILog log, string message, object paramaeter = null)
         {
             log.Log(new LogEntry(new DebugLogTitle(message), paramaeter));
         }
 
-        public static void LogError(this ILog log, string message, object paramaeter = null)
+        public static void Error(this ILog log, string message, object paramaeter = null)
         {
             log.Log(new LogEntry(new ErrorLogTitle(message), paramaeter));
         }
 
-        public static void LogFatal(this ILog log, string message, object paramaeter = null)
+        public static void Fatal(this ILog log, string message, object paramaeter = null)
         {
             log.Log(new LogEntry(new FatalLogTitle(message), paramaeter));
         }
 
-        public static void LogWarning(this ILog log, string message, object paramaeter = null)
+        public static void Warning(this ILog log, string message, object paramaeter = null)
         {
             log.Log(new LogEntry(new WarningLogTitle(message), paramaeter));
         }
 
-        public static void LogInfo(this ILog log, string message, object paramaeter = null)
+        public static void Info(this ILog log, string message, object paramaeter = null)
         {
             log.Log(new LogEntry(new InfoLogTitle(message), paramaeter));
         }

@@ -61,7 +61,7 @@ namespace Whitelog.ConsoleTests
 
             // Let write an array
 
-            logTunnel2.LogInfo("This is an Array: {*}", new
+            logTunnel2.Info("This is an Array: {*}", new
             {
                 MyArray = new []{1,2}
             });
@@ -73,7 +73,7 @@ namespace Whitelog.ConsoleTests
         {
             using (logTunnel.CreateScope("Starting somthing"))
             {
-                logTunnel.LogInfo("Test LogEntry {IntValue} {StringValue}", new
+                logTunnel.Info("Test LogEntry {IntValue} {StringValue}", new
                                                                             {
                                                                                 IntValue = 5,
                                                                                 StringValue = "MyValue",
@@ -85,11 +85,11 @@ namespace Whitelog.ConsoleTests
                                                                                     },
                                                                             });
 
-                logTunnel.LogWarning("My Warning");
+                logTunnel.Warning("My Warning");
 
                 logTunnel.Log("Custom", "Non spesific log title");
 
-                logTunnel.LogError("Test LogEntry {*}", new
+                logTunnel.Error("Test LogEntry {*}", new
                                                         {
                                                             IntValue = 5,
                                                             StringValue = "MyValue",

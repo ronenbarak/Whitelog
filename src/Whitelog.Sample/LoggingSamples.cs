@@ -27,19 +27,19 @@ namespace Whitelog.Sample
             switch (m_cboLogTitles.SelectedItem.ToString().ToUpper())
             {
                 case "DEBUG":
-                    Logger.LogDebug(m_txtSimpleLogMessage.Text);
+                    Logger.Debug(m_txtSimpleLogMessage.Text);
                     break;
                 case "ERROR":
-                    Logger.LogError(m_txtSimpleLogMessage.Text);
+                    Logger.Error(m_txtSimpleLogMessage.Text);
                     break;
                 case "FATAL":
-                    Logger.LogFatal(m_txtSimpleLogMessage.Text);
+                    Logger.Fatal(m_txtSimpleLogMessage.Text);
                     break;
                 case "INFO":
-                    Logger.LogInfo(m_txtSimpleLogMessage.Text);
+                    Logger.Info(m_txtSimpleLogMessage.Text);
                     break;
                 case "WARNING":
-                    Logger.LogWarning(m_txtSimpleLogMessage.Text);
+                    Logger.Warning(m_txtSimpleLogMessage.Text);
                     break;
             }
         }
