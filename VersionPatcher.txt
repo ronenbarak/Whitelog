@@ -1,4 +1,4 @@
-11/27/2014 9:19:39 PM
+1/4/2015 8:42:19 PM
 C:\Git\Whitelog\src\Whitelog.Core\Properties\AssemblyInfo.cs
 C:\Git\Whitelog\src\Whitelog.ConsoleTests\Properties\AssemblyInfo.cs
 C:\Git\Whitelog\src\Whitelog.Sample\Properties\AssemblyInfo.cs
