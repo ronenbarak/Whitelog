@@ -70,7 +70,7 @@
             this.m_binaryTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.m_binaryTabPage.Size = new System.Drawing.Size(534, 149);
             this.m_binaryTabPage.TabIndex = 0;
-            this.m_binaryTabPage.Text = "Binary";
+            this.m_binaryTabPage.Text = "BinaryFile";
             this.m_binaryTabPage.UseVisualStyleBackColor = true;
             // 
             // m_stringLayoutTabPage

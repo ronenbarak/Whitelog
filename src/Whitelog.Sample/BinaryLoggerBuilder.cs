@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using BrightIdeasSoftware;
 using Whitelog.Core;
-using Whitelog.Core.Binary.FileLog.SubmitLogEntry;
+using Whitelog.Core.Binary;
 using Whitelog.Core.Binary.Serializer.MemoryBuffer;
 using Whitelog.Core.File;
 using Whitelog.Core.Loggers;
@@ -30,14 +30,11 @@ namespace Whitelog.Sample
             m_loggerTypes.Items.Add(typeof(ContinuesBinaryFileLogger).Name);
             m_loggerTypes.Items.Add("In Memory");
 
-            var ringBufferLogger = new RingSubmitLogEntryFactory(RingConsumeOption.SpinWait, 1000);
             m_submitterType.Items.Add(new SubmiterOption(new AsyncSubmitLogEntryFactory(), "Async - Eventually consistent"));
             m_submitterType.Items.Add(new SubmiterOption(new SyncSubmitLogEntryFactory(), "Sync - ACID"));
-            m_submitterType.Items.Add(new SubmiterOption(ringBufferLogger, "RingBuffer - Zero Memory Allocation(Eventually consistent)"));
 
             m_bufferTypes.Items.Add(new BufferOption(ThreadStaticBufferFactory.Instance, "ThreadStatic"));
             m_bufferTypes.Items.Add(new BufferOption(BufferPoolFactory.Instance, "BufferPool"));
-            m_bufferTypes.Items.Add(new BufferOption(ringBufferLogger, "RingBuffer"));
 
             m_submitterType.SelectedIndexChanged += m_submitterType_SelectedIndexChanged;
             m_bufferTypes.SelectedIndexChanged += m_submitterType_SelectedIndexChanged;
@@ -72,7 +69,7 @@ namespace Whitelog.Sample
                     var fileLogger = new ContinuesBinaryFileLogger(fileStremProvider, ((SubmiterOption)m_submitterType.SelectedItem).SubmitLogEntryFactory, ((BufferOption)m_bufferTypes.SelectedItem).BufferAllocatorFactory);
                     fileLogger.AttachToTunnelLog(LogTunnel);
 
-                    var tabPage = new TabPage("Binary " + System.IO.Path.GetFileName(m_txtPath.Text));
+                    var tabPage = new TabPage("BinaryFile " + System.IO.Path.GetFileName(m_txtPath.Text));
                     TreeListView dataTreeListView = new TreeListView();
                     dataTreeListView.Dock = DockStyle.Fill;
                     tabPage.Controls.Add(dataTreeListView);

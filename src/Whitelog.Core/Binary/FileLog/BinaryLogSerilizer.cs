@@ -7,29 +7,29 @@ using Whitelog.Interface;
 
 namespace Whitelog.Core.Binary.FileLog
 {
-    public class BaseFileLog : IDisposable
+    public class BinaryLogSerilizer : IDisposable
     {
         public class BufferAndSubmiterTuple
         {
-            public BufferAndSubmiterTuple(ISubmitLogEntry entry,IBufferAllocator bufferAllocator)
+            public BufferAndSubmiterTuple(ISubmitEntry<IRawData> entry,IBufferAllocator bufferAllocator)
             {
                 SubmitLogEntry = entry;
                 BufferAllocator = bufferAllocator;
             }
 
-            public ISubmitLogEntry SubmitLogEntry { get; private set; }
+            public ISubmitEntry<IRawData> SubmitLogEntry { get; private set; }
             public IBufferAllocator BufferAllocator { get; private set; }
         }
 
         private readonly StreamLogBinaryPackager m_streamLogBinaryPackager;
-        private ISubmitLogEntry m_logEntrySubmiter;
-        private ISubmitLogEntry m_stringCacheSubmiter;
-        private ISubmitLogEntry m_definitionSubmiter;
+        private ISubmitEntry<IRawData> m_logEntrySubmiter;
+        private ISubmitEntry<IRawData> m_stringCacheSubmiter;
+        private ISubmitEntry<IRawData> m_definitionSubmiter;
         private IBufferAllocator m_logEntryBufferAllocator;
         private IBufferAllocator m_stringCacheBufferAllocator;
         private IBufferAllocator m_definitionBufferAllocator;
 
-        public BaseFileLog(BufferAndSubmiterTuple logentry,BufferAndSubmiterTuple definitions, BufferAndSubmiterTuple stringCache)
+        public BinaryLogSerilizer(BufferAndSubmiterTuple logentry,BufferAndSubmiterTuple definitions, BufferAndSubmiterTuple stringCache)
         {
             m_logEntrySubmiter = logentry.SubmitLogEntry;
             m_logEntryBufferAllocator = logentry.BufferAllocator;
@@ -71,7 +71,7 @@ namespace Whitelog.Core.Binary.FileLog
                 var dataSerializer = buffer.AttachedSerializer;
                 m_streamLogBinaryPackager.Pack(logEntry, dataSerializer);
                 dataSerializer.Flush();
-                m_logEntrySubmiter.AddLogEntry(buffer);
+                m_logEntrySubmiter.AddEntry(buffer);
             }
             finally
             {
@@ -89,7 +89,7 @@ namespace Whitelog.Core.Binary.FileLog
                 var dataSerializer = buffer.AttachedSerializer;
                 m_streamLogBinaryPackager.Pack(e.Data, dataSerializer);
                 dataSerializer.Flush();
-                m_definitionSubmiter.AddLogEntry(buffer);
+                m_definitionSubmiter.AddEntry(buffer);
             }
             finally
             {
@@ -107,7 +107,7 @@ namespace Whitelog.Core.Binary.FileLog
                 var dataSerializer = buffer.AttachedSerializer;
                 m_streamLogBinaryPackager.Pack(e.Data, dataSerializer);
                 dataSerializer.Flush();
-                m_stringCacheSubmiter.AddLogEntry(buffer);
+                m_stringCacheSubmiter.AddEntry(buffer);
             }
             finally 
             {

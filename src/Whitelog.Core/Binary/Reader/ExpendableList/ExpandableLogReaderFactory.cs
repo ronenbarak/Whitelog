@@ -22,7 +22,7 @@ namespace Whitelog.Core.Binary.Reader.ExpendableList
                 throw new CorruptedDataException();
             }
 
-            return new ExpendableListLogReader(consumer, new ListWriter.ExpendableListReader(data));
+            return new ExpendableListLogReader(consumer, new ExpendableListReader(data));
 
         }
     }

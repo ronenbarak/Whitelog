@@ -4,7 +4,7 @@ using Whitelog.Core.Loggers.StringAppender.Console;
 using Whitelog.Interface;
 using Whitelog.Interface.LogTitles;
 
-namespace Whitelog.Core.Configuration.Fluent.StringLayout
+namespace Whitelog.Core.Configuration.Fluent.StringLayout.Console
 {
     class ConsoleColorConditions : IConsoleColorConditions
     {

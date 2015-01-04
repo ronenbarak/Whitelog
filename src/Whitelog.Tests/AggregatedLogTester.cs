@@ -11,7 +11,6 @@ using Whitelog.Barak.SystemDateTime;
 using Whitelog.Core;
 using Whitelog.Core.Binary;
 using Whitelog.Core.Binary.FileLog;
-using Whitelog.Core.Binary.FileLog.SubmitLogEntry;
 using Whitelog.Core.Binary.Generic;
 using Whitelog.Core.Binary.Reader;
 using Whitelog.Core.Binary.Reader.ExpendableList;

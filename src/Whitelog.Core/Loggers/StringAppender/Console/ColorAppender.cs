@@ -104,7 +104,6 @@ namespace Whitelog.Core.Loggers.StringAppender.Console
             }
             else
             {
-
                 var colorLine = m_colorSchema.GetColor(logEntry);
                 m_consoleLogEntrySubmitter.AddLogEntry(value,colorLine);
             }   

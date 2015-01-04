@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTitle("Whitelog.Core")]
 [assembly: AssemblyDescription(@"Whitelog is a next generation logging library
-Open source, Fluent, Hierarchical,Binary and String")]
+Open source, Fluent, Hierarchical,BinaryFile and String")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Whitelog")]
 [assembly: AssemblyProduct("Whitelog.Core")]

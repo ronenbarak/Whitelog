@@ -1,9 +1,8 @@
 ﻿using System;
-using Whitelog.Core.Filter;
 using Whitelog.Core.Loggers.StringAppender.Console;
 using Whitelog.Interface;
 
-namespace Whitelog.Core.Configuration.Fluent.StringLayout
+namespace Whitelog.Core.Configuration.Fluent.StringLayout.Console
 {
     public interface IConsoleColorConditions
     {
@@ -26,9 +25,6 @@ namespace Whitelog.Core.Configuration.Fluent.StringLayout
     public interface IConsoleBuilder
     {
         IConsoleColors Colors { get; }
-        IConsoleBuilder Sync { get; }
-        IConsoleBuilder Async { get; }
-
         IFilterBuilder<IConsoleBuilder> Filter { get; }
     }
 }

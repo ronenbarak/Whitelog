@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Whitelog.Core.Binary.FileLog;
-using Whitelog.Core.Binary.FileLog.SubmitLogEntry;
 using Whitelog.Core.Binary.Serializer.MemoryBuffer;
 using Whitelog.Core.File;
 using Whitelog.Core.Loggers;
@@ -12,66 +11,35 @@ using Whitelog.Core.Loggers.StringAppender.File;
 
 namespace Whitelog.Core.Configuration.Fluent.StringLayout.File
 {
-	class StringFileAppenderBuilder : IStringFileAppenderBuilder , IStringAppenderBuilder
+	class StringFileAppenderBuilder : IStringAppenderBuilder
 	{
-		private FilterBuilder<IStringFileAppenderBuilder> m_filterBuilder;
-		private Buffers m_buffers = Buffers.ThreadStatic;
-		private ExecutionMode m_executionMode;
-		private FileConfiguration m_fileConfiguration = new FileConfiguration()
-		{
-			FilePath = string.Format(@"{{basepath}}{0}Log.txt",Path.DirectorySeparatorChar),
-		};
+        private FilterBuilder<StringFileAppenderBuilder> m_filterBuilder;
+	    private FileConfigurationBuilder m_fileConfiguration;
+	    private ExecutionMode m_executionMode;
 
-		public StringFileAppenderBuilder()
-		{
-			m_filterBuilder = new FilterBuilder<IStringFileAppenderBuilder>(this);
-		}
-		public IStringFileAppenderBuilder Config(Func<IFileConfigurationBuilder, object> file)
-		{
-			var fcb = new FileConfigurationBuilder(string.Format(@"{{basepath}}{0}Log.txt", Path.DirectorySeparatorChar));
-			file.Invoke(fcb);
-			m_fileConfiguration = fcb.GetFileConfiguration();
-			return this;
-		}
-
-		public IFilterBuilder<IStringFileAppenderBuilder> Filter { get { return m_filterBuilder; } }
-
-		public IStringFileAppenderBuilder ExecutionMode(ExecutionMode executionMode)
-		{
-			m_executionMode = executionMode;
-			return this;
-		}
-
-		public IStringFileAppenderBuilder Buffer(Buffers buffers)
-		{
-			m_buffers = buffers;
-			return this;
-		}
+	    public StringFileAppenderBuilder(ExecutionMode executionMode, FileConfigurationBuilder fileConfiguration)
+	    {
+	        m_executionMode = executionMode;
+	        m_fileConfiguration = fileConfiguration;
+            m_filterBuilder = new FilterBuilder<StringFileAppenderBuilder>(this);
+	    }
 
 		public IStringAppender Build()
 		{
-			var listWriter = new StringListWriter(new FileStreamProvider(m_fileConfiguration));
-			ISubmitLogEntry subbmiter = null;
-			if (m_executionMode == Fluent.ExecutionMode.Async)
-			{
-				subbmiter = new AsyncSubmitLogEntry(listWriter);
-			}
-			else if (m_executionMode == Fluent.ExecutionMode.Sync)
-			{
-				subbmiter = new SyncSubmitLogEntry(listWriter);
-			}
+			var fileWriter = new StringFileWriter(new FileStreamProvider(m_fileConfiguration.GetFileConfiguration()));
 
-			IBufferAllocator bufferAllocator = null;
-			if (m_buffers == Buffers.BufferPool)
-			{
-				bufferAllocator = BufferPoolProxy.Instance;
-			}
-			else if (m_buffers == Buffers.ThreadStatic)
-			{
-				bufferAllocator = ThreadStaticBufferFactory.Instance.CreateBufferAllocator(listWriter);
-			}
+		    IStringAppenderSubbmiter subbmiter = null;
+            if (m_executionMode == ExecutionMode.Sync)
+            {
+                subbmiter = new SyncStringFileSubbmiter(fileWriter);
+            }
+            else if (m_executionMode == ExecutionMode.Async)
+            {
+                subbmiter = new AsyncStringFile(fileWriter);
+            }
+
 			var filter = m_filterBuilder.Build();
-			return new StringFileAppender(bufferAllocator, subbmiter, filter);
+            return new StringFileAppender(subbmiter, filter);
 		}
 	}
 }

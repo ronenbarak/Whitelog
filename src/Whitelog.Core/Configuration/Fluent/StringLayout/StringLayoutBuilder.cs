@@ -9,7 +9,7 @@ using Whitelog.Core.String.StringBuffer;
 
 namespace Whitelog.Core.Configuration.Fluent.StringLayout
 {
-    class StringLayoutBuilder : IStringLayoutBuilder, IStringAppenders, ILoggerBuilder, IFilterBuilder<IStringLayoutBuilder>
+    class StringLayoutBuilder : IStringLayoutBuilder,IStringOutputTo, ILoggerBuilder, IFilterBuilder<IStringLayoutBuilder>
     {
         class CustomStringAppenderBuilder : IStringAppenderBuilder
         {
@@ -30,8 +30,9 @@ namespace Whitelog.Core.Configuration.Fluent.StringLayout
 
         private List<IStringAppenderBuilder> m_stringAppenders = new List<IStringAppenderBuilder>();
         public List<IStringPackageDefinition> m_definitions = new List<IStringPackageDefinition>();
-        private LayoutExtensions m_layoutExtensions;
+        private LayoutExtensions<IStringLayoutBuilder> m_layoutExtensions;
         private FilterBuilder<StringLayoutBuilder> m_filterBuilder;
+
         public StringLayoutBuilder()
         {
             m_filterBuilder = new FilterBuilder<StringLayoutBuilder>(this);
@@ -45,10 +46,10 @@ namespace Whitelog.Core.Configuration.Fluent.StringLayout
                 layout = "${longdate} ${title} ${message}";
             }
             var filter = m_filterBuilder.Build();
-            var layoutLogger = new LayoutLogger(layout, StringBufferPool.Instance, filter);
+            var layoutLogger = new StringLayoutLogger(layout, StringBufferPool.Instance, filter);
             if (m_layoutExtensions == null)
             {
-                m_layoutExtensions = new LayoutExtensions();
+                m_layoutExtensions = new LayoutExtensions<IStringLayoutBuilder>(this);
                 var t = m_layoutExtensions.All;
             }
             m_layoutExtensions.Initilze(layoutLogger);
@@ -74,11 +75,15 @@ namespace Whitelog.Core.Configuration.Fluent.StringLayout
             return this;
         }
 
-        public IStringLayoutBuilder Extensions(Func<ILayoutExtensions, object> extensions)
-        {
-            m_layoutExtensions = new LayoutExtensions();
-            extensions.Invoke(m_layoutExtensions);
-            return this;
+        public ILayoutExtensions<IStringLayoutBuilder> Extensions {
+            get
+            {
+                if (m_layoutExtensions == null)
+                {
+                    m_layoutExtensions = new LayoutExtensions<IStringLayoutBuilder>(this);   
+                }
+                return m_layoutExtensions;
+            }
         }
 
         public IStringLayoutBuilder Map<T>(Func<PackageDefinition<T>, object> define)
@@ -95,41 +100,7 @@ namespace Whitelog.Core.Configuration.Fluent.StringLayout
             return this;
         }
 
-        public IStringAppenders Appenders { get { return this; } }
-
-        public IStringAppenders File()
-        {
-            m_stringAppenders.Add(new StringFileAppenderBuilder());
-            return this;
-        }
-
-        public IStringAppenders File(Func<IStringFileAppenderBuilder, object> file)
-        {
-            var fileAppender = new StringFileAppenderBuilder();
-            file.Invoke(fileAppender);
-            m_stringAppenders.Add(fileAppender);
-            return this;
-        }
-
-        public IStringAppenders Console()
-        {
-            m_stringAppenders.Add(new ConsoleBuilder());
-            return this;
-        }
-
-        public IStringAppenders Console(Func<IConsoleBuilder, object> console)
-        {
-            var consoleBuilder = new ConsoleBuilder();
-            console.Invoke(consoleBuilder);
-            m_stringAppenders.Add(consoleBuilder);
-            return this;
-        }
-
-        public IStringAppenders Custom(IStringAppender stringAppender)
-        {
-            m_stringAppenders.Add(new CustomStringAppenderBuilder(stringAppender));
-            return this;
-        }
+        public IStringOutputTo OutputTo { get { return this; } }
         
         #region Filter
         
@@ -147,6 +118,13 @@ namespace Whitelog.Core.Configuration.Fluent.StringLayout
         {
             return m_filterBuilder.Custom(filter);
         }
+
+        #endregion
+
+        #region IStringOutputTo
+
+        public StringOutputer Async { get { return new StringOutputer(this,builder => m_stringAppenders.Add(builder), ExecutionMode.Async); } }
+        public StringOutputer Sync  { get { return new StringOutputer(this, builder => m_stringAppenders.Add(builder), ExecutionMode.Sync); } }
 
         #endregion
     }

@@ -1,7 +1,7 @@
 using System;
 using Whitelog.Core.Binary.ListWriter;
 
-namespace Whitelog.Core.Binary.FileLog
+namespace Whitelog.Core.Binary
 {
     public static class BufferDefaults
     {
@@ -24,12 +24,6 @@ namespace Whitelog.Core.Binary.FileLog
 
     public interface ISubmitLogEntryFactory
     {
-        ISubmitLogEntry CreateSubmitLogEntry(IListWriter listWriter);
-    }
-
-    public interface ISubmitLogEntry
-    {
-        void WaitForIdle();
-        void AddLogEntry(IRawData buffer);
+        ISubmitEntry<IRawData> CreateSubmitLogEntry(IListWriter listWriter);
     }
 }

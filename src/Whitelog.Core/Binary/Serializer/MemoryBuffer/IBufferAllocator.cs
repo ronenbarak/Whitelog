@@ -6,10 +6,7 @@ namespace Whitelog.Core.Binary.Serializer.MemoryBuffer
 {
     public interface IBufferAllocatorFactory
     {
-        // the IListWriter paramater is a design flow and hopfuly will be removed when a new
-        // design will not require it any more.
-        // at the moment it is in use only for the ringbuffer allocator
-        IBufferAllocator CreateBufferAllocator(IListWriter listWriter);
+        IBufferAllocator CreateBufferAllocator();
     }
 
     public interface IBufferAllocator : IDisposable

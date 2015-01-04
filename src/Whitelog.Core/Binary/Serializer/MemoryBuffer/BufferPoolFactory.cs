@@ -18,7 +18,7 @@ namespace Whitelog.Core.Binary.Serializer.MemoryBuffer
         private BufferPoolFactory()
         {
         }
-        public IBufferAllocator CreateBufferAllocator(IListWriter listWriter)
+        public IBufferAllocator CreateBufferAllocator()
         {
             return m_bufferPoolProxy;
         }

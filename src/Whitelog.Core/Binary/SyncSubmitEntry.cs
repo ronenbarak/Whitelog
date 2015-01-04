@@ -1,17 +1,17 @@
 ﻿using Whitelog.Core.Binary.ListWriter;
 
-namespace Whitelog.Core.Binary.FileLog.SubmitLogEntry
+namespace Whitelog.Core.Binary
 {
-    public class SyncSubmitLogEntry : ISubmitLogEntry
+    public class SyncSubmitEntry : ISubmitEntry<IRawData>
     {
         private IListWriter m_listWriter;
         private object m_lockObject = new object();
-        public SyncSubmitLogEntry(IListWriter listWriter)
+        public SyncSubmitEntry(IListWriter listWriter)
         {
             m_listWriter = listWriter;
         }
 
-        public void AddLogEntry(IRawData buffer)
+        public void AddEntry(IRawData buffer)
         {
             lock (m_lockObject)
             {

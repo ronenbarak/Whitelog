@@ -29,7 +29,7 @@ namespace Whitelog.Core.Binary.Serializer.MemoryBuffer
 
         }
 
-        public IBufferAllocator CreateBufferAllocator(IListWriter listWriter)
+        public IBufferAllocator CreateBufferAllocator()
         {
             IBufferAllocator bufferAllocator;
             if (m_bufferAllocators.TryDequeue(out bufferAllocator))

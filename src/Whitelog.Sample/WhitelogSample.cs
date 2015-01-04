@@ -17,7 +17,7 @@ namespace Whitelog.Sample
         public WhitelogSample()
         {
             InitializeComponent();
-            BindingList<LayoutLogger> layoutLoggers = new BindingList<LayoutLogger>();
+            BindingList<StringLayoutLogger> layoutLoggers = new BindingList<StringLayoutLogger>();
             
             m_binaryTabPage.Controls.Add(new BinaryLoggerBuilder(){LogTunnel = m_log, PreviewTabControl = m_previewTabControl});
             m_stringLayoutTabPage.Controls.Add(new StringLayoutLoggerBuilder() { LogTunnel = m_log, LayoutLoggers = layoutLoggers});

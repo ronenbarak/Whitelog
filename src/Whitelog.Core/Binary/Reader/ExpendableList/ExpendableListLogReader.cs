@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Whitelog.Barak.Common.Events;
 using Whitelog.Core.Binary.FileLog;
-using Whitelog.Core.Binary.FileLog.SubmitLogEntry;
 using Whitelog.Core.Binary.Generic;
 using Whitelog.Core.Binary.ListWriter;
 using Whitelog.Core.Binary.PakageDefinitions.Unpack;

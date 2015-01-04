@@ -48,30 +48,29 @@
     <Compile Include="Barak\DataStructures\Dictionary\IMaintenanceMode.cs" />
     <Compile Include="Barak\DataStructures\Dictionary\IncressSizeOnlyMaintenanceMode.cs" />
     <Compile Include="Barak\DataStructures\Dictionary\ReadSafeDictionary.cs" />
-    <Compile Include="Barak\DataStructures\Ring\Consumer.cs" />
-    <Compile Include="Barak\DataStructures\Ring\Entry.cs" />
-    <Compile Include="Barak\DataStructures\Ring\RingBuffer.cs" />
-    <Compile Include="Barak\DataStructures\Ring\Util.cs" />
     <Compile Include="Barak\EventArgs.cs" />
     <Compile Include="Barak\ISystemTime.cs" />
     <Compile Include="Barak\ObjectHelper.cs" />
     <Compile Include="Barak\SystemTime\SystemUtcTime.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Binary\FileLog\BaseFileLog.cs" />
+    <Compile Include="Binary\FileLog\BinaryLogSerilizer.cs" />
+    <Compile Include="Binary\Reader\ExpendableListReader.cs" />
+    <Compile Include="Binary\Serializer\MemoryBuffer\MemoryAllocationFactory.cs" />
     <Compile Include="Configuration\Fluent\Binary\IBinaryBuilder.cs" />
     <Compile Include="Configuration\Fluent\IFilterBuilder.cs" />
     <Compile Include="Configuration\Fluent\StringLayout\Console\ConsoleBuilder.cs" />
     <Compile Include="Configuration\Fluent\StringLayout\Console\ConsoleColorConditions.cs" />
     <Compile Include="Configuration\Fluent\StringLayout\Console\IConsoleBuilder.cs" />
     <Compile Include="Configuration\Fluent\StringLayout\File\StringFileAppenderBuilder.cs" />
-    <Compile Include="Configuration\Fluent\StringLayout\File\IStringFileAppenderBuilder.cs" />
     <Compile Include="Configuration\Fluent\IFileConfigurationBuilder.cs" />
     <Compile Include="Configuration\Fluent\StringLayout\IStringAppenderBuilder.cs" />
     <Compile Include="Configuration\Fluent\StringLayout\LayoutExtensions.cs" />
     <Compile Include="Configuration\Fluent\StringLayout\IStringLayoutBuilder.cs" />
     <Compile Include="Configuration\Fluent\LogTitles.cs" />
     <Compile Include="Configuration\Fluent\StringLayout\StringLayoutBuilder.cs" />
+    <Compile Include="Configuration\Fluent\LoggerExtension.cs" />
+    <Compile Include="Configuration\Fluent\WhilelogFluentBuilder.cs" />
     <Compile Include="Configuration\Fluent\WhiteLogBuilder.cs" />
     <Compile Include="File\FileConfiguration.cs">
       <SubType>Code</SubType>
@@ -82,6 +81,7 @@
     <Compile Include="File\InMemoryStreamProvider.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="File\OverrideStreamFlush.cs" />
     <Compile Include="Filter\AndMaskFilter.cs" />
     <Compile Include="Filter\InclusiveMaskFilter.cs" />
     <Compile Include="Filter\ExclusiveMaskFilter.cs" />
@@ -89,7 +89,7 @@
     <Compile Include="Interface\LogTitles\ReservedLogTitleIds.cs" />
     <Compile Include="Interface\LogTitles\TraceLogTitle.cs" />
     <Compile Include="Loggers\IStringAppender.cs" />
-    <Compile Include="Loggers\LayoutLogger.cs">
+    <Compile Include="Loggers\StringLayoutLogger.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Loggers\StringAppender\Console\ColorLine.cs" />
@@ -102,7 +102,7 @@
     <Compile Include="Loggers\StringAppender\Console\SubmitConsoleLogEntry\ISubmitConsoleLogEntry.cs" />
     <Compile Include="Loggers\StringAppender\Console\SubmitConsoleLogEntry\SyncSubmitConsoleLogEntry.cs" />
     <Compile Include="Loggers\StringAppender\File\StringFileAppender.cs" />
-    <Compile Include="Loggers\StringAppender\File\StringListWriter.cs" />
+    <Compile Include="Loggers\StringAppender\File\StringFileWriter.cs" />
     <Compile Include="LogScopeSyncImplementation\LogScopeSyncFactory.cs" />
     <Compile Include="StringParser.cs" />
     <Compile Include="String\IStringLogger.cs" />
@@ -132,12 +132,10 @@
     <Compile Include="PackageDefinitions\IPackageDefinition.cs" />
     <Compile Include="Loggers\ILogger.cs" />
     <Compile Include="PackageDefinitions\DuplicatedPropertyDefinitionException.cs" />
-    <Compile Include="Binary\FileLog\SubmitLogEntry\AsyncSubmitLogEntry.cs" />
-    <Compile Include="Binary\FileLog\SubmitLogEntry\AsyncSubmitLogEntryFactory.cs" />
-    <Compile Include="Binary\FileLog\SubmitLogEntry\RingLogBuffer.cs" />
-    <Compile Include="Binary\FileLog\SubmitLogEntry\RingSubmitLogEntryFactory.cs" />
-    <Compile Include="Binary\FileLog\SubmitLogEntry\SyncSubmitLogEntry.cs" />
-    <Compile Include="Binary\FileLog\SubmitLogEntry\SyncSubmitLogEntryFactory.cs" />
+    <Compile Include="AsyncSubmitEntry.cs" />
+    <Compile Include="Binary\AsyncSubmitLogEntryFactory.cs" />
+    <Compile Include="Binary\SyncSubmitEntry.cs" />
+    <Compile Include="Binary\SyncSubmitLogEntryFactory.cs" />
     <Compile Include="Binary\Generic\GenericComponentType.cs" />
     <Compile Include="Binary\Generic\GenericPropertyInfo.cs" />
     <Compile Include="Binary\IBinaryLogger.cs" />
@@ -146,7 +144,7 @@
     </Compile>
     <Compile Include="Binary\ILogEntryData.cs" />
     <Compile Include="ILogScopeSyncImplementation.cs" />
-    <Compile Include="Binary\FileLog\ISubmitLogEntry.cs" />
+    <Compile Include="Binary\ISubmitEntry.cs" />
     <Compile Include="Interface\ILog.cs" />
     <Compile Include="Interface\ILogScope.cs" />
     <Compile Include="Interface\ILogTitle.cs" />

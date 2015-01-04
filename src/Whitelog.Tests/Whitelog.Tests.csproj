@@ -46,7 +46,6 @@
     <Compile Include="FluentBuilderTests.cs" />
     <Compile Include="ListWritersTester.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RingBufferLogTests.cs" />
     <Compile Include="SimpleBuffer.cs" />
     <Compile Include="StringParserTests.cs" />
   </ItemGroup>

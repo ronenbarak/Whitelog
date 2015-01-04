@@ -6,7 +6,7 @@ using Whitelog.Core.String.Layout.StringLayoutFactory;
 
 namespace Whitelog.Core.Configuration.Fluent.StringLayout
 {
-    class LayoutExtensions : ILayoutExtensions
+    class LayoutExtensions<T> : ILayoutExtensions<T>
     {
         private static readonly ObjectStringLayoutFactory m_astrix = new ObjectStringLayoutFactory();
         private static readonly TitleStringLayoutFactory m_title = new TitleStringLayoutFactory();
@@ -14,65 +14,79 @@ namespace Whitelog.Core.Configuration.Fluent.StringLayout
         private static readonly ThreadIdStringLayoutFactory m_threadId = new ThreadIdStringLayoutFactory();
 
         private HashSet<IStringLayoutFactory> m_extensions = new HashSet<IStringLayoutFactory>();
+        private T m_source;
 
-        public LayoutExtensions()
+        public LayoutExtensions(T source)
         {
+            m_source = source;
         }
 
-        public void Initilze(LayoutLogger layoutLogger)
+        public void Initilze(StringLayoutLogger stringLayoutLogger)
         {
             foreach (var stringLayoutFactory in m_extensions)
             {
-                layoutLogger.RegisterLayoutExtensions(stringLayoutFactory);
+                stringLayoutLogger.RegisterLayoutExtensions(stringLayoutFactory);
             }
         }
 
-        public ILayoutExtensions All
+        public T All
         {
             get
             {
-                return Astrix.Title.LongDate.ThreadId;
+                var x = this.Astrix;
+                x = this.Title;
+                x = this.LongDate;
+                x = this.ThreadId;
+
+                return m_source;
             }
         }
 
-        public ILayoutExtensions Astrix
+        public T Astrix
         {
             get
             {
                 m_extensions.Add(m_astrix);
-                return this;
+                return m_source;
             }
         }
 
-        public ILayoutExtensions Title
+        public T Title
         {
             get
             {
                 m_extensions.Add(m_title);
-                return this;
+                return m_source;
             }
         }
         
-        public ILayoutExtensions LongDate
+        public T LongDate
         {
             get
             {
                 m_extensions.Add(m_date);
-                return this;
+                return m_source;
             }
         }
-        public ILayoutExtensions ThreadId
+        public T ThreadId
         {
             get
             {
                 m_extensions.Add(m_threadId);
-                return this;
+                return m_source;
             }
         }
-        public ILayoutExtensions AddCustom(IStringLayoutFactory layoutFactory)
+
+        public T Custom(IStringLayoutFactory layoutFactory)
         {
             m_extensions.Add(layoutFactory);
-            return this;
+            return m_source;
+        }
+
+        public T AddCustom(IStringLayoutFactory layoutFactory)
+        {
+            m_extensions.Add(layoutFactory);
+            return m_source;
         }
     }
 }

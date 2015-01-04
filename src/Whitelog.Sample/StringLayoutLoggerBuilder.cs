@@ -32,9 +32,9 @@ namespace Whitelog.Sample
             }
         }
 
-        private IList<LayoutLogger> m_layouyLoggers;
+        private IList<StringLayoutLogger> m_layouyLoggers;
         public LogTunnel LogTunnel { get; set; }
-        public IList<LayoutLogger> LayoutLoggers {
+        public IList<StringLayoutLogger> LayoutLoggers {
             get
             {
                 return m_layouyLoggers;
@@ -53,12 +53,12 @@ namespace Whitelog.Sample
 
             m_lstBuildLayouts.DisplayMember = "Layout";
 
-            m_extensions.Items.Add(new ExtensionOption("Title", "Append the title Level"));
-            m_extensions.Items.Add(new ExtensionOption("Newline", "Append new Line"));
-            m_extensions.Items.Add(new ExtensionOption("ScopeId", "Append the current scope id"));
-            m_extensions.Items.Add(new ExtensionOption("ThreadId", "Append the current threadId"));
-            m_extensions.Items.Add(new ExtensionOption("Longdate", "Append the date"));
-            m_extensions.Items.Add(new ExtensionOption("Message", "Append the message"));
+            m_extensions.Items.Add(new ExtensionOption("Title", "AppendLogEntry the title Level"));
+            m_extensions.Items.Add(new ExtensionOption("Newline", "AppendLogEntry new Line"));
+            m_extensions.Items.Add(new ExtensionOption("ScopeId", "AppendLogEntry the current scope id"));
+            m_extensions.Items.Add(new ExtensionOption("ThreadId", "AppendLogEntry the current threadId"));
+            m_extensions.Items.Add(new ExtensionOption("Longdate", "AppendLogEntry the date"));
+            m_extensions.Items.Add(new ExtensionOption("Message", "AppendLogEntry the message"));
 
             m_extensions.SelectedIndex = 0;
         }
@@ -70,7 +70,7 @@ namespace Whitelog.Sample
 
         private void m_btnBuild_Click(object sender, EventArgs e)
         {
-            var logger = new LayoutLogger(m_txtLayout.Text,StringBufferPool.Instance);
+            var logger = new StringLayoutLogger(m_txtLayout.Text,StringBufferPool.Instance);
             logger.RegisterLayoutExtensions(AllLayoutFactories.Factories);
             LayoutLoggers.Add(logger);
             logger.AttachToTunnelLog(LogTunnel);

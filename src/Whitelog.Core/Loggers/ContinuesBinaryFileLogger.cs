@@ -12,8 +12,8 @@ namespace Whitelog.Core.Loggers
     {
         public static readonly Guid ID = new Guid("CD06DD66-1C1B-4AB3-B061-D7A965620120");
 
-        private readonly BaseFileLog m_baseFileLog;
-        private ISubmitLogEntry m_logEntry;
+        private readonly BinaryLogSerilizer m_binaryLogSerilizer;
+        private ISubmitEntry<IRawData> m_logEntry;
         private ExpendableListWriter m_listWriter;
 
         public ContinuesBinaryFileLogger(IStreamProvider streamProvider, ISubmitLogEntryFactory submitLogEntryFactory, IBufferAllocatorFactory bufferAllocatorFactory)
@@ -23,9 +23,9 @@ namespace Whitelog.Core.Loggers
             var stringCache = submitLogEntryFactory.CreateSubmitLogEntry(m_listWriter);
             var definition = submitLogEntryFactory.CreateSubmitLogEntry(m_listWriter);
 
-            m_baseFileLog = new BaseFileLog(new BaseFileLog.BufferAndSubmiterTuple(m_logEntry, bufferAllocatorFactory.CreateBufferAllocator(m_listWriter)),
-                                            new BaseFileLog.BufferAndSubmiterTuple(stringCache, bufferAllocatorFactory.CreateBufferAllocator(m_listWriter)),
-                                            new BaseFileLog.BufferAndSubmiterTuple(definition, bufferAllocatorFactory.CreateBufferAllocator(m_listWriter)));
+            m_binaryLogSerilizer = new BinaryLogSerilizer(new BinaryLogSerilizer.BufferAndSubmiterTuple(m_logEntry, bufferAllocatorFactory.CreateBufferAllocator()),
+                                            new BinaryLogSerilizer.BufferAndSubmiterTuple(stringCache, bufferAllocatorFactory.CreateBufferAllocator()),
+                                            new BinaryLogSerilizer.BufferAndSubmiterTuple(definition, bufferAllocatorFactory.CreateBufferAllocator()));
         }
 
         private static void OnNewfileCreated(ExpendableListWriter expendableListWriter, Stream stream)
@@ -46,27 +46,27 @@ namespace Whitelog.Core.Loggers
 
         public void AttachToTunnelLog(LogTunnel logTunnel)
         {
-            m_baseFileLog.AttachToTunnelLog(logTunnel);
+            m_binaryLogSerilizer.AttachToTunnelLog(logTunnel);
         }
 
         public void DetachTunnelLog(LogTunnel logTunnel)
         {
-            m_baseFileLog.DetachTunnelLog(logTunnel);
+            m_binaryLogSerilizer.DetachTunnelLog(logTunnel);
         }
 
         public void RegisterDefinition(IBinaryPackageDefinition packageDefinition)
         {
-            m_baseFileLog.RegisterDefinition(packageDefinition);
+            m_binaryLogSerilizer.RegisterDefinition(packageDefinition);
         }
 
         /*public void UnregisterDefinition(IBinaryPackageDefinition packageDefinition)
         {
-            m_baseFileLog.UnregisterDefinition(packageDefinition);
+            m_binaryLogSerilizer.UnregisterDefinition(packageDefinition);
         }*/
 
         public void Dispose()
         {
-            m_baseFileLog.Dispose();            
+            m_binaryLogSerilizer.Dispose();            
             m_listWriter.Dispose();
         }
     }

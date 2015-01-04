@@ -1,19 +1,28 @@
-﻿using Whitelog.Core.File;
+﻿using System.Security.Cryptography.X509Certificates;
+using Whitelog.Core.File;
 
 namespace Whitelog.Core.Configuration.Fluent
 {
+    public interface IArchiveOptions
+    {
+        IFileConfigurationBuilder Hour {get;}
+        IFileConfigurationBuilder Day { get; }
+        IFileConfigurationBuilder Week { get; }
+        IFileConfigurationBuilder Month { get; }
+        IFileConfigurationBuilder Size(long size);
+    }
+
     public interface IFileConfigurationBuilder
     {
-        IFileConfigurationBuilder FilePath(string file);
-        IFileConfigurationBuilder ArchiveFilePath(string file);
+        IFileConfigurationBuilder Path(string file);
+        IFileConfigurationBuilder ArchivePath(string file);
         IFileConfigurationBuilder DontArchive { get; }
-        IFileConfigurationBuilder ArchiveEvery(ArchiveOptions archiveOptions);
-        IFileConfigurationBuilder ArchiveEvery(long size);
+        IArchiveOptions ArchiveEvery { get; }
         IFileConfigurationBuilder MaxArchiveFiles(int maxFiles);
         IFileConfigurationBuilder Append { get; }
     }
 
-    class FileConfigurationBuilder : IFileConfigurationBuilder
+    class FileConfigurationBuilder : IFileConfigurationBuilder , IArchiveOptions
     {
         private FileConfiguration m_fileConfiguration;
 
@@ -29,24 +38,20 @@ namespace Whitelog.Core.Configuration.Fluent
             return m_fileConfiguration;
         }
 
-        public IFileConfigurationBuilder FilePath(string file)
+        public IFileConfigurationBuilder Path(string file)
         {
             m_fileConfiguration.FilePath = file;
             return this;
         }
 
-        public IFileConfigurationBuilder ArchiveFilePath(string file)
+        public IFileConfigurationBuilder ArchivePath(string file)
         {
             m_fileConfiguration.ArchiveFilePath = file;
             return this;
         }
 
         public IFileConfigurationBuilder DontArchive { get { m_fileConfiguration.Archive = false; return this; } }
-        public IFileConfigurationBuilder ArchiveEvery(ArchiveOptions archiveOptions)
-        {
-            m_fileConfiguration.ArchiveEvery = archiveOptions;
-            return this;
-        }
+        public IArchiveOptions ArchiveEvery { get { return this; } }
 
         public IFileConfigurationBuilder MaxArchiveFiles(int maxFiles)
         {
@@ -54,12 +59,19 @@ namespace Whitelog.Core.Configuration.Fluent
             return this;
         }
 
-        public IFileConfigurationBuilder ArchiveEvery(long size)
+        public IFileConfigurationBuilder Append { get { m_fileConfiguration.AppendToEnd = true; return this; } }
+
+        #region IArchiveOptions
+
+        public IFileConfigurationBuilder Hour { get {m_fileConfiguration.ArchiveEvery = ArchiveOptions.Hour; return this;} }
+        public IFileConfigurationBuilder Day { get { m_fileConfiguration.ArchiveEvery = ArchiveOptions.Day; return this; } }
+        public IFileConfigurationBuilder Week { get { m_fileConfiguration.ArchiveEvery = ArchiveOptions.Week; return this; } }
+        public IFileConfigurationBuilder Month { get { m_fileConfiguration.ArchiveEvery = ArchiveOptions.Month; return this; } }
+        public IFileConfigurationBuilder Size(long size)
         {
-            m_fileConfiguration.ArchiveAboveSize = size;
+            m_fileConfiguration.ArchiveAboveSize = size; 
             return this;
         }
-
-        public IFileConfigurationBuilder Append { get { m_fileConfiguration.AppendToEnd = true; return this;} }
+        #endregion
     }
 }

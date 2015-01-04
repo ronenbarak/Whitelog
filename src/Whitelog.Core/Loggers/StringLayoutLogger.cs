@@ -8,7 +8,7 @@ using Whitelog.Core.String.StringBuffer;
 
 namespace Whitelog.Core.Loggers
 {
-    public class LayoutLogger : IStringLogger
+    public class StringLayoutLogger : IStringLogger
     {
         private StringLayoutRenderer m_stringLayoutRenderer;
         private readonly IStringBuffer m_stringBuffer;
@@ -18,21 +18,21 @@ namespace Whitelog.Core.Loggers
         public string Layout { get; private set; }
 
 
-        public LayoutLogger(string layout, IStringBuffer stringBuffer)
+        public StringLayoutLogger(string layout, IStringBuffer stringBuffer)
             : this(layout, stringBuffer, null)
         {
         }
 
-        public LayoutLogger(IStringBuffer stringBuffer):this("${longdate} ${title} ${message}",stringBuffer,null)
+        public StringLayoutLogger(IStringBuffer stringBuffer):this("${longdate} ${title} ${message}",stringBuffer,null)
         {
         }
 
-        public LayoutLogger(IStringBuffer stringBuffer,IFilter filter)
+        public StringLayoutLogger(IStringBuffer stringBuffer,IFilter filter)
             : this("${longdate} ${title} ${message}", stringBuffer, filter)
         {
         }
 
-        public LayoutLogger(string layout, IStringBuffer stringBuffer,IFilter filter)
+        public StringLayoutLogger(string layout, IStringBuffer stringBuffer,IFilter filter)
         {
             Layout = layout;
             m_filter = filter;

@@ -1,6 +1,5 @@
 ﻿using System;
 using Whitelog.Barak.SystemDateTime;
-using Whitelog.Core.Binary.FileLog.SubmitLogEntry;
 using Whitelog.Core.Binary.Serializer.MemoryBuffer;
 using Whitelog.Core.Configuration.Fluent;
 using Whitelog.Core.File;
@@ -36,33 +35,27 @@ namespace Whitelog.ConsoleTests
 
         static void Main(string[] args)
         {
-            ILog logTunnel = Whilelog.FluentConfiguration
-                        .Binary(binary => binary.Buffer(Buffers.ThreadStatic)
-                                                .ExecutionMode(ExecutionMode.Async)
-                                                .Config(file=>file.FilePath("BinaryLog.dat")))
-                        .StringLayout(builder => builder.SetLayout("${longdate} ${title} ${message}")
-                                                        .Extensions(extensions => extensions.All)
-                                                        .Filter.Exclude(LogTitles.Close)
-                              .Appenders
-
-                              .File(file => file.ExecutionMode(ExecutionMode.Sync)
-                                                .Buffer(Buffers.ThreadStatic)
-                                                .Config(config => config.FilePath("TextLog.txt")))
-                                .Console(consoleBuilder => consoleBuilder.Sync
-                                                                        .Filter
-                                                                        .Exclude(LogTitles.Open)
-                                                                        .Colors.Conditions(conditions => conditions.Condition(LogTitles.Info,ConsoleColor.DarkGreen)
-                                                                                                                .Condition(LogTitles.Warning, ConsoleColor.DarkMagenta,ConsoleColor.White))))
-                .CreateLog();
+            ILog logTunnel = Whilelog.Configure
+                                .Time.DateTimeNow
+                                .Logger.BinaryFile(binary => binary.Buffer.ThreadStatic                                    
+                                                                       .Mode.Async
+                                                                       .File(x => x.ArchiveEvery.Size(1024*1024*10))
+                                                       )
+                                .Logger.String(layout => layout.SetLayout("${longdate} ${title} ${message}")
+                                                                   .Extensions.All
+                                                                   .Filter.Exclude(LogTitles.Close)
+                                                                   .OutputTo.Sync.ColorConsole(console => console.Filter.Exclude(LogTitles.Open)
+                                                                                                                 .Colors.Conditions(conditions => conditions.Condition(LogTitles.Info, ConsoleColor.DarkGreen)
+                                                                                                                        .Condition(LogTitles.Warning, ConsoleColor.DarkMagenta, ConsoleColor.White)))
+                                                                   .OutputTo.Async.File(file=>file.Path("Log.txt").ArchiveEvery.Hour))
+                                .CreateLog();
 
             WriteSomeLogs(logTunnel);
             
             Console.WriteLine();
 
             // just as good
-            ILog logTunnel2 = Whilelog.FluentConfiguration
-                        .StringLayout(builder => builder.Appenders.Console())
-                        .CreateLog();
+            ILog logTunnel2 = Whilelog.Configure.Logger.String(p=>p.OutputTo.Sync.ColorConsole()).CreateLog();
 
             WriteSomeLogs(logTunnel2);
 

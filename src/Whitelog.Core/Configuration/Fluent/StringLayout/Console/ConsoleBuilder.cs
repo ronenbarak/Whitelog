@@ -4,7 +4,7 @@ using Whitelog.Core.Loggers;
 using Whitelog.Core.Loggers.StringAppender.Console;
 using Whitelog.Core.Loggers.StringAppender.Console.SubmitConsoleLogEntry;
 
-namespace Whitelog.Core.Configuration.Fluent.StringLayout
+namespace Whitelog.Core.Configuration.Fluent.StringLayout.Console
 {
     class ConsoleBuilder : IStringAppenderBuilder, IConsoleBuilder, IConsoleColors, IFilterBuilder<IConsoleBuilder>
     {
@@ -12,41 +12,26 @@ namespace Whitelog.Core.Configuration.Fluent.StringLayout
         private ISubmitConsoleLogEntry m_submitLogEntry;
         private FilterBuilder<ConsoleBuilder> m_filterBuilder;
         
-        public ConsoleBuilder()
+        public ConsoleBuilder(ExecutionMode executionMode)
         {
             m_filterBuilder = new FilterBuilder<ConsoleBuilder>(this);
+            if (executionMode == ExecutionMode.Sync)
+            {
+                m_submitLogEntry = new SyncSubmitConsoleLogEntry();
+            }
+            else
+            {
+                m_submitLogEntry = new AsyncSubmitConsoleLogEntry();
+            }
         }
 
         public IStringAppender Build()
         {
-            ISubmitConsoleLogEntry submit = m_submitLogEntry;
-            if (submit == null)
-            {
-                submit = new SyncSubmitConsoleLogEntry();
-            }
             var filter = m_filterBuilder.Build();
-            return new ConsoleAppender(submit, filter, m_colorSchema);
+            return new ConsoleAppender(m_submitLogEntry, filter, m_colorSchema);
         }
 
         public IConsoleColors Colors { get { return this; } }
-
-        public IConsoleBuilder Sync
-        {
-            get
-            {
-                m_submitLogEntry = new SyncSubmitConsoleLogEntry();
-                return this;
-            }
-        }
-
-        public IConsoleBuilder Async
-        {
-            get
-            {
-                m_submitLogEntry = new AsyncSubmitConsoleLogEntry();
-                return this;
-            }
-        }
 
         public IFilterBuilder<IConsoleBuilder> Filter { get { return this; } }
 

@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Whitelog.Core.File
 {
-	public class FileStreamProvider : IStreamProvider
+    public class FileStreamProvider : IStreamProvider
 	{
 		private FileConfiguration m_configuration;
 		private DateTime? m_nextArchive;
@@ -30,12 +30,12 @@ namespace Whitelog.Core.File
 							(m_configuration.ArchiveEvery.Value == ArchiveOptions.Week && originalCreationDate.AddDays(7) > DateTime.Now) ||
 							(m_configuration.ArchiveEvery.Value == ArchiveOptions.Month && originalCreationDate.AddMonths(1) > DateTime.Now))
 						{
-							return CreateFile(filePath);
+							return new OverrideStreamFlush(CreateFile(filePath));
 						}
 					}
 					else
 					{
-						return CreateFile(filePath);
+						return new OverrideStreamFlush(CreateFile(filePath));
 					}
 				}
 
@@ -45,11 +45,11 @@ namespace Whitelog.Core.File
 				}
 
 				ArchiveFile(m_configuration, filePath);
-				return CreateFile(filePath);
+				return new OverrideStreamFlush(CreateFile(filePath));
 			}
 			else
 			{
-				return CreateFile(filePath);
+				return new OverrideStreamFlush(CreateFile(filePath));
 			}
 		}
 

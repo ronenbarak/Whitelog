@@ -1,43 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using Whitelog.Barak.Common.SystemTime;
-using Whitelog.Barak.SystemDateTime;
 using Whitelog.Core.Configuration.Fluent.Binary;
 using Whitelog.Core.Configuration.Fluent.StringLayout;
 using Whitelog.Core.Loggers;
-using Whitelog.Core.LogScopeSyncImplementation;
-using Whitelog.Interface;
 
 namespace Whitelog.Core.Configuration.Fluent
 {
-    public enum Buffers
-    {
-        /// <summary>
-        /// Ring buffer is async
-        /// </summary>
-        RingBuffer,  
-        ThreadStatic,
-        BufferPool,
-        MemoryAllocation,  
-    }
-
     public enum ExecutionMode
     {
         Async,
         Sync,
     }
 
-    public enum SystemTime
-    {
-        DateTimeNow,
-        DateTimeUtcNow,
-    }
-
     public static class Whilelog
     {
-        public static WhilelogFluentBuilder FluentConfiguration
+        public static IWhilelogFluentBuilder Configure
         {
             get
             {
@@ -46,80 +25,40 @@ namespace Whitelog.Core.Configuration.Fluent
         }
     }
 
-    interface ILoggerBuilder
+    public interface ILoggerBuilder
     {
         ILogger Build();
     }
 
-    public class WhilelogFluentBuilder
+    public interface ILogTimerSetter
     {
-        private ISystemTime m_systemTime = null;
-        private List<ILoggerBuilder> m_loggers = new List<ILoggerBuilder>();
+        IWhilelogFluentBuilder Custom(ISystemTime systemTime);
+        IWhilelogFluentBuilder DateTimeNow { get; }
+        IWhilelogFluentBuilder DateTimeUtcNow { get; }
+    }
 
-        internal WhilelogFluentBuilder()
+    public interface IWhiteLogLogger
+    {
+        void AddLogger(ILoggerBuilder logger);
+        IWhilelogFluentBuilder Source { get; }
+    }
+    
+    public class WhiteLogLogger : IWhiteLogLogger
+    {
+        private IWhilelogFluentBuilder m_builder;
+        private Action<ILoggerBuilder> m_addLogger;
+
+        public WhiteLogLogger(IWhilelogFluentBuilder builder,Action<ILoggerBuilder> addLogger)
         {
-            
+            m_addLogger = addLogger;
+            m_builder = builder;
         }
 
-        public WhilelogFluentBuilder Time(ISystemTime systemTime)
+        void IWhiteLogLogger.AddLogger(ILoggerBuilder logger)
         {
-            m_systemTime = systemTime;
-            return this;
+            m_addLogger.Invoke(logger);
         }
 
-        public WhilelogFluentBuilder Time(SystemTime systemTime)
-        {
-            switch (systemTime)
-            {
-                case SystemTime.DateTimeNow:
-                    m_systemTime = new SystemDateTime();
-                    break;
-                case SystemTime.DateTimeUtcNow:
-                    m_systemTime = new SystemUtcTime();
-                    break;
-            }
-            return this;
-        }
-
-
-        public WhilelogFluentBuilder StringLayout(Func<IStringLayoutBuilder, object> stringLayout)
-        {
-            var stringLayoutBuilder = new StringLayoutBuilder();
-            stringLayout.Invoke(stringLayoutBuilder);
-            m_loggers.Add(stringLayoutBuilder);
-            return this;
-        }
-
-        public WhilelogFluentBuilder Binary()
-        {
-            m_loggers.Add(new BinaryBuilder());
-            return this;
-        }
-
-        public WhilelogFluentBuilder Binary(Func<IBinaryBuilder, object> binary)
-        {
-            var binaryBuilder = new BinaryBuilder();
-            binary.Invoke(binaryBuilder);
-            m_loggers.Add(binaryBuilder);
-            return this;
-        }
-
-        public ILog CreateLog()
-        {
-            ISystemTime systemTime = m_systemTime;
-            if (systemTime == null)
-            {
-                systemTime = new SystemDateTime();
-            }
-            var logTunnel = new LogTunnel(systemTime, LogScopeSyncFactory.Create());
-
-            foreach (var loggerBuilder in m_loggers)
-            {
-                var logger = loggerBuilder.Build();
-                logger.AttachToTunnelLog(logTunnel);
-            }
-
-            return logTunnel;
-        }
+        IWhilelogFluentBuilder IWhiteLogLogger.Source { get { return m_builder; } }
     }
 }

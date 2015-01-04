@@ -12,13 +12,13 @@ namespace Whitelog.Sample
 {
     public partial class ColorLoggerBuilder : UserControl
     {
-        private IList<LayoutLogger> m_layouyLoggers;
+        private IList<StringLayoutLogger> m_layouyLoggers;
         private int m_index = 0;
 
         public LogTunnel LogTunnel { get; set; }
         public TabControl PreviewTabControl { get; set; }
 
-        public IList<LayoutLogger> LayoutLoggers
+        public IList<StringLayoutLogger> LayoutLoggers
         {
             get
             {
@@ -62,7 +62,7 @@ namespace Whitelog.Sample
                 if (m_chkDefaultColors.Checked)
                 {
                     var defualtColorSchema = new DefaultColorSchema();
-                    (m_cboLayout.SelectedItem as LayoutLogger).AddStringAppender(new ConsoleAppender(new RichTextBoxConsoleLogEntry(richTextBox),true,defualtColorSchema));   
+                    (m_cboLayout.SelectedItem as StringLayoutLogger).AddStringAppender(new ConsoleAppender(new RichTextBoxConsoleLogEntry(richTextBox),true,defualtColorSchema));   
                 }
                 else
                 {
@@ -92,7 +92,7 @@ namespace Whitelog.Sample
                     colorSchema.AddCondition(entry => entry.Title.Id == ReservedLogTitleIds.Info,new ColorLine(null,infoForeground));
                     colorSchema.AddCondition(entry => entry.Title.Id == ReservedLogTitleIds.Error, new ColorLine(errorBackground, errorForeground));
 
-                    (m_cboLayout.SelectedItem as LayoutLogger).AddStringAppender(new ConsoleAppender(new RichTextBoxConsoleLogEntry(richTextBox),true,colorSchema));   
+                    (m_cboLayout.SelectedItem as StringLayoutLogger).AddStringAppender(new ConsoleAppender(new RichTextBoxConsoleLogEntry(richTextBox),true,colorSchema));   
                 }
             }
             

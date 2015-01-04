@@ -2,7 +2,7 @@
 
 namespace Whitelog.Core.Configuration.Fluent.StringLayout
 {
-    interface IStringAppenderBuilder
+    public interface IStringAppenderBuilder
     {
         IStringAppender Build();
     }
