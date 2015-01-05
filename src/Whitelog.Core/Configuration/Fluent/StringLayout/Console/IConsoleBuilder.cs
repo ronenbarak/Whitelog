@@ -1,5 +1,5 @@
 ﻿using System;
-using Whitelog.Core.Loggers.StringAppender.Console;
+using Whitelog.Core.Loggers.String.StringAppenders.Console;
 using Whitelog.Interface;
 
 namespace Whitelog.Core.Configuration.Fluent.StringLayout.Console

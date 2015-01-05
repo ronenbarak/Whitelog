@@ -5,8 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using BrightIdeasSoftware;
-using Whitelog.Core.Binary.Reader;
-using Whitelog.Core.Binary.Reader.ExpendableList;
+using Whitelog.Core.Binary.Deserilizer.Reader;
+using Whitelog.Core.Binary.Deserilizer.Reader.ExpendableList;
 
 namespace Whitelog.Viewer
 {

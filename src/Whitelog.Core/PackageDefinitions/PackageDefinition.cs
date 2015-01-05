@@ -6,12 +6,12 @@ using System.Linq.Expressions;
 using System.Text;
 using Whitelog.Barak.Common.ExtensionMethods;
 using Whitelog.Core.Binary;
-using Whitelog.Core.Binary.PakageDefinitions.Pack;
+using Whitelog.Core.Binary.Serializer;
 using Whitelog.Core.String;
 
 namespace Whitelog.Core.PackageDefinitions
 {
-    public class PackageDefinition<T> : IBinaryPackageDefinition, IStringPackageDefinition
+    public class PackageDefinition<T> : IBinaryPackageDefinition, IStringPackageDefinition, IJsonPackageDefinition
     {
         private static readonly byte[] ZeroByteArray = BitConverter.GetBytes((int)-1);
 
@@ -19,6 +19,7 @@ namespace Whitelog.Core.PackageDefinitions
         protected List<ConstStringPropertyDefinitoin> m_constDefinitions = new List<ConstStringPropertyDefinitoin>();
 
         protected StringPropertyDefinition<T>[] m_stringDefinitions = new StringPropertyDefinition<T>[0];
+        protected JsonPropertyDefinition<T>[] m_JsonDefinitions = new JsonPropertyDefinition<T>[0];
 
         public virtual IPackageDefinition Clone(Type type, object instance)
         {
@@ -27,7 +28,8 @@ namespace Whitelog.Core.PackageDefinitions
             var packageDefinitionInstance = Activator.CreateInstance(packageDefinitionType,
                                                                         m_definitions.ToList(),
                                                                         m_constDefinitions.Select(p => p.Clone(instance)).ToList(),
-                                                                        m_stringDefinitions.ToList()) as IPackageDefinition;
+                                                                        m_stringDefinitions.ToList(),
+                                                                        m_JsonDefinitions.ToList()) as IPackageDefinition;
             return packageDefinitionInstance;
         }
 
@@ -39,6 +41,27 @@ namespace Whitelog.Core.PackageDefinitions
         IStringPackageDefinition IStringPackageDefinition.Clone(Type type, object instance)
         {
             return Clone(type, instance) as IStringPackageDefinition;
+        }
+
+        IJsonPackageDefinition IJsonPackageDefinition.Clone(Type type, object instance)
+        {
+            return Clone(type, instance) as IJsonPackageDefinition;
+        }
+
+        public virtual void JsonPackData(object data, IStringRenderer stringRenderer, StringBuilder stringBuilder)
+        {
+            stringBuilder.Append("{");
+            T instance = (T)data;
+            var temp = m_JsonDefinitions;
+            for (int i = 0; i < temp.Length; i++)
+            {
+                if (i != 0)
+                {
+                    stringBuilder.Append(",");
+                }
+                temp[i].Render(instance, stringRenderer, stringBuilder);
+            }
+            stringBuilder.Append("}");
         }
 
         public virtual Type GetTypeDefinition()
@@ -88,6 +111,12 @@ namespace Whitelog.Core.PackageDefinitions
         {
             Array.Resize(ref m_stringDefinitions, m_stringDefinitions.Length + 1);
             m_stringDefinitions[m_stringDefinitions.Length - 1] = new StringPropertyDefinition<T>(property, valueAppender);
+        }
+
+        protected void AddJsonDefinition(string property, Action<T, IStringRenderer, StringBuilder> valueAppender)
+        {
+            Array.Resize(ref m_JsonDefinitions, m_JsonDefinitions.Length + 1);
+            m_JsonDefinitions[m_JsonDefinitions.Length - 1] = new JsonPropertyDefinition<T>(property, valueAppender);
         }
 
         private void ValidateDefinitionUniq(string property)
@@ -177,6 +206,7 @@ namespace Whitelog.Core.PackageDefinitions
         {
             AddDefinition(property, SerilizeType.Int32, (arg, packager, serializer) => serializer.Serialize(dataExtractor.Invoke(arg)));
             AddStringDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
+            AddJsonDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
             return this;
         }
 
@@ -184,6 +214,7 @@ namespace Whitelog.Core.PackageDefinitions
         {
             AddDefinition(property, SerilizeType.VariantUInt32, (arg, packager, serializer) => serializer.SerializeVariant(dataExtractor.Invoke(arg)));
             AddStringDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
+            AddJsonDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
             return this;
         }
 
@@ -191,6 +222,7 @@ namespace Whitelog.Core.PackageDefinitions
         {
             AddDefinition(property, SerilizeType.Double, (arg, packager, serializer) => serializer.Serialize(dataExtractor.Invoke(arg)));
             AddStringDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
+            AddJsonDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
             return this;
         }
 
@@ -198,6 +230,7 @@ namespace Whitelog.Core.PackageDefinitions
         {
             AddDefinition(property, SerilizeType.Bool, (arg, packager, serializer) => serializer.Serialize(dataExtractor.Invoke(arg)));
             AddStringDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
+            AddJsonDefinition(property, (arg1, renderer, sb) => sb.Append(!dataExtractor.Invoke(arg1) ? "false":"true"));
             return this;
         }
 
@@ -205,13 +238,21 @@ namespace Whitelog.Core.PackageDefinitions
         {
             AddDefinition(property, SerilizeType.Byte, (arg, packager, serializer) => serializer.Serialize(dataExtractor.Invoke(arg)));
             AddStringDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
+            AddJsonDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
             return this;
         }
 
+        private static readonly DateTime m_epocTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
         public PackageDefinition<T> Define(string property, Func<T, DateTime> dataExtractor)
         {
             AddDefinition(property, SerilizeType.DateTime, (arg, packager, serializer) => serializer.Serialize(dataExtractor.Invoke(arg).Ticks));
             AddStringDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
+            AddJsonDefinition(property, (arg1, renderer, sb) =>
+            {
+                sb.Append("\"\\/Date(");
+                sb.Append((dataExtractor.Invoke(arg1) - m_epocTime).TotalMilliseconds);
+                sb.Append(")\\/\"");
+            });
             return this;
         }
 
@@ -219,6 +260,7 @@ namespace Whitelog.Core.PackageDefinitions
         {
             AddDefinition(property, SerilizeType.Int64, (arg, packager, serializer) => serializer.Serialize(dataExtractor.Invoke(arg)));
             AddStringDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
+            AddJsonDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
             return this;
         }
 
@@ -226,6 +268,12 @@ namespace Whitelog.Core.PackageDefinitions
         {
             AddDefinition(property, SerilizeType.Guid, (arg, packager, serializer) => serializer.Serialize(dataExtractor.Invoke(arg).ToByteArray(),0, 16));
             AddStringDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
+            AddJsonDefinition(property, (arg1, renderer, sb) =>
+            {
+                sb.Append("\"");
+                sb.Append(dataExtractor.Invoke(arg1));
+                sb.Append("\"");
+            });
             return this;
         }
 
@@ -233,6 +281,20 @@ namespace Whitelog.Core.PackageDefinitions
         {
             AddDefinition(property, SerilizeType.String, (arg, packager, serializer) => serializer.Serialize(dataExtractor.Invoke(arg)));
             AddStringDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
+            AddJsonDefinition(property, (arg1, renderer, sb) =>
+            {
+                var value = dataExtractor.Invoke(arg1);
+                if (value == null)
+                {
+                    sb.Append("null");
+                }
+                else
+                {
+                    sb.Append("\"");
+                    sb.Append(value);
+                    sb.Append("\"");   
+                }
+            });
 
             return this;
         }
@@ -241,6 +303,20 @@ namespace Whitelog.Core.PackageDefinitions
         {
             AddDefinition(property, SerilizeType.CacheString, (arg1, packager, serializer) => serializer.SerializeVariant(packager.GetCacheStringId(dataExtractor.Invoke(arg1))));
             AddStringDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
+            AddJsonDefinition(property, (arg1, renderer, sb) =>
+            {
+                var value = dataExtractor.Invoke(arg1);
+                if (value == null)
+                {
+                    sb.Append("null");
+                }
+                else
+                {
+                    sb.Append("\"");
+                    sb.Append(value);
+                    sb.Append("\"");
+                }
+            });
             return this;
         }
 
@@ -250,6 +326,21 @@ namespace Whitelog.Core.PackageDefinitions
             m_constDefinitions.Add(new ConstStringPropertyDefinitoin(property,o => dataExtractor.Invoke((T)o),initialValue));
             
             AddStringDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
+            AddJsonDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
+            AddJsonDefinition(property, (arg1, renderer, sb) =>
+            {
+                var value = dataExtractor.Invoke(arg1);
+                if (value == null)
+                {
+                    sb.Append("null");
+                }
+                else
+                {
+                    sb.Append("\"");
+                    sb.Append(value);
+                    sb.Append("\"");
+                }
+            });
             return this;
         }
 
@@ -281,6 +372,7 @@ namespace Whitelog.Core.PackageDefinitions
                                                                  }
                                                              });
 
+
             AddStringDefinition(property, (arg, renderer,sb) => 
                                           {
                                               var enumerable = dataExtractor.Invoke(arg);
@@ -304,6 +396,30 @@ namespace Whitelog.Core.PackageDefinitions
                                                   sb.Append("]");
                                               }
                                           });
+
+            AddJsonDefinition(property, (arg, renderer, sb) =>
+            {
+                var enumerable = dataExtractor.Invoke(arg);
+                if (enumerable == null)
+                {
+                    sb.Append("null");                    
+                }
+                else
+                {
+                    sb.Append("[");
+                    bool isFirst = true;
+                    foreach (var data in enumerable)
+                    {
+                        if (!isFirst)
+                        {
+                            sb.Append(",");
+                        }
+                        isFirst = false;
+                        renderer.Render(data, sb);
+                    }
+                    sb.Append("]");
+                }
+            });
 
             return this;
         }
@@ -347,6 +463,32 @@ namespace Whitelog.Core.PackageDefinitions
                         }
                         isFirst = false;
                         
+                        renderer.Render(data, sb);
+                    }
+                    sb.Append("]");
+                }
+            });
+
+            AddJsonDefinition(property, (arg, renderer, sb) =>
+            {
+                var enumerable = dataExtractor.Invoke(arg);
+                if (enumerable == null)
+                {
+                    // Do nothing its empty
+                    sb.Append("null");
+                }
+                else
+                {
+                    sb.Append("[");
+                    bool isFirst = true;
+                    foreach (var data in enumerable)
+                    {
+                        if (!isFirst)
+                        {
+                            sb.Append(",");
+                        }
+                        isFirst = false;
+
                         renderer.Render(data, sb);
                     }
                     sb.Append("]");
@@ -410,6 +552,11 @@ namespace Whitelog.Core.PackageDefinitions
                                           {
                                               renderer.Render(dataExtractor.Invoke(arg1), sb);
                                           });
+            AddJsonDefinition(property, (arg1, renderer, sb) =>
+                                          {
+                                              renderer.Render(dataExtractor.Invoke(arg1), sb);
+                                          });
+
             return this;
         }
     }

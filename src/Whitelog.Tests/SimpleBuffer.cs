@@ -1,7 +1,7 @@
 ﻿using System;
 using Whitelog.Core.Binary;
-using Whitelog.Core.Binary.FileLog;
 using Whitelog.Core.Binary.Serializer;
+using Whitelog.Core.Binary.Serializer.MemoryBuffer;
 
 namespace Whitelog.Tests
 {

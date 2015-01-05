@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Whitelog.Barak.Common.DataStructures.Dictionary;
 using Whitelog.Barak.Common.Events;
 using Whitelog.Core.PackageDefinitions;
 using Whitelog.Core.String.Layout;
-using Whitelog.Core.String.Layout.StringLayoutFactory;
 using Whitelog.Core.String.StringBuffer;
 using Whitelog.Interface;
 using Whitelog.Interface.LogTitles;
@@ -14,6 +11,80 @@ using Whitelog.Interface.LogTitles;
 
 namespace Whitelog.Core.String
 {
+    public class JsonSerilizer : IStringRenderer
+    {
+        public event EventHandler<EventArgs<IJsonPackageDefinition>> PackageRegistered;
+        protected readonly object m_definitionSyncObjectLock = new object();
+        protected readonly ReadSafeDictionary<Type, IJsonPackageDefinition> m_PackageDefinitions = new ReadSafeDictionary<Type, IJsonPackageDefinition>(new TypeComparer());
+
+        protected IJsonPackageDefinition GetClosestPackageDefinition(Type currDataType)
+        {
+            int distance = int.MaxValue;
+            IJsonPackageDefinition closestDefinition = null;
+            foreach (var logPackageDefinition in m_PackageDefinitions)
+            {
+                if (logPackageDefinition.Key.IsAssignableFrom(currDataType))
+                {
+                    var currType = currDataType;
+                    int currentDistance = 0;
+                    while (currType != null && logPackageDefinition.Key.IsAssignableFrom(currType))
+                    {
+                        currentDistance++;
+                        currType = currType.BaseType;
+                    }
+
+                    if (currentDistance < distance)
+                    {
+                        distance = currentDistance;
+                        closestDefinition = logPackageDefinition.Value;
+                    }
+                }
+            }
+            return closestDefinition;
+        }
+
+        public void Render(object data, StringBuilder stringBuilder)
+        {
+            if (data == null)
+            {
+                stringBuilder.Append("null");
+            }
+            else
+            {
+                Type type = data.GetType();
+                IJsonPackageDefinition packageDefinition;
+                if (!m_PackageDefinitions.TryGetValue(type, out packageDefinition))
+                {
+                    lock (m_PackageDefinitions)
+                    {
+                        if (!m_PackageDefinitions.TryGetValue(type, out packageDefinition))
+                        {
+                            packageDefinition = GetClosestPackageDefinition(type);
+                            packageDefinition = packageDefinition.Clone(type, data);
+                            m_PackageDefinitions.Add(type, packageDefinition);
+                        }
+                    }
+                }
+
+                if (packageDefinition == null)
+                {
+                    throw new NoPackageFoundForTypeExceptin(type);
+                }
+
+                packageDefinition.JsonPackData(data, this, stringBuilder);
+            }
+        }
+
+        public void RegisterDefinition(IJsonPackageDefinition packageDefinition)
+        {
+            lock (m_definitionSyncObjectLock)
+            {
+                m_PackageDefinitions[packageDefinition.GetTypeDefinition()] = packageDefinition;
+                this.RaiseEvent(PackageRegistered, packageDefinition);
+            }
+        }
+    }
+
     public class StringLayoutRenderer : IStringRenderer
     {
 

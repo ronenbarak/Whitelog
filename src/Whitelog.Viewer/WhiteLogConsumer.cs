@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Whitelog.Core.Binary;
-using Whitelog.Core.Binary.Generic;
-using Whitelog.Core.Binary.Reader;
+using Whitelog.Core.Binary.Deserilizer.Reader;
+using Whitelog.Core.Binary.Deserilizer.Reader.Generic;
 
 namespace Whitelog.Viewer
 {
@@ -37,7 +37,7 @@ namespace Whitelog.Viewer
             }
         }
 
-        public void Consume(ILogEntryData entryData)
+        public void Consume(IEntryData entryData)
         {
             if (entryData.GetEntryType().FullName == "Whitelog.Interface.LogEntry")
             {

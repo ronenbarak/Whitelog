@@ -1,14 +1,8 @@
 using System;
 using System.IO;
-using Whitelog.Core.Binary.ListWriter;
 
 namespace Whitelog.Core.File
 {
-    public interface IListWriterFactory
-    {
-        IListWriter Create();
-    }
-
     public enum ArchiveOptions
     {
         Hour,

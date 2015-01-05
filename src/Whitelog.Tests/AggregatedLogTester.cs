@@ -10,13 +10,14 @@ using Whitelog.Barak.Common.ExtensionMethods;
 using Whitelog.Barak.SystemDateTime;
 using Whitelog.Core;
 using Whitelog.Core.Binary;
-using Whitelog.Core.Binary.FileLog;
-using Whitelog.Core.Binary.Generic;
-using Whitelog.Core.Binary.Reader;
-using Whitelog.Core.Binary.Reader.ExpendableList;
+using Whitelog.Core.Binary.Deserilizer.Reader;
+using Whitelog.Core.Binary.Deserilizer.Reader.ExpendableList;
+using Whitelog.Core.Binary.Deserilizer.Reader.Generic;
 using Whitelog.Core.Binary.Serializer.MemoryBuffer;
 using Whitelog.Core.File;
 using Whitelog.Core.Loggers;
+using Whitelog.Core.Loggers.Binary;
+using Whitelog.Core.Loggers.Binary.SubmitLogEntry;
 using Whitelog.Core.LogScopeSyncImplementation;
 using Whitelog.Interface;
 using Whitelog.Interface.LogTitles;
@@ -25,13 +26,13 @@ namespace Whitelog.Tests
 {
     public static class ValidationExtentions
     {
-        public static object GetValue(this ILogEntryData genericPackageData, string memberName)
+        public static object GetValue(this IEntryData genericPackageData, string memberName)
         {
             var property = genericPackageData.GetProperties().FirstOrDefault(p => p.Name == memberName);
             return property.GetValue(genericPackageData);
         }
 
-        public static ILogEntryData ValidateLogEntry<T, T2>(this ILogEntryData genericPackageData, Expression<Func<T, object>> expression, params Action<ILogEntryData>[] subItems)
+        public static IEntryData ValidateLogEntry<T, T2>(this IEntryData genericPackageData, Expression<Func<T, object>> expression, params Action<IEntryData>[] subItems)
         {
             var memberName = ObjectHelper.GetMemberName(expression);
             var property = genericPackageData.GetProperties().FirstOrDefault(p => p.Name == memberName);
@@ -47,7 +48,7 @@ namespace Whitelog.Tests
             return genericPackageData;
         }
 
-        public static ILogEntryData ValidateArrayLogEntry<T, T2>(this ILogEntryData genericPackageData, int index, Expression<Func<T, object>> expression, params Action<ILogEntryData>[] subItems)
+        public static IEntryData ValidateArrayLogEntry<T, T2>(this IEntryData genericPackageData, int index, Expression<Func<T, object>> expression, params Action<IEntryData>[] subItems)
         {
             var memberName = ObjectHelper.GetMemberName(expression);
             var property = genericPackageData.GetProperties().FirstOrDefault(p => p.Name == memberName);
@@ -63,7 +64,7 @@ namespace Whitelog.Tests
             return genericPackageData;
         }
 
-        public static ILogEntryData ValidatePropertyLogEntry<T, TPropertyType>(this ILogEntryData genericPackageData, Expression<Func<T, TPropertyType>> expression, TPropertyType value)
+        public static IEntryData ValidatePropertyLogEntry<T, TPropertyType>(this IEntryData genericPackageData, Expression<Func<T, TPropertyType>> expression, TPropertyType value)
         {
             var memberName = ObjectHelper.GetMemberName(expression);
             var property = genericPackageData.GetProperties().FirstOrDefault(p => p.Name == memberName);
@@ -79,13 +80,13 @@ namespace Whitelog.Tests
 
     class TestConsumer : ILogConsumer
     {
-        private List<ILogEntryData> m_logs = new List<ILogEntryData>();
-        public void Consume(ILogEntryData entryData)
+        private List<IEntryData> m_logs = new List<IEntryData>();
+        public void Consume(IEntryData entryData)
         {
             m_logs.Add(entryData);
         }
 
-        public IEnumerable<ILogEntryData> Logs()
+        public IEnumerable<IEntryData> Logs()
         {
             var list = m_logs.ToList();
             m_logs.Clear();

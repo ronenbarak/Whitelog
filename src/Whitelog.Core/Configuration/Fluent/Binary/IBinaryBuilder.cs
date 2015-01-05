@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
 using Whitelog.Core.Binary;
-using Whitelog.Core.Binary.FileLog;
+using Whitelog.Core.Binary.Serializer;
 using Whitelog.Core.Binary.Serializer.MemoryBuffer;
 using Whitelog.Core.File;
 using Whitelog.Core.Loggers;
+using Whitelog.Core.Loggers.Binary;
+using Whitelog.Core.Loggers.Binary.SubmitLogEntry;
 using Whitelog.Core.PackageDefinitions;
 
 namespace Whitelog.Core.Configuration.Fluent.Binary

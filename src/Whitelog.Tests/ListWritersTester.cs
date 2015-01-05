@@ -5,12 +5,13 @@ using System.Linq;
 using NUnit.Framework;
 using Whitelog.Barak.Common.ExtensionMethods;
 using Whitelog.Core.Binary;
-using Whitelog.Core.Binary.FileLog;
-using Whitelog.Core.Binary.ListWriter;
-using Whitelog.Core.Binary.PakageDefinitions.Unpack;
-using Whitelog.Core.Binary.Reader;
+using Whitelog.Core.Binary.Deserilizer;
+using Whitelog.Core.Binary.Deserilizer.Reader;
+using Whitelog.Core.Binary.Deserilizer.Unpack;
 using Whitelog.Core.Binary.Serializer;
+using Whitelog.Core.Binary.Serializer.MemoryBuffer;
 using Whitelog.Core.File;
+using Whitelog.Core.Loggers.Binary;
 using Whitelog.Core.PackageDefinitions;
 
 namespace Whitelog.Tests

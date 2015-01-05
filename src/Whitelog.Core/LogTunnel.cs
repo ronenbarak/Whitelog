@@ -1,4 +1,3 @@
-using Whitelog.Core.Filter;
 using Whitelog.Interface;
 using Whitelog.Barak.Common.SystemTime;
 

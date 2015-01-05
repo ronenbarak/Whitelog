@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Whitelog.Barak.Common.DataStructures.Dictionary;
 using Whitelog.Barak.Common.Events;
-using Whitelog.Core.Binary.PakageDefinitions;
+using Whitelog.Core.Binary.Serializer;
 
 namespace Whitelog.Core.Binary
 {
@@ -17,6 +18,25 @@ namespace Whitelog.Core.Binary
         {
             return obj.GetHashCode();
         }
+    }
+
+    public class ObjectReferanceEquals : IEqualityComparer<object>
+    {
+        bool IEqualityComparer<object>.Equals(object x, object y)
+        {
+            return object.ReferenceEquals(x, y);
+        }
+
+        int IEqualityComparer<object>.GetHashCode(object obj)
+        {
+            return RuntimeHelpers.GetHashCode(obj);
+        }
+    }
+
+    public interface IBinaryPackager
+    {
+        int GetCacheStringId(string value);
+        void Pack(object data, ISerializer serializer);
     }
 
     public class BinaryPackager : IBinaryPackager

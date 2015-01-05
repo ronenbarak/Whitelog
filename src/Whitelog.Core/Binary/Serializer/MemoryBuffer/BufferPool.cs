@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using Whitelog.Core.Binary.FileLog;
 
 namespace Whitelog.Core.Binary.Serializer.MemoryBuffer
 {

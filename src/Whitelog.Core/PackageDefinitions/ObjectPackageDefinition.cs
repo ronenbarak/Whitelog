@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 using Whitelog.Core.Binary;
-using Whitelog.Core.Binary.PakageDefinitions.Pack;
+using Whitelog.Core.Binary.Serializer;
 using Whitelog.Core.String;
 
 namespace Whitelog.Core.PackageDefinitions
@@ -35,6 +35,12 @@ namespace Whitelog.Core.PackageDefinitions
         public override System.Type GetTypeDefinition()
         {
             return m_type;
+        }
+
+        public override void JsonPackData(object data, IStringRenderer stringRenderer, StringBuilder stringBuilder)
+        {
+            // data connot be null here
+            stringBuilder.Append(stringRenderer.ToString());
         }
 
         public override void Render(object data, IStringRenderer stringRenderer, StringBuilder stringBuilder)

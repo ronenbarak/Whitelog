@@ -2,7 +2,7 @@ using System;
 
 namespace Whitelog.Core
 {
-    class NoPackageFoundForTypeExceptin : Exception
+    public class NoPackageFoundForTypeExceptin : Exception
     {
         public Type MissingType { get; set; }
 

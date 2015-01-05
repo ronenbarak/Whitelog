@@ -7,12 +7,13 @@ using NUnit.Framework;
 using Whitelog.Barak.SystemDateTime;
 using Whitelog.Core;
 using Whitelog.Core.Binary;
-using Whitelog.Core.Binary.FileLog;
-using Whitelog.Core.Binary.Reader;
-using Whitelog.Core.Binary.Reader.ExpendableList;
+using Whitelog.Core.Binary.Deserilizer.Reader;
+using Whitelog.Core.Binary.Deserilizer.Reader.ExpendableList;
 using Whitelog.Core.Binary.Serializer.MemoryBuffer;
 using Whitelog.Core.File;
 using Whitelog.Core.Loggers;
+using Whitelog.Core.Loggers.Binary;
+using Whitelog.Core.Loggers.Binary.SubmitLogEntry;
 using Whitelog.Core.LogScopeSyncImplementation;
 using Whitelog.Interface;
 

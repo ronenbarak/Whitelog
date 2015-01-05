@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Whitelog.Barak.Common.Events;
+using Whitelog.Core.Binary.Deserilizer;
 
 namespace Whitelog.Core.Binary
 {

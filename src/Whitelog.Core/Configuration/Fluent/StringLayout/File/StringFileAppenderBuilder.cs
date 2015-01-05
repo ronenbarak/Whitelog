@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Whitelog.Core.Binary.FileLog;
 using Whitelog.Core.Binary.Serializer.MemoryBuffer;
 using Whitelog.Core.File;
 using Whitelog.Core.Loggers;
-using Whitelog.Core.Loggers.StringAppender.File;
+using Whitelog.Core.Loggers.String;
+using Whitelog.Core.Loggers.String.StringAppenders.File;
+using Whitelog.Core.Loggers.String.StringAppenders.File.Submitter;
 
 namespace Whitelog.Core.Configuration.Fluent.StringLayout.File
 {
@@ -28,18 +29,18 @@ namespace Whitelog.Core.Configuration.Fluent.StringLayout.File
 		{
 			var fileWriter = new StringFileWriter(new FileStreamProvider(m_fileConfiguration.GetFileConfiguration()));
 
-		    IStringAppenderSubbmiter subbmiter = null;
+		    IStringAppenderSubmitter submitter = null;
             if (m_executionMode == ExecutionMode.Sync)
             {
-                subbmiter = new SyncStringFileSubbmiter(fileWriter);
+                submitter = new SyncStringFileSubmitter(fileWriter);
             }
             else if (m_executionMode == ExecutionMode.Async)
             {
-                subbmiter = new AsyncStringFile(fileWriter);
+                submitter = new AsyncStringFile(fileWriter);
             }
 
 			var filter = m_filterBuilder.Build();
-            return new StringFileAppender(subbmiter, filter);
+            return new StringFileAppender(submitter, filter);
 		}
 	}
 }

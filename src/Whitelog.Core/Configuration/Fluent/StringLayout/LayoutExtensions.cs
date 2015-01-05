@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Whitelog.Core.Loggers;
+using Whitelog.Core.Loggers.String;
 using Whitelog.Core.String.Layout;
 using Whitelog.Core.String.Layout.StringLayoutFactory;
 

@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using Whitelog.Barak.SystemDateTime;
 using Whitelog.Core;
 using Whitelog.Core.Loggers;
+using Whitelog.Core.Loggers.String;
 using Whitelog.Core.LogScopeSyncImplementation;
 using Whitelog.Interface;
 

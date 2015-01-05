@@ -5,7 +5,8 @@ using System.Windows.Forms;
 using Whitelog.Core;
 using Whitelog.Core.Filter;
 using Whitelog.Core.Loggers;
-using Whitelog.Core.Loggers.StringAppender.Console;
+using Whitelog.Core.Loggers.String;
+using Whitelog.Core.Loggers.String.StringAppenders.Console;
 using Whitelog.Interface.LogTitles;
 
 namespace Whitelog.Sample

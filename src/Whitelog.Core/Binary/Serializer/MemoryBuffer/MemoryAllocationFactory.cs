@@ -1,6 +1,3 @@
-using Whitelog.Core.Binary.FileLog;
-using Whitelog.Core.Binary.ListWriter;
-
 namespace Whitelog.Core.Binary.Serializer.MemoryBuffer
 {
     public class MemoryAllocationFactory : IBufferAllocatorFactory

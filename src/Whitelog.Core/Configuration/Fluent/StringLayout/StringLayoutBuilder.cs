@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Whitelog.Core.Configuration.Fluent.StringLayout.File;
 using Whitelog.Core.Filter;
 using Whitelog.Core.Loggers;
+using Whitelog.Core.Loggers.String;
 using Whitelog.Core.PackageDefinitions;
 using Whitelog.Core.String;
 using Whitelog.Core.String.StringBuffer;

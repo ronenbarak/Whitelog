@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using Whitelog.Core;
 using Whitelog.Core.Loggers;
+using Whitelog.Core.Loggers.String;
 using Whitelog.Core.String.Layout.StringLayoutFactory;
 using Whitelog.Core.String.StringBuffer;
 

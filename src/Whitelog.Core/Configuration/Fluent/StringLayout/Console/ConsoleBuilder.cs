@@ -1,8 +1,9 @@
 ﻿using System;
 using Whitelog.Core.Filter;
 using Whitelog.Core.Loggers;
-using Whitelog.Core.Loggers.StringAppender.Console;
-using Whitelog.Core.Loggers.StringAppender.Console.SubmitConsoleLogEntry;
+using Whitelog.Core.Loggers.String;
+using Whitelog.Core.Loggers.String.StringAppenders.Console;
+using Whitelog.Core.Loggers.String.StringAppenders.Console.SubmitConsoleLogEntry;
 
 namespace Whitelog.Core.Configuration.Fluent.StringLayout.Console
 {

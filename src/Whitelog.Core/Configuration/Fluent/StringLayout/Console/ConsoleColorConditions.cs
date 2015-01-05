@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Whitelog.Core.Loggers.StringAppender.Console;
+using Whitelog.Core.Loggers.String.StringAppenders.Console;
 using Whitelog.Interface;
 using Whitelog.Interface.LogTitles;
 

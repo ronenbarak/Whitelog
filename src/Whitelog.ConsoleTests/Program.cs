@@ -1,10 +1,5 @@
 ﻿using System;
-using Whitelog.Barak.SystemDateTime;
-using Whitelog.Core.Binary.Serializer.MemoryBuffer;
 using Whitelog.Core.Configuration.Fluent;
-using Whitelog.Core.File;
-using Whitelog.Core.Loggers.StringAppender.File;
-using Whitelog.Core.PackageDefinitions;
 using Whitelog.Interface;
 
 namespace Whitelog.ConsoleTests

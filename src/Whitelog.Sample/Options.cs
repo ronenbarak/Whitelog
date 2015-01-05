@@ -1,6 +1,6 @@
 ﻿using Whitelog.Core.Binary;
-using Whitelog.Core.Binary.FileLog;
 using Whitelog.Core.Binary.Serializer.MemoryBuffer;
+using Whitelog.Core.Loggers.Binary.SubmitLogEntry;
 
 namespace Whitelog.Sample
 {

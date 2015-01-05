@@ -12,6 +12,8 @@ using Whitelog.Core.Binary;
 using Whitelog.Core.Binary.Serializer.MemoryBuffer;
 using Whitelog.Core.File;
 using Whitelog.Core.Loggers;
+using Whitelog.Core.Loggers.Binary;
+using Whitelog.Core.Loggers.Binary.SubmitLogEntry;
 using Whitelog.Viewer;
 using System.IO;
 
