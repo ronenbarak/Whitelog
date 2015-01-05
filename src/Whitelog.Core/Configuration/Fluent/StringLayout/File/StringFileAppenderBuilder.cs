@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using Whitelog.Core.Binary.Serializer.MemoryBuffer;
-using Whitelog.Core.File;
-using Whitelog.Core.Loggers;
+﻿using Whitelog.Core.File;
 using Whitelog.Core.Loggers.String;
 using Whitelog.Core.Loggers.String.StringAppenders.File;
 using Whitelog.Core.Loggers.String.StringAppenders.File.Submitter;

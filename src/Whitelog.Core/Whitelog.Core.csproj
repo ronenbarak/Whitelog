@@ -55,6 +55,7 @@
     </Compile>
     <Compile Include="Binary\Deserilizer\CloneRawData.cs" />
     <Compile Include="Binary\Deserilizer\IListReader.cs" />
+    <Compile Include="Configuration\Fluent\StringLayout\StringOutputer.cs" />
     <Compile Include="Loggers\Binary\BinaryLogSerilizer.cs" />
     <Compile Include="Binary\Deserilizer\IDeserializer.cs" />
     <Compile Include="Binary\Deserilizer\IUnpackageDefinition.cs" />

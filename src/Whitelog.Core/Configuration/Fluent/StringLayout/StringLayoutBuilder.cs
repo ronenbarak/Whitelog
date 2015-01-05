@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Whitelog.Core.Configuration.Fluent.StringLayout.File;
 using Whitelog.Core.Filter;
 using Whitelog.Core.Loggers;
 using Whitelog.Core.Loggers.String;
