@@ -23,7 +23,7 @@ namespace Whitelog.Core.Loggers.String.StringAppenders.File
         
         private readonly IStreamProvider m_streamProvider;
         private readonly FileConfiguration m_fileConfiguration;
-        
+        private byte[] EOL = Encoding.Unicode.GetBytes(Environment.NewLine);
         private byte[] m_buffer = new byte[1024];
 
         public StringFileWriter(IStreamProvider streamProvider)
@@ -50,6 +50,7 @@ namespace Whitelog.Core.Loggers.String.StringAppenders.File
             }
             
             m_stream.Write(m_buffer, 0, size);
+            m_stream.Write(EOL, 0, EOL.Length);// End of line
         }
 
         public void WriteData(IEnumerable<TextEntry> entries)

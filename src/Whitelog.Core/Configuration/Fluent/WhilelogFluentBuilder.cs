@@ -29,28 +29,6 @@ namespace Whitelog.Core.Configuration.Fluent
 
         public WhiteLogLogger Logger { get { return m_logger; } }
 
-        /*public WhilelogFluentBuilder String(Func<IStringLayoutBuilder, object> stringLayout)
-        {
-            var stringLayoutBuilder = new StringLayoutBuilder();
-            stringLayout.Invoke(stringLayoutBuilder);
-            m_loggers.Add(stringLayoutBuilder);
-            return this;
-        }
-
-        public WhilelogFluentBuilder BinaryFile()
-        {
-            m_loggers.Add(new BinaryBuilder());
-            return this;
-        }
-
-        public WhilelogFluentBuilder BinaryFile(Func<IBinaryBuilder, object> binary)
-        {
-            var binaryBuilder = new BinaryBuilder();
-            binary.Invoke(binaryBuilder);
-            m_loggers.Add(binaryBuilder);
-            return this;
-        }*/
-
         public ILog CreateLog()
         {
             var logTunnel = new LogTunnel(m_systemTime, LogScopeSyncFactory.Create());

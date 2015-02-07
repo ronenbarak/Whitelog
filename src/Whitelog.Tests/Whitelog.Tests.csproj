@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="AggregatedLogTester.cs" />
     <Compile Include="AnonymousPackerTests.cs" />
+    <Compile Include="DefinitionTests.cs" />
     <Compile Include="FileHandlerTests.cs" />
     <Compile Include="FluentBuilderTests.cs" />
     <Compile Include="ListWritersTester.cs" />

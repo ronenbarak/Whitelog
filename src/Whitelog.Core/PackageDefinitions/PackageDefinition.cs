@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.InteropServices;
 using System.Text;
 using Whitelog.Barak.Common.ExtensionMethods;
 using Whitelog.Core.Binary;
@@ -11,6 +12,16 @@ using Whitelog.Core.String;
 
 namespace Whitelog.Core.PackageDefinitions
 {
+
+    [StructLayout(LayoutKind.Explicit)]
+    struct IntFloat
+    {
+        [FieldOffset(0)]
+        public int IntValue;
+        [FieldOffset(0)]
+        public float FloatValue;
+    }
+
     public class PackageDefinition<T> : IBinaryPackageDefinition, IStringPackageDefinition, IJsonPackageDefinition
     {
         private static readonly byte[] ZeroByteArray = BitConverter.GetBytes((int)-1);
@@ -132,6 +143,11 @@ namespace Whitelog.Core.PackageDefinitions
             return Define(ObjectHelper.GetMemberName(expression), dataExtractor);
         }
 
+        public PackageDefinition<T> Define(Expression<Func<T, object>> expression, Func<T, uint> dataExtractor)
+        {
+            return Define(ObjectHelper.GetMemberName(expression), dataExtractor);
+        }
+
         public PackageDefinition<T> DefineVariant(Expression<Func<T, object>> expression, Func<T, int> dataExtractor)
         {
             return DefineVariant(ObjectHelper.GetMemberName(expression), dataExtractor);
@@ -142,12 +158,47 @@ namespace Whitelog.Core.PackageDefinitions
             return Define(ObjectHelper.GetMemberName(expression), dataExtractor);
         }
 
+        public PackageDefinition<T> Define(Expression<Func<T, object>> expression, Func<T, sbyte> dataExtractor)
+        {
+            return Define(ObjectHelper.GetMemberName(expression), dataExtractor);
+        }
+
+        public PackageDefinition<T> Define(Expression<Func<T, object>> expression, Func<T, short> dataExtractor)
+        {
+            return Define(ObjectHelper.GetMemberName(expression), dataExtractor);
+        }
+
+        public PackageDefinition<T> Define(Expression<Func<T, object>> expression, Func<T, ushort> dataExtractor)
+        {
+            return Define(ObjectHelper.GetMemberName(expression), dataExtractor);
+        }
+
         public PackageDefinition<T> Define(Expression<Func<T, object>> expression, Func<T, double> dataExtractor)
         {
             return Define(ObjectHelper.GetMemberName(expression), dataExtractor);
         }
 
         public PackageDefinition<T> Define(Expression<Func<T, object>> expression, Func<T, long> dataExtractor)
+        {
+            return Define(ObjectHelper.GetMemberName(expression), dataExtractor);
+        }
+
+        public PackageDefinition<T> Define(Expression<Func<T, object>> expression, Func<T, ulong> dataExtractor)
+        {
+            return Define(ObjectHelper.GetMemberName(expression), dataExtractor);
+        }
+
+        public PackageDefinition<T> Define(Expression<Func<T, object>> expression, Func<T, float> dataExtractor)
+        {
+            return Define(ObjectHelper.GetMemberName(expression), dataExtractor);
+        }
+
+        public PackageDefinition<T> Define(Expression<Func<T, object>> expression, Func<T, char> dataExtractor)
+        {
+            return Define(ObjectHelper.GetMemberName(expression), dataExtractor);
+        }
+
+        public PackageDefinition<T> Define(Expression<Func<T, object>> expression, Func<T, decimal> dataExtractor)
         {
             return Define(ObjectHelper.GetMemberName(expression), dataExtractor);
         }
@@ -210,6 +261,14 @@ namespace Whitelog.Core.PackageDefinitions
             return this;
         }
 
+        public PackageDefinition<T> Define(string property, Func<T, uint> dataExtractor)
+        {
+            AddDefinition(property, SerilizeType.UInt32, (arg, packager, serializer) => serializer.Serialize((int)dataExtractor.Invoke(arg)));
+            AddStringDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
+            AddJsonDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
+            return this;
+        }
+
         public PackageDefinition<T> DefineVariant(string property, Func<T, int> dataExtractor)
         {
             AddDefinition(property, SerilizeType.VariantUInt32, (arg, packager, serializer) => serializer.SerializeVariant(dataExtractor.Invoke(arg)));
@@ -242,6 +301,77 @@ namespace Whitelog.Core.PackageDefinitions
             return this;
         }
 
+        public PackageDefinition<T> Define(string property, Func<T, sbyte> dataExtractor)
+        {
+            AddDefinition(property, SerilizeType.SByte, (arg, packager, serializer) => serializer.Serialize(dataExtractor.Invoke(arg)));
+            AddStringDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
+            AddJsonDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
+            return this;
+        }
+
+        public
+#if UNSafe
+ unsafe
+#endif
+            PackageDefinition<T> Define(string property, Func<T, float> dataExtractor)
+        {
+            AddDefinition(property, SerilizeType.Float, (arg, packager, serializer) =>
+            {
+                float value = dataExtractor.Invoke(arg);
+#if UNSafe
+                serializer.Serialize(*((int*)&value));
+#else
+                IntFloat f;
+                f.IntValue = 0; // This is requeired for compilation
+                f.FloatValue = value;
+                serializer.Serialize(f.IntValue);
+#endif
+            });
+            AddStringDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
+            AddJsonDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
+            return this;
+        }
+
+        public PackageDefinition<T> Define(string property, Func<T, short> dataExtractor)
+        {
+            AddDefinition(property, SerilizeType.Short, (arg, packager, serializer) => serializer.Serialize(dataExtractor.Invoke(arg)));
+            AddStringDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
+            AddJsonDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
+            return this;
+        }
+
+        public PackageDefinition<T> Define(string property, Func<T, ushort> dataExtractor)
+        {
+            AddDefinition(property, SerilizeType.UShort, (arg, packager, serializer) => serializer.Serialize((short) dataExtractor.Invoke(arg)));
+            AddStringDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
+            AddJsonDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
+            return this;
+        }
+
+        public PackageDefinition<T> Define(string property, Func<T, char> dataExtractor)
+        {
+            AddDefinition(property, SerilizeType.Char, (arg, packager, serializer) => serializer.Serialize((short)dataExtractor.Invoke(arg)));
+            AddStringDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
+            AddJsonDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
+            return this;
+        }
+
+        public PackageDefinition<T> Define(string property, Func<T, decimal> dataExtractor)
+        {            
+            AddDefinition(property, SerilizeType.Decimal, (arg, packager, serializer) =>
+            {
+                var value = dataExtractor.Invoke(arg);
+                var bits = decimal.GetBits(value);
+                serializer.Serialize(bits[0]);
+                serializer.Serialize(bits[1]);
+                serializer.Serialize(bits[2]);
+                serializer.Serialize(bits[3]);
+            });
+            AddStringDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
+            AddJsonDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
+            return this;
+        }
+
         private static readonly DateTime m_epocTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
         public PackageDefinition<T> Define(string property, Func<T, DateTime> dataExtractor)
         {
@@ -259,6 +389,14 @@ namespace Whitelog.Core.PackageDefinitions
         public PackageDefinition<T> Define(string property, Func<T, long> dataExtractor)
         {
             AddDefinition(property, SerilizeType.Int64, (arg, packager, serializer) => serializer.Serialize(dataExtractor.Invoke(arg)));
+            AddStringDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
+            AddJsonDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
+            return this;
+        }
+
+        public PackageDefinition<T> Define(string property, Func<T, ulong> dataExtractor)
+        {
+            AddDefinition(property, SerilizeType.UInt64, (arg, packager, serializer) => serializer.Serialize((long)dataExtractor.Invoke(arg)));
             AddStringDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
             AddJsonDefinition(property, (arg1, renderer, sb) => sb.Append(dataExtractor.Invoke(arg1)));
             return this;

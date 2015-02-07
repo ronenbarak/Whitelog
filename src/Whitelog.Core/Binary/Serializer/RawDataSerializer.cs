@@ -85,7 +85,11 @@ namespace Whitelog.Core.Binary.Serializer
             m_ioIndex += sizeof(long);
         }
 
-        public void Serialize(double value)
+        public 
+#if UNSafe
+            unsafe
+#endif
+            void Serialize(double value)
         {
 #if UNSafe
             Serialize(*(long*)&value);
@@ -106,6 +110,14 @@ namespace Whitelog.Core.Binary.Serializer
             DemandSpace(1);
             m_buffer[m_ioIndex] = value;
             m_ioIndex++;
+        }
+
+        public void Serialize(short value)
+        {
+            DemandSpace(sizeof(short));
+            m_buffer[m_ioIndex] = (byte)value;
+            m_buffer[m_ioIndex +1] = (byte)((uint)value >> 8);
+            m_ioIndex += sizeof(short);
         }
 
         public void Serialize(string value)

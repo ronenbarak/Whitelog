@@ -9,6 +9,7 @@ namespace Whitelog.Core.Binary.Serializer
         void Serialize(double value);
         void Serialize(bool value);
         void Serialize(byte value);
+        void Serialize(short value);
         void Serialize(string value);
         void Serialize(byte[] value, int srcOffset, int count);
     }
